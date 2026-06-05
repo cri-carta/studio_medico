@@ -50,7 +50,40 @@ async function createPatient(req, res) {
     }
 }
 
+async function updatePatient(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        const {
+            nome,
+            cognome,
+            eta
+        } = req.body;
+
+        await PazienteModel.updatePatient(
+            id,
+            nome,
+            cognome,
+            eta
+        );
+
+        res.json({
+            message: 'Paziente aggiornato'
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+}
+
 module.exports = {
     getPatients,
-    createPatient
+    createPatient,
+    updatePatient
 };

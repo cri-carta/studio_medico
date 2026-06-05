@@ -28,12 +28,20 @@ async function UpdatePatient(id, nome, cognome, eta) {
 
     const [result] = await db.query(
 
-        
-    )
+        `UPDATE pazienti
+        SET nome = ?, cognome = ?, eta = ?
+        WHERE id = ?`,
+
+        [nome, cognome, eta, id]
+
+    );
+
+    return result;
 }
 
 module.exports = {
     getAllPatients,
-    createPatient
+    createPatient,
+    UpdatePatient
 };
 
