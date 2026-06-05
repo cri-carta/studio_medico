@@ -1,0 +1,41 @@
+# =====================
+# Node / Express / Angular
+# =====================
+node_modules/
+dist/
+build/
+coverage/
+
+# Angular cache
+.angular/
+.angular-cache/
+
+# =====================
+# Python
+# =====================
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+
+# =====================
+# Environment variables
+# =====================
+.env
+.env.*
+!.env.example
+
+# =====================
+# Logs
+# =====================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# =====================
+# OS files
+# =====================
+.DS_Store
+Thumbs.db
