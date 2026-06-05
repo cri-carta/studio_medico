@@ -24,7 +24,13 @@ async function createPatient(nome, cognome, eta) {
     return result;
 }
 
-async function UpdatePatient
+async function UpdatePatient(id, nome, cognome, eta) {
+
+    const [result] = await db.query(
+
+        
+    )
+}
 
 module.exports = {
     getAllPatients,
