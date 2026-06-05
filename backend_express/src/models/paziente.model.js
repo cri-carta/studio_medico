@@ -24,7 +24,7 @@ async function createPatient(nome, cognome, eta) {
     return result;
 }
 
-async function UpdatePatient(id, nome, cognome, eta) {
+async function updatePatient(id, nome, cognome, eta) {
 
     const [result] = await db.query(
 
@@ -39,9 +39,24 @@ async function UpdatePatient(id, nome, cognome, eta) {
     return result;
 }
 
+async function deletePatient(id) {
+
+    const [result] = await db.query(
+        `DELETE FROM pazienti
+        WHERE id = ?`,
+
+        [id]
+
+    );
+
+    return result;
+    
+}
+
 module.exports = {
     getAllPatients,
     createPatient,
-    UpdatePatient
+    updatePatient,
+    deletePatient
 };
 

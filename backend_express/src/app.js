@@ -6,6 +6,7 @@ const cors = require('cors');
 const pazientiRoutes = require('./routes/pazienti.routes');
 const visiteRoutes = require('./routes/visite.routes');
 const pianiRoutes = require('./routes/piani.routes');
+const authRoutes = require('./routes/auth.routes');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use('/pazienti', pazientiRoutes);
 app.use('/visite', visiteRoutes);
 
 app.use('/piani', pianiRoutes);
+
+app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
 

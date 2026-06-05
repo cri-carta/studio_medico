@@ -82,8 +82,30 @@ async function updatePatient(req, res) {
     }
 }
 
+async function deletePatient(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        await PazienteModel.deletePatient(id);
+
+        res.json({
+            message: 'Paziente eliminato'
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message
+        });
+    }
+    
+}
+
 module.exports = {
     getPatients,
     createPatient,
-    updatePatient
+    updatePatient,
+    deletePatient
 };
