@@ -1,5 +1,6 @@
-const visitaModel = require('../models/visitaModel'); // Assicurati che il percorso sia corretto
-
+const VisitaModel =
+    require('../models/visita.model');
+    
 // GET /visite
 async function getAll(req, res) {
     try {
