@@ -1,13 +1,17 @@
 const express = require('express');
-
 const router = express.Router();
+const visiteController = require('../controllers/visite.controller'); 
 
-router.get('/', (req, res) => {
 
-    res.json({
-        message: 'Route visite funzionante'
-    });
+router.get('/', visiteController.getAll);
 
-});
+
+router.post('/', visiteController.create);
+
+
+router.put('/:id', visiteController.update);
+
+
+router.delete('/:id', visiteController.remove);
 
 module.exports = router;
