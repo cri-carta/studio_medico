@@ -9,6 +9,25 @@ async function getAllPatients() {
     return rows;
 }
 
+async function createPatient(nome, cognome, eta) {
+
+    const [result] = await db.query(
+
+        `INSERT INTO pazienti
+        (nome, cognome, eta)
+        VALUES (?, ?, ?)`,
+
+        [nome, cognome, eta]
+
+    );
+
+    return result;
+}
+
+async function UpdatePatient
+
 module.exports = {
-    getAllPatients
+    getAllPatients,
+    createPatient
 };
+
