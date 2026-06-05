@@ -40,7 +40,23 @@ async function createUser(
 
 }
 
+async function getAllUsers() {
+
+    const [rows] = await db.query(
+
+        `SELECT
+            id,
+            email,
+            ruolo
+        FROM utenti`
+
+    );
+
+    return rows;
+}
+
 module.exports = {
     findUserByEmail,
-    createUser
+    createUser,
+    getAllUsers
 }
