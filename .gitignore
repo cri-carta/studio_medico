@@ -40,3 +40,14 @@ logs/
 .DS_Store
 Thumbs.db
 postman/.dependencies/
+
+# =====================
+# AI assistant context files (local only)
+# =====================
+CLAUDE.md
+.claude/
+.cursor/
+.copilot/
+*.cursorrules
+.aider*
+# AGENTS.md is intentionally tracked (not ignored)
