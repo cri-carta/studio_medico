@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
-
+import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
+import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
@@ -10,7 +10,8 @@ import { Paziente } from '../../../core/models/database.model';
   styleUrls: ['./dashboard-medico.css']
 })
 export class DashboardMedicoComponent implements OnInit {
-  
+  // 3. Inietta il servizio
+  private authService = inject(AuthService); //test
   pazienti: Paziente[] = [
     { id: 1, medico_id: 4, nome: 'Mario', cognome: 'Rossi', data_nascita: new Date('1985-04-12'), altezza: 178, obiettivo: 'Dimagrimento' },
     { id: 2, medico_id: 4, nome: 'Giulia', cognome: 'Bianchi', data_nascita: new Date('1992-11-23'), altezza: 165, obiettivo: 'Ipertrofia' },
@@ -39,13 +40,16 @@ export class DashboardMedicoComponent implements OnInit {
   pazienteSelezionato: Paziente | null = null;
 
   ngOnInit(): void {
+    // 4. TEST DI SIMULAZIONE:
+    // Forza il login come 'medico' per testare se le Guardie ti fanno passare
+    this.authService.login('token-di-test-123', 'medico');
     this.pazientiFiltrati = this.pazienti;
   }
 
   onSearch(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.pazientiFiltrati = this.pazienti.filter(p => 
-      p.nome.toLowerCase().includes(query) || 
+    this.pazientiFiltrati = this.pazienti.filter(p =>
+      p.nome.toLowerCase().includes(query) ||
       p.cognome.toLowerCase().includes(query)
     );
   }
