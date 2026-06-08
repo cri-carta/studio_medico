@@ -30,10 +30,6 @@ export class DashboardMedicoComponent implements OnInit {
     { id: 10, medico_id: 4, nome: 'Valentina', cognome: 'Bruno', data_nascita: new Date('1993-05-09'), altezza: 160, obiettivo: 'Dimagrimento' },
     { id: 11, medico_id: 4, nome: 'Stefano', cognome: 'Conti', data_nascita: new Date('1987-02-25'), altezza: 181, obiettivo: 'Ipertrofia' },
     { id: 12, medico_id: 4, nome: 'Elena', cognome: 'Mancini', data_nascita: new Date('1996-10-11'), altezza: 166, obiettivo: 'Mantenimento' },
-    { id: 9, medico_id: 4, nome: 'Matteo', cognome: 'Greco', data_nascita: new Date('1975-08-21'), altezza: 174, obiettivo: 'Mantenimento' },
-    { id: 10, medico_id: 4, nome: 'Valentina', cognome: 'Bruno', data_nascita: new Date('1993-05-09'), altezza: 160, obiettivo: 'Dimagrimento' },
-    { id: 11, medico_id: 4, nome: 'Stefano', cognome: 'Conti', data_nascita: new Date('1987-02-25'), altezza: 181, obiettivo: 'Ipertrofia' },
-    { id: 12, medico_id: 4, nome: 'Elena', cognome: 'Mancini', data_nascita: new Date('1996-10-11'), altezza: 166, obiettivo: 'Mantenimento' }
   ];
 
   pazientiFiltrati: Paziente[] = [];    
@@ -48,7 +44,7 @@ export class DashboardMedicoComponent implements OnInit {
 
   // Array di utilità per ciclare i giorni ordinati nell'HTML
   giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
-  tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'];
+  tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'] as const;
 
   // Oggetto di appoggio per il Form Nuova Visita
   nuovaVisita = {
