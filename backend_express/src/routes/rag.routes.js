@@ -5,8 +5,8 @@ const path      = require('path');
 const { getVisiteByPaziente } = require('../models/visita.model');
 const { getPatientById }      = require('../models/paziente.model');
 
-const PYTHON     = path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe');
-const RAG_SCRIPT = path.join(__dirname, '../..', 'backend_AI', 'rag_system.py');
+const PYTHON     = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\venv\\Scripts\\python.exe';
+const RAG_SCRIPT = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\rag_system.py';
 
 function callPython(comando, payload) {
     return new Promise((resolve, reject) => {
@@ -73,6 +73,9 @@ router.get('/analisi/:paziente_id', async (req, res) => {
             return res.status(400).json({ error: 'Servono almeno 2 visite per l\'analisi.' });
         }
 
+        const dataNascita = new Date(paziente.data_nascita);
+        const eta = Math.floor((new Date() - dataNascita) / (365.25 * 24 * 60 * 60 * 1000));
+
         const visteFormattate = visite.map(v => ({
             data_visita: v.data_visita.toISOString().split('T')[0],
             peso:        v.peso,
@@ -84,6 +87,7 @@ router.get('/analisi/:paziente_id', async (req, res) => {
             paziente: {
                 nome:      paziente.nome,
                 cognome:   paziente.cognome,
+                eta:       eta,
                 obiettivo: paziente.obiettivo || 'non specificato',
             },
             visite: visteFormattate,
