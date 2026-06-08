@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     // Corretto: ora combacia con il percorso cercato dalla guardia
     path: 'auth/login',
-    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
+    loadChildren: () => import('./features/auth/login/login.routes').then(m => m.loginRoutes)
   },
   {
     path: 'medico',
@@ -19,8 +19,8 @@ export const routes: Routes = [
     loadChildren: () => import('./features/paziente/paziente.routes').then(m => m.pazienteRoutes)
   },
 
-  // Quando l'app parte vuota, prova ad andare su medico
-  { path: '', redirectTo: 'medico', pathMatch: 'full' },
+  // Quando l'app parte vuota, prova ad andare su login
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
   // IMPORTANTE: il jolly deve mandare al LOGIN, non a medico, altrimenti crea il loop!
   { path: '**', redirectTo: 'auth/login' }

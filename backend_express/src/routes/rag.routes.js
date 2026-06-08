@@ -1,14 +1,13 @@
-const express    = require('express');
-const router     = express.Router();
-const { spawn }  = require('child_process');
-const path       = require('path');
+const express   = require('express');
+const router    = express.Router();
+const { spawn } = require('child_process');
+const path      = require('path');
 const { getVisiteByPaziente } = require('../models/visita.model');
 const { getPatientById }      = require('../models/paziente.model');
 
 const PYTHON     = path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe');
 const RAG_SCRIPT = path.join(__dirname, '../..', 'backend_AI', 'rag_system.py');
 
-// Helper — chiama Python e restituisce il risultato come Promise
 function callPython(comando, payload) {
     return new Promise((resolve, reject) => {
         const proc = spawn(PYTHON, [RAG_SCRIPT, comando, JSON.stringify(payload)]);
@@ -32,7 +31,7 @@ function callPython(comando, payload) {
     });
 }
 
-// POST /api/rag/tabella
+// POST /rag/tabella
 // Body: { paziente_id: number }
 router.post('/tabella', async (req, res) => {
     try {
@@ -59,7 +58,7 @@ router.post('/tabella', async (req, res) => {
     }
 });
 
-// GET /api/rag/analisi/:paziente_id
+// GET /rag/analisi/:paziente_id
 router.get('/analisi/:paziente_id', async (req, res) => {
     try {
         const { paziente_id } = req.params;
@@ -74,7 +73,6 @@ router.get('/analisi/:paziente_id', async (req, res) => {
             return res.status(400).json({ error: 'Servono almeno 2 visite per l\'analisi.' });
         }
 
-        // Formatta le date per Python
         const visteFormattate = visite.map(v => ({
             data_visita: v.data_visita.toISOString().split('T')[0],
             peso:        v.peso,
@@ -86,7 +84,6 @@ router.get('/analisi/:paziente_id', async (req, res) => {
             paziente: {
                 nome:      paziente.nome,
                 cognome:   paziente.cognome,
-                eta:       paziente.eta,
                 obiettivo: paziente.obiettivo || 'non specificato',
             },
             visite: visteFormattate,
