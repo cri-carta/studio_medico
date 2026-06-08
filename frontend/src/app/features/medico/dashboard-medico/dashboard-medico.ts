@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
 import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
 import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
+import { MedicoService } from '../medico.service';
+import { RispostaAnalisiAI, RispostaTabellaAI } from '../../../core/models/outputAI.model';
+
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
@@ -9,9 +12,11 @@ import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il 
   templateUrl: './dashboard-medico.html',
   styleUrls: ['./dashboard-medico.css']
 })
+
 export class DashboardMedicoComponent implements OnInit {
   // 3. Inietta il servizio
   private authService = inject(AuthService); //test
+
   pazienti: Paziente[] = [
     { id: 1, medico_id: 4, nome: 'Mario', cognome: 'Rossi', data_nascita: new Date('1985-04-12'), altezza: 178, obiettivo: 'Dimagrimento' },
     { id: 2, medico_id: 4, nome: 'Giulia', cognome: 'Bianchi', data_nascita: new Date('1992-11-23'), altezza: 165, obiettivo: 'Ipertrofia' },
@@ -31,13 +36,29 @@ export class DashboardMedicoComponent implements OnInit {
     { id: 12, medico_id: 4, nome: 'Elena', cognome: 'Mancini', data_nascita: new Date('1996-10-11'), altezza: 166, obiettivo: 'Mantenimento' }
   ];
 
-  pazientiFiltrati: Paziente[] = [];
-  
-  // Tiene traccia dell'ID del paziente attualmente selezionato nella colonna di sinistra
-  pazienteSelezionatoId: number | null = null;
+  pazientiFiltrati: Paziente[] = [];    
+  pazienteSelezionatoId: number | null = null; // Tiene traccia dell'ID del paziente attualmente selezionato nella colonna di sinistra  
+  pazienteSelezionato: Paziente | null = null; // Variabile che contiene l'oggetto completo del paziente da mostrare a destra
 
-  // Variabile che contiene l'oggetto completo del paziente da mostrare a destra
-  pazienteSelezionato: Paziente | null = null;
+  // VARIABILI DI STATO PER IL TASK
+  caricamentoPiano: boolean = false;
+  caricamentoAnalisi: boolean = false;
+  testoAnalisiOllama: RispostaAnalisiAI | null = null;
+  pianoAlimentareGenerato: RispostaTabellaAI | null = null;
+
+  // Array di utilità per ciclare i giorni ordinati nell'HTML
+  giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
+  tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'];
+
+  // Oggetto di appoggio per il Form Nuova Visita
+  nuovaVisita = {
+    peso: 0,
+    bmi: 0,
+    bf: 0
+  };
+
+  // Iniezione del servizio tramite costruttore
+  constructor(private medicoService: MedicoService) {}
 
   ngOnInit(): void {
     // 4. TEST DI SIMULAZIONE:
@@ -57,6 +78,93 @@ export class DashboardMedicoComponent implements OnInit {
   selezionaPaziente(id: number): void {
     this.pazienteSelezionatoId = id;
     this.pazienteSelezionato = this.pazienti.find(p => p.id === id) || null;
+    // Resetta i vecchi output e i campi del form al cambio paziente
+    this.testoAnalisiOllama = null;
+    this.pianoAlimentareGenerato = null;
+    this.nuovaVisita = { peso: 0, bmi: 0, bf: 0 };
+  }
+
+  calcolaBmiBf(event: Event, field: string): void {
+  const inputVal = parseFloat((event.target as HTMLInputElement).value);
+  if (!inputVal || !this.pazienteSelezionato?.altezza) return;
+
+  this.nuovaVisita.peso = inputVal;
+  
+  // Formula standard: BMI = peso / (altezza_metri ^ 2)
+  const altezzaMetri = this.pazienteSelezionato.altezza / 100;
+  this.nuovaVisita.bmi = this.nuovaVisita.peso / (altezzaMetri * altezzaMetri);
+
+  // Formula stimata della Body Fat (BF)
+  this.nuovaVisita.bf = (1.20 * this.nuovaVisita.bmi) - 5; 
+}
+
+  // TASK A: Tasto "Genera tabella" -> /api/rag/tabella
+  onGeneraTabella(): void {
+    if (!this.pazienteSelezionatoId) return;    
+    this.caricamentoPiano = true;
+    this.pianoAlimentareGenerato = null; // Resetta vecchi dati
+
+    // Il servizio chiamerà la rotta Express passandogli il pazienteId
+    this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
+      next: (res: RispostaTabellaAI) => {
+        this.pianoAlimentareGenerato = res;
+        this.caricamentoPiano = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Errore durante la generazione del piano con il RAG.');
+        this.caricamentoPiano = false;
+      }
+    });
+  }
+
+  // TASK B: Tasto "Analisi andamento" -> /api/rag/analisi/:id
+  onAnalisiAndamento(): void {
+    if (!this.pazienteSelezionatoId) return;
+    this.caricamentoAnalisi = true;
+    this.testoAnalisiOllama = null; // Resetta vecchi dati
+
+    // Il servizio invia l'ID; Express estrapolerà l'anagrafica del paziente, 
+    // la sua prima visita storica e l'ultima registrata per fornirle al file Python
+    this.medicoService.getAnalisiAndamento(this.pazienteSelezionatoId).subscribe({
+      next: (res: RispostaAnalisiAI) => {
+        this.testoAnalisiOllama = res;
+        this.caricamentoAnalisi = false;
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Errore durante l'elaborazione dell'analisi clinica.");
+        this.caricamentoAnalisi = false;
+      }
+    });
+  }
+
+  // TASK C: Form "Effettua visita" -> POST /api/visite
+  onSalvaVisita(event: Event): void {
+    event.preventDefault(); // Blocca il refresh nativo della pagina
+    if (!this.pazienteSelezionatoId || this.nuovaVisita.peso <= 0) return;
+
+    const payload = {
+      paziente_id: this.pazienteSelezionatoId,
+      medico_id: 4, // Il medico loggato ricavato dal DB
+      data_visita: new Date().toISOString().split('T')[0], // Data odierna YYYY-MM-DD
+      peso: this.nuovaVisita.peso,
+      bmi: this.nuovaVisita.bmi,
+      bf: this.nuovaVisita.bf
+    };
+
+    this.medicoService.salvaVisita(payload).subscribe({
+      next: (res) => {
+        alert('Visita salvata con successo nel database!');
+        // Svuota il form
+        (event.target as HTMLFormElement).reset();
+        this.nuovaVisita = { peso: 0, bmi: 0, bf: 0 };
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Errore durante il salvataggio della visita.");
+      }
+    });
   }
 
   // CRUD pulsanti in basso

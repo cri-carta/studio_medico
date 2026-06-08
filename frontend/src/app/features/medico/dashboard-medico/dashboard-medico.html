@@ -7,16 +7,13 @@
       </div>
 
       @for (paziente of pazientiFiltrati; track paziente.id) {
-        <div
-          class="paziente-item"
-          [class.active]="pazienteSelezionatoId === paziente.id"
-          (click)="selezionaPaziente(paziente.id)"
-        >
-          <div class="avatar">{{ paziente.nome[0] }}{{ paziente.cognome[0] }}</div>
-          <span class="paziente-name">{{ paziente.cognome }} {{ paziente.nome }}</span>
-        </div>
+      <div class="paziente-item" [class.active]="pazienteSelezionatoId === paziente.id"
+        (click)="selezionaPaziente(paziente.id)">
+        <div class="avatar">{{ paziente.nome[0] }}{{ paziente.cognome[0] }}</div>
+        <span class="paziente-name">{{ paziente.cognome }} {{ paziente.nome }}</span>
+      </div>
       } @empty {
-        <div class="empty-state">Nessun paziente trovato</div>
+      <div class="empty-state">Nessun paziente trovato</div>
       }
     </div>
 
@@ -27,27 +24,15 @@
       </div>
 
       <div class="action-buttons-grid">
-        <button
-          class="btn-ctrl btn-add"
-          (click)="aggiungiPaziente()"
-          title="Aggiungi nuovo paziente"
-        >
+        <button class="btn-ctrl btn-add" (click)="aggiungiPaziente()" title="Aggiungi nuovo paziente">
           ➕ Inserisci
         </button>
-        <button
-          class="btn-ctrl btn-edit"
-          [disabled]="!pazienteSelezionatoId"
-          (click)="modificaPaziente()"
-          title="Modifica dati paziente selezionato"
-        >
+        <button class="btn-ctrl btn-edit" [disabled]="!pazienteSelezionatoId" (click)="modificaPaziente()"
+          title="Modifica dati paziente selezionato">
           ✏️ Modifica
         </button>
-        <button
-          class="btn-ctrl btn-delete"
-          [disabled]="!pazienteSelezionatoId"
-          (click)="eliminaPaziente()"
-          title="Elimina paziente selezionato"
-        >
+        <button class="btn-ctrl btn-delete" [disabled]="!pazienteSelezionatoId" (click)="eliminaPaziente()"
+          title="Elimina paziente selezionato">
           🗑️ Elimina
         </button>
       </div>
@@ -56,44 +41,153 @@
 
   <main class="contenuto-destra">
     @if (pazienteSelezionatoId && pazienteSelezionato) {
-      <div class="placeholder-content">
-        <h1 style="text-align: center">Scheda Paziente ID: {{ pazienteSelezionatoId }}</h1>
-        <br />
-        <div class="dati-anagrafici">
-          <div class="field">
-            <label>Nome</label>
-            <input type="text" [value]="pazienteSelezionato.nome" readonly />
+    <div class="scheda-paziente-container">
+
+      <header class="scheda-header">
+        <div class="paziente-titolo">
+          <h1>{{ pazienteSelezionato.cognome }} {{ pazienteSelezionato.nome }}</h1>
+          <span class="badge-obiettivo">{{ pazienteSelezionato.obiettivo || 'Nessun obiettivo' }}</span>
+        </div>
+
+        <div class="ia-actions">
+          <button class="btn-ia btn-genera" (click)="onGeneraTabella()" [disabled]="caricamentoPiano">
+            @if (caricamentoPiano) { ⏳ Generazione... } @else { 🍏 Genera Tabella }
+          </button>
+          <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">
+            @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
+          </button>
+        </div>
+      </header>
+
+      <div class="scheda-grid">
+
+        <section class="card-dati dati-anagrafici">
+          <h3>Dati Anagrafici</h3>
+          <div class="field-group">
+            <div class="field"><label>Data Nascita:</label> <span>{{ pazienteSelezionato.data_nascita | date:
+                'dd/MM/yyyy' }}</span></div>
+            <div class="field"><label>Altezza:</label> <span>{{ pazienteSelezionato.altezza ?
+                pazienteSelezionato.altezza + ' cm' : '---' }}</span></div>
           </div>
-          <div class="field">
-            <label>Altezza</label>
-            <input type="text" [value]="pazienteSelezionato.altezza" readonly />
-          </div>          
-          <div class="field">
-            <label>Data Nascita</label>
-            <input
-              type="text"
-              [value]="pazienteSelezionato.data_nascita | date: 'dd/MM/yyyy'"
-              readonly
-            />
+          @if (pazienteSelezionato.anamnesi) {
+          <div class="field-anamnesi">
+            <label>Anamnesi iniziale:</label>
+            <p>{{ pazienteSelezionato.anamnesi }}</p>
           </div>
-          <div class="field">
-            <label>Cognome</label>
-            <input type="text" [value]="pazienteSelezionato.cognome" readonly />
+          }
+        </section>
+
+        <section class="card-dati form-visita-box">
+          <h3>Form "Effettua Visita"</h3>
+          <form (submit)="onSalvaVisita($event)" class="visita-form">
+            <div class="form-row">
+              <div class="field-input">
+                <label for="peso">Peso (kg)</label>
+                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaBmiBf($event, 'peso')">
+              </div>
+              <div class="field-input">
+                <label for="bmi">BMI</label>
+                <input type="number" id="bmi" name="bmi" [value]="nuovaVisita.bmi | number:'1.1-2'" readonly
+                  class="input-readonly">
+              </div>
+              <div class="field-input">
+                <label for="bf">Body Fat (%)</label>
+                <input type="number" id="bf" name="bf" [value]="nuovaVisita.bf | number:'1.1-1'" readonly
+                  class="input-readonly">
+              </div>
+            </div>
+            <button type="submit" class="btn-submit-visita">💾 Salva Dati Visita</button>
+          </form>
+        </section>
+      </div>
+
+      @if (testoAnalisiOllama) {
+      <section class="card-dati output-ia-box analisi-box animate-fade">
+        <div class="output-header">
+          <h3>🧠 Analisi Clinica Avanzata (Ollama AI)</h3>
+          <button class="btn-close-output" (click)="testoAnalisiOllama = null">❌ Chiudi</button>
+        </div>
+        <div class="quadro-clinico-grid">
+          <div class="widget-delta" [class.migliorato]="testoAnalisiOllama.delta_peso <= 0">
+            <span class="delta-label">Variazione Peso</span>
+            <span class="delta-valore">{{ testoAnalisiOllama.delta_peso | number:'1.1-1' }} kg</span>
           </div>
-          <div class="field">
-            <label>Obiettivo</label>
-            <input type="text" [value]="pazienteSelezionato.obiettivo" readonly />
+          <div class="widget-delta" [class.migliorato]="testoAnalisiOllama.delta_bmi <= 0">
+            <span class="delta-label">Variazione BMI</span>
+            <span class="delta-valore">{{ testoAnalisiOllama.delta_bmi | number:'1.1-2' }}</span>
+          </div>
+          <div class="widget-status-badge" [class.successo]="testoAnalisiOllama.ha_migliorato">
+            Status Obiettivo: <strong>{{ testoAnalisiOllama.ha_migliorato ? 'In Miglioramento' : 'Stazionario /
+              Monitorare'
+              }}</strong>
           </div>
         </div>
-      </div>
+        <div class="output-content text-markdown">
+          <p>{{ testoAnalisiOllama }}</p>
+        </div>
+      </section>
+      }
+
+      @if (pianoAlimentareGenerato && pianoAlimentareGenerato.piano_settimanale) {
+      <section class="card-dati output-ia-box tabella-box animate-fade">
+        <div class="output-header">
+          <h3>🍏 Piano Alimentare Settimanale Generato</h3>
+          <button class="btn-close-output" (click)="pianoAlimentareGenerato = null">❌ Chiudi</button>
+        </div>
+        <div class="tabella-scroll">
+          <table class="piano-table">
+            <thead>
+              <tr>
+                <th>Giorno</th>
+                <th>Dettaglio Pasti Settimanali</th>
+                <th style="width: 180px;">Apporto Giornaliero</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (giornoNome of giorniDellaSettimana; track giornoNome) {
+              @if (pianoAlimentareGenerato.piano_settimanale[giornoNome]; as datiGiorno) {
+              <tr>
+                <td class="giorno-cell"><strong>{{ giornoNome | uppercase }}</strong></td>
+                <td>
+                  <div class="pasti-giorno-grid">
+                    @for (pastoTipo of tipiPasto; track pastoTipo) {
+                    <div class="pasto-blocco">
+                      <span class="pasto-titolo-label">{{ pastoTipo }}:</span>
+                      @for (alimentoObj of datiGiorno.pasti[pastoTipo]; track alimentoObj.alimento) {
+                      <span class="alimento-item">
+                        • {{ alimentoObj.alimento }} <strong>({{ alimentoObj.grammatura }})</strong>
+                      </span>
+                      } @empty {
+                      <span class="alimento-vuoto">Non previsto dalle linee guida</span>
+                      }
+                    </div>
+                    }
+                  </div>
+                </td>
+                <td class="macro-cell">
+                  <div class="macro-container">
+                    <div class="macro-kcal">🔥 {{ datiGiorno.totale_giornaliero.calorie_totali }} kcal</div>
+                    <div class="macro-sub">🥩 Proteine: {{ datiGiorno.totale_giornaliero.proteine_g }}g</div>
+                    <div class="macro-sub">🍞 Carbo: {{ datiGiorno.totale_giornaliero.carboidrati_g }}g</div>
+                    <div class="macro-sub">🥑 Grassi: {{ datiGiorno.totale_giornaliero.grassi_g }}g</div>
+                  </div>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      }
+
+    </div>
     } @else {
-      <div class="placeholder-content">
-        <h1>Benvenuto nel Gestionale Medico</h1>
-        <p>
-          Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o
-          creare un piano alimentare con l'IA.
-        </p>
-      </div>
+    <div class="placeholder-content">
+      <h1>Benvenuto nel Gestionale Medico</h1>
+      <p>Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o configurare le
+        attività.</p>
+    </div>
     }
   </main>
 </div>
