@@ -1,17 +1,77 @@
 const express = require('express');
 const router = express.Router();
-const visiteController = require('../controllers/visite.controller'); 
+const {
+    getAllVisits,
+    getVisiteByPaziente,
+    getPrimaUltimaVisita,
+    createVisita,
+    updateVisita,
+    deleteVisita
+} = require('../models/visita.model');
 
+// GET tutte le visite
+router.get('/', async (req, res) => {
+    try {
+        const visite = await getAllVisits();
+        res.json(visite);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
-router.get('/', visiteController.getAll);
+// GET visite di un paziente
+router.get('/paziente/:paziente_id', async (req, res) => {
+    try {
+        const visite = await getVisiteByPaziente(req.params.paziente_id);
+        res.json(visite);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
+// GET prima e ultima visita (per analisi andamento)
+router.get('/paziente/:paziente_id/andamento', async (req, res) => {
+    try {
+        const visite = await getPrimaUltimaVisita(req.params.paziente_id);
+        if (visite.length < 2) {
+            return res.status(400).json({ error: 'Servono almeno 2 visite per l\'analisi.' });
+        }
+        res.json({ prima: visite[0], ultima: visite[1] });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
-router.post('/', visiteController.create);
+// POST nuova visita
+router.post('/', async (req, res) => {
+    try {
+        const { paziente_id, medico_id, data_visita, peso, bmi, bf } = req.body;
+        const result = await createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf);
+        res.status(201).json({ ok: true, id: result.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
+// PUT aggiorna visita
+router.put('/:id', async (req, res) => {
+    try {
+        const { data_visita, peso, bmi, bf } = req.body;
+        await updateVisita(req.params.id, data_visita, peso, bmi, bf);
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
-router.put('/:id', visiteController.update);
-
-
-router.delete('/:id', visiteController.remove);
+// DELETE visita
+router.delete('/:id', async (req, res) => {
+    try {
+        await deleteVisita(req.params.id);
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;
