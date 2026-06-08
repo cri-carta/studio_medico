@@ -88,18 +88,13 @@ async function login(req, res) {
         }
 
         const token = jwt.sign(
-
             {
-                id: user.id,
-                ruolo: user.ruolo
+                id:    user.id,
+                email: user.email,
+                role:  user.ruolo    // ← era 'ruolo', ora 'role'
             },
-
             process.env.JWT_SECRET,
-
-            {
-                expiresIn: '24h'
-            }
-
+            { expiresIn: '24h' }
         );
 
         res.json({
