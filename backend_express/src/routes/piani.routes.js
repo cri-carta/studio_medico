@@ -6,11 +6,14 @@ const {
     getPlans,
     createPlan,
     updatePlan,
-    deletePlan
+    deletePlan,
+    getPlanById,
+    getFullPlan
 } = require('../controllers/piani.controller');
 
 router.get('/', getPlans);
-
+router.get('/:id/full', getFullPlan);
+router.get('/:id', getPlanById);
 router.post('/', createPlan);
 
 router.put('/:id', updatePlan);
