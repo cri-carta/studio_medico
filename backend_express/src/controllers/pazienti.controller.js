@@ -17,36 +17,26 @@ async function getPatients(req, res) {
 }
 
 async function createPatient(req, res) {
-
     try {
+        // Aggiungiamo tutti i campi necessari per la transazione nel modello
+        const { nome, cognome, eta, peso, bmi, bf, medico_id } = req.body;
 
-        const {
-            nome,
-            cognome,
-            eta
-        } = req.body;
-
-        const result =
-            await PazienteModel.createPatient(
-                nome,
-                cognome,
-                eta
-            );
+        const result = await PazienteModel.createPatient(
+            nome, 
+            cognome, 
+            eta, 
+            peso, 
+            bmi, 
+            bf, 
+            medico_id
+        );
 
         res.status(201).json({
-
-            message: 'Paziente creato',
-
+            message: 'Paziente e prima visita creati correttamente',
             id: result.insertId
-
         });
-
     } catch (error) {
-
-        res.status(500).json({
-            error: error.message
-        });
-
+        res.status(500).json({ error: error.message });
     }
 }
 
