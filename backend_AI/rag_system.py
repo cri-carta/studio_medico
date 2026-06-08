@@ -8,7 +8,7 @@ Comandi CLI:
     python rag_system.py seed     '{}'
     python rag_system.py query    '{"domanda": "...", "paziente_id": "paz_001"}'
     python rag_system.py tabella  '{"domanda": "...", "paziente_id": "paz_001"}'
-    python rag_system.py analisi  '{"paziente": {...}, "prima_visita": {...}, "ultima_visita": {...}}'
+    python rag_system.py analisi  '{"paziente": {...}, "visite": [...]}'
     python rag_system.py add      '{"id": "paz_001", "nome": "Mario", ...}'
     python rag_system.py remove   '{"id": "paz_001"}'
     python rag_system.py update   '{"id": "paz_001", "nome": "Mario", ...}'
@@ -27,8 +27,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL",  "http://localhost:11434")
-OLLAMA_CHAT     = os.getenv("OLLAMA_MODEL",      "llama3.2")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL",   "http://localhost:11434")
+OLLAMA_CHAT     = os.getenv("OLLAMA_MODEL",       "llama3.2")
 OLLAMA_EMBED    = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 CHROMA_PATH     = os.getenv("CHROMA_PATH",        "./rag_db")
 
@@ -121,8 +121,8 @@ class SistemaRAG:
             metadata           = {"hnsw:space": "cosine"},
         )
 
-        self.col_pazienti   = chroma.get_or_create_collection("pazienti",    **collection_kwargs)
-        self.col_conoscenza = chroma.get_or_create_collection("conoscenza",  **collection_kwargs)
+        self.col_pazienti   = chroma.get_or_create_collection("pazienti",   **collection_kwargs)
+        self.col_conoscenza = chroma.get_or_create_collection("conoscenza", **collection_kwargs)
 
     # ------------------------------------------------------------------
     # Chunking
@@ -347,8 +347,8 @@ RISPONDI ESCLUSIVAMENTE IN FORMATO JSON seguendo esattamente questa struttura:
 
         try:
             response = ollama.chat(
-                model  = self.chat_model,
-                format = "json",
+                model    = self.chat_model,
+                format   = "json",
                 messages = [
                     {
                         "role":    "system",
@@ -376,48 +376,57 @@ RISPONDI ESCLUSIVAMENTE IN FORMATO JSON seguendo esattamente questa struttura:
         }
 
     # ------------------------------------------------------------------
-    # Generazione — analisi andamento paziente
+    # Generazione — analisi andamento su tutte le visite
     # ------------------------------------------------------------------
 
-    def analisi_andamento(self, paziente: dict, prima_visita: dict, ultima_visita: dict) -> dict:
-        delta_peso = ultima_visita['peso'] - prima_visita['peso']
-        delta_bmi  = ultima_visita['bmi']  - prima_visita['bmi']
-        delta_bf   = ultima_visita['bf']   - prima_visita['bf']
+    def analisi_andamento(self, paziente: dict, visite: list[dict]) -> dict:
+        if len(visite) < 2:
+            return {"ok": False, "errore": "Servono almeno 2 visite per l'analisi."}
 
-        prompt = f"""Sei un nutrizionista. Analizza l'andamento di questo paziente.
+        visite_str = ""
+        for i, v in enumerate(visite):
+            visite_str += f"\nVisita {i+1} ({v['data_visita']}):\n"
+            visite_str += f"  - Peso: {v['peso']} kg\n"
+            visite_str += f"  - BMI:  {v['bmi']}\n"
+            visite_str += f"  - BF:   {v['bf']}%\n"
+
+        prima      = visite[0]
+        ultima     = visite[-1]
+        delta_peso = round(ultima['peso'] - prima['peso'], 1)
+        delta_bmi  = round(ultima['bmi']  - prima['bmi'],  2)
+        delta_bf   = round(ultima['bf']   - prima['bf'],   1)
+
+        prompt = f"""Sei un nutrizionista. Analizza l'andamento completo di questo paziente nel tempo.
 
 PAZIENTE: {paziente['nome']} {paziente['cognome']}, {paziente['eta']} anni
 OBIETTIVO: {paziente.get('obiettivo', 'non specificato')}
 
-PRIMA VISITA ({prima_visita['data_visita']}):
-- Peso: {prima_visita['peso']} kg
-- BMI:  {prima_visita['bmi']}
-- BF:   {prima_visita['bf']}%
+STORICO VISITE:
+{visite_str}
 
-ULTIMA VISITA ({ultima_visita['data_visita']}):
-- Peso: {ultima_visita['peso']} kg
-- BMI:  {ultima_visita['bmi']}
-- BF:   {ultima_visita['bf']}%
-
-VARIAZIONI:
+VARIAZIONE TOTALE (prima → ultima visita):
 - Peso: {delta_peso:+.1f} kg
 - BMI:  {delta_bmi:+.2f}
 - BF:   {delta_bf:+.1f}%
 
 Fornisci:
-1. Valutazione generale dell'andamento (positivo/negativo/stabile)
-2. Analisi dettagliata di ogni parametro
-3. Consigli pratici per il proseguimento
+1. Valutazione generale dell'andamento nel tempo (positivo/negativo/altalenante/stabile)
+2. Analisi dettagliata di ogni parametro con riferimento alle singole visite
+3. Eventuali anomalie o inversioni di tendenza
+4. Consigli pratici per il proseguimento
 Rispondi in italiano, in modo professionale ma comprensibile."""
 
         try:
             response = ollama.chat(
                 model    = self.chat_model,
                 messages = [
-                    {"role": "system", "content": "Sei un nutrizionista esperto. Rispondi sempre in italiano."},
-                    {"role": "user",   "content": prompt},
+                    {
+                        "role":    "system",
+                        "content": "Sei un nutrizionista esperto. Rispondi sempre in italiano."
+                    },
+                    {"role": "user", "content": prompt},
                 ],
-                options={"temperature": 0.3, "num_predict": 800},
+                options={"temperature": 0.3, "num_predict": 1000},
             )
             testo = response["message"]["content"]
         except Exception as e:
@@ -425,9 +434,10 @@ Rispondi in italiano, in modo professionale ma comprensibile."""
 
         return {
             "analisi":       testo,
-            "delta_peso":    round(delta_peso, 1),
-            "delta_bmi":     round(delta_bmi, 2),
-            "delta_bf":      round(delta_bf, 1),
+            "n_visite":      len(visite),
+            "delta_peso":    delta_peso,
+            "delta_bmi":     delta_bmi,
+            "delta_bf":      delta_bf,
             "ha_migliorato": delta_peso <= 0 and delta_bf <= 0
         }
 
@@ -484,13 +494,12 @@ def main():
         print(json.dumps(rag.genera_tabella(domanda, paziente_id=paziente_id), ensure_ascii=False))
 
     elif comando == "analisi":
-        paziente      = payload.get("paziente")
-        prima_visita  = payload.get("prima_visita")
-        ultima_visita = payload.get("ultima_visita")
-        if not paziente or not prima_visita or not ultima_visita:
-            print(json.dumps({"ok": False, "errore": "Campi 'paziente', 'prima_visita', 'ultima_visita' obbligatori."}))
+        paziente = payload.get("paziente")
+        visite   = payload.get("visite")
+        if not paziente or not visite:
+            print(json.dumps({"ok": False, "errore": "Campi 'paziente' e 'visite' obbligatori."}))
         else:
-            print(json.dumps(rag.analisi_andamento(paziente, prima_visita, ultima_visita), ensure_ascii=False))
+            print(json.dumps(rag.analisi_andamento(paziente, visite), ensure_ascii=False))
 
     elif comando == "add":
         print(json.dumps(rag.aggiungi_paziente(payload), ensure_ascii=False))
@@ -524,22 +533,29 @@ if __name__ == "__main__":
 
         print("--- ADD ---")
         print(rag.aggiungi_paziente({
-            "id": "paz_001",
-            "nome": "Mario Rossi",
-            "eta": 45,
-            "peso": 92,
-            "note": "Intollerante al lattosio. Ipertensione lieve.",
-            "kcal": 1800
+            "id":        "paz_001",
+            "nome":      "Mario Rossi",
+            "eta":       45,
+            "peso":      92,
+            "note":      "Intollerante al lattosio. Ipertensione lieve.",
+            "kcal":      1800
         }))
 
         print("--- TABELLA ---")
-        print(rag.genera_tabella("Genera piano nutrizionale settimanale.", paziente_id="paz_001"))
+        print(rag.genera_tabella(
+            "Genera piano nutrizionale settimanale.",
+            paziente_id="paz_001"
+        ))
 
         print("--- ANALISI ---")
         print(rag.analisi_andamento(
-            paziente      = {"nome": "Mario", "cognome": "Rossi", "eta": 45},
-            prima_visita  = {"data_visita": "2024-01-01", "peso": 92, "bmi": 29.5, "bf": 28.0},
-            ultima_visita = {"data_visita": "2024-06-01", "peso": 87, "bmi": 27.8, "bf": 24.5},
+            paziente = {"nome": "Mario", "cognome": "Rossi", "eta": 45},
+            visite   = [
+                {"data_visita": "2024-01-01", "peso": 92.0, "bmi": 29.5, "bf": 28.0},
+                {"data_visita": "2024-02-01", "peso": 90.5, "bmi": 28.9, "bf": 26.5},
+                {"data_visita": "2024-04-01", "peso": 89.0, "bmi": 28.4, "bf": 25.8},
+                {"data_visita": "2024-06-01", "peso": 87.0, "bmi": 27.8, "bf": 24.5},
+            ]
         ))
 
     else:
