@@ -1,18 +1,17 @@
 <div class="dashboard-layout">
-  
   <aside class="sidebar-pazienti">
-    
     <div class="lista-pazienti-scroll">
       <div class="lista-header">
         <h2>Pazienti</h2>
         <span class="pazienti-count">{{ pazientiFiltrati.length }}</span>
       </div>
-      
+
       @for (paziente of pazientiFiltrati; track paziente.id) {
-        <div 
-          class="paziente-item" 
+        <div
+          class="paziente-item"
           [class.active]="pazienteSelezionatoId === paziente.id"
-          (click)="selezionaPaziente(paziente.id)">
+          (click)="selezionaPaziente(paziente.id)"
+        >
           <div class="avatar">{{ paziente.nome[0] }}{{ paziente.cognome[0] }}</div>
           <span class="paziente-name">{{ paziente.cognome }} {{ paziente.nome }}</span>
         </div>
@@ -24,39 +23,77 @@
     <div class="controlli-basso">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input 
-          type="text" 
-          placeholder="Cerca paziente..." 
-          (input)="onSearch($event)">
+        <input type="text" placeholder="Cerca paziente..." (input)="onSearch($event)" />
       </div>
 
       <div class="action-buttons-grid">
-        <button class="btn-ctrl btn-add" (click)="aggiungiPaziente()" title="Aggiungi nuovo paziente">
+        <button
+          class="btn-ctrl btn-add"
+          (click)="aggiungiPaziente()"
+          title="Aggiungi nuovo paziente"
+        >
           ➕ Inserisci
         </button>
-        <button class="btn-ctrl btn-edit" [disabled]="!pazienteSelezionatoId" (click)="modificaPaziente()" title="Modifica dati paziente selezionato">
+        <button
+          class="btn-ctrl btn-edit"
+          [disabled]="!pazienteSelezionatoId"
+          (click)="modificaPaziente()"
+          title="Modifica dati paziente selezionato"
+        >
           ✏️ Modifica
         </button>
-        <button class="btn-ctrl btn-delete" [disabled]="!pazienteSelezionatoId" (click)="eliminaPaziente()" title="Elimina paziente selezionato">
+        <button
+          class="btn-ctrl btn-delete"
+          [disabled]="!pazienteSelezionatoId"
+          (click)="eliminaPaziente()"
+          title="Elimina paziente selezionato"
+        >
           🗑️ Elimina
         </button>
       </div>
     </div>
-
   </aside>
 
   <main class="contenuto-destra">
-    @if (pazienteSelezionatoId) {
+    @if (pazienteSelezionatoId && pazienteSelezionato) {
       <div class="placeholder-content">
-        <h1>Scheda Paziente ID: {{ pazienteSelezionatoId }}</h1>
-        <p>Qui verranno visualizzati l'anamnesi, l'altezza, gli obiettivi e i grafici delle visite/peso.</p>
+        <h1 style="text-align: center">Scheda Paziente ID: {{ pazienteSelezionatoId }}</h1>
+        <br />
+        <div class="dati-anagrafici">
+          <div class="field">
+            <label>Nome</label>
+            <input type="text" [value]="pazienteSelezionato.nome" readonly />
+          </div>
+          <div class="field">
+            <label>Altezza</label>
+            <input type="text" [value]="pazienteSelezionato.altezza" readonly />
+          </div>          
+          <div class="field">
+            <label>Data Nascita</label>
+            <input
+              type="text"
+              [value]="pazienteSelezionato.data_nascita | date: 'dd/MM/yyyy'"
+              readonly
+            />
+          </div>
+          <div class="field">
+            <label>Cognome</label>
+            <input type="text" [value]="pazienteSelezionato.cognome" readonly />
+          </div>
+          <div class="field">
+            <label>Obiettivo</label>
+            <input type="text" [value]="pazienteSelezionato.obiettivo" readonly />
+          </div>
+        </div>
       </div>
     } @else {
       <div class="placeholder-content">
         <h1>Benvenuto nel Gestionale Medico</h1>
-        <p>Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o creare un piano alimentare con l'IA.</p>
+        <p>
+          Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o
+          creare un piano alimentare con l'IA.
+        </p>
       </div>
     }
   </main>
-
 </div>
