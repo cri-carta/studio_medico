@@ -63,7 +63,7 @@ export class DashboardMedicoComponent implements OnInit {
   ngOnInit(): void {
     // 4. TEST DI SIMULAZIONE:
     // Forza il login come 'medico' per testare se le Guardie ti fanno passare
-    this.authService.login('token-di-test-123', 'medico');
+    this.authService.login('INCOLLA_IL_LUNGO_TOKEN_DI_JWT_IO');;
     this.pazientiFiltrati = this.pazienti;
   }
 
