@@ -31,25 +31,22 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // 1. Cerca l'utente nel DB
         const utente = await Utente.findUserByEmail(email);
+        
         if (!utente) {
+            console.log("Login fallito: Utente non trovato");
             return res.status(401).json({ message: 'Credenziali non valide' });
         }
 
-        // 2. Confronta la password inserita con l'hash nel DB
         const isMatch = await bcrypt.compare(password, utente.password_hash);
+        
         if (!isMatch) {
+            console.log("Login fallito: Password errata per", email);
             return res.status(401).json({ message: 'Credenziali non valide' });
         }
 
-        // 3. Login riuscito (per ora restituiamo un successo)
-        res.status(200).json({ 
-            message: 'Login effettuato con successo',
-            userId: utente.id,
-            ruolo: utente.ruolo 
-        });
+        // Se arriva qui, il login è ok
+        res.status(200).json({ message: 'Login riuscito', userId: utente.id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
