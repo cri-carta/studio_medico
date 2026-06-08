@@ -20,7 +20,7 @@ async function getPrimaUltimaVisita(paziente_id) {
          (SELECT * FROM visite WHERE paziente_id = ? ORDER BY data_visita DESC LIMIT 1)`,
         [paziente_id, paziente_id]
     );
-    return rows; // rows[0] = prima, rows[1] = ultima
+    return rows;
 }
 
 async function createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf) {
