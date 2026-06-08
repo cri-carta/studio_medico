@@ -13,25 +13,24 @@ async function getPatientById(id) {
     return rows[0];
 }
 
-async function createPatient(nome, cognome, eta, peso, bmi, bf, medico_id) {
+async function createPatient(utente_id, medico_id, nome, cognome, data_nascita, altezza, obiettivo, anamnesi, peso, bmi, bf) {
     const conn = await db.getConnection();
     try {
         await conn.beginTransaction();
 
-        // Crea il paziente
         const [result] = await conn.query(
-            `INSERT INTO pazienti (nome, cognome, eta)
-             VALUES (?, ?, ?)`,
-            [nome, cognome, eta]
+            `INSERT INTO pazienti (utente_id, medico_id, nome, cognome, data_nascita, altezza, obiettivo, anamnesi)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [utente_id, medico_id, nome, cognome, data_nascita, altezza, obiettivo, anamnesi]
         );
 
         const paziente_id = result.insertId;
 
-        // Crea automaticamente la prima visita
+        // Prima visita automatica
         await conn.query(
-            `INSERT INTO visite (paziente_id, medico_id, data_visita, peso, bmi, bf)
-             VALUES (?, ?, CURDATE(), ?, ?, ?)`,
-            [paziente_id, medico_id, peso, bmi, bf]
+            `INSERT INTO visite (paziente_id, data_visita, peso, bmi, bf)
+             VALUES (?, CURDATE(), ?, ?, ?)`,
+            [paziente_id, peso, bmi, bf]
         );
 
         await conn.commit();
@@ -45,12 +44,12 @@ async function createPatient(nome, cognome, eta, peso, bmi, bf, medico_id) {
     }
 }
 
-async function updatePatient(id, nome, cognome, eta) {
+async function updatePatient(id, nome, cognome, data_nascita, altezza, obiettivo, anamnesi) {
     const [result] = await db.query(
         `UPDATE pazienti
-         SET nome = ?, cognome = ?, eta = ?
+         SET nome = ?, cognome = ?, data_nascita = ?, altezza = ?, obiettivo = ?, anamnesi = ?
          WHERE id = ?`,
-        [nome, cognome, eta, id]
+        [nome, cognome, data_nascita, altezza, obiettivo, anamnesi, id]
     );
     return result;
 }
