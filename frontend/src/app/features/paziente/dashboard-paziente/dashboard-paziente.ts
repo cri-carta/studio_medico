@@ -50,6 +50,52 @@ export class DashboardPazienteComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+// NUOVA FUNZIONE: Recupera la dieta e lo storico visite dal database
+caricaDatiConnessi(pazienteId: number): void {
+  this.medicoService.getPianoCompletoPaziente(pazienteId).subscribe({
+    next: (vociPiano) => {
+      this.inizializzaMappaVuota();
+
+      vociPiano.forEach(voce => {
+        // ========================================================
+        // QUI C'È IL "PUNTO 2": Protezione per maiuscole e spazi
+        // ========================================================
+        const g = voce.giorno.toLowerCase().trim();
+        const p = voce.tipo_pasto.toLowerCase().trim();
+
+        if (this.pianoStrutturato[g] && this.pianoStrutturato[g][p]) {
+          this.pianoStrutturato[g][p].push(voce);
+        }
+      });
+
+      // Spegniamo il caricamento solo quando i dati della tabella sono pronti
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error("Errore recupero piano alimentare", err);
+      this.isLoading = false;
+    }
+  });
+
+  // Recupera anche l'elenco delle visite passate per la sezione progressi
+  this.medicoService.getStoricoVisite(pazienteId).subscribe({
+    next: (visite) => {
+      this.storicoVisite = visite;
+    },
+    error: (err) => console.error("Errore recupero storico visite", err)
+  });
+}
+
+// NUOVA FUNZIONE: Genera la struttura iniziale ad albero vuota
+private inizializzaMappaVuota(): void {
+  this.giorniChiave.forEach(g => {
+    this.pianoStrutturato[g] = {};
+    this.pastiChiave.forEach(p => {
+      this.pianoStrutturato[g][p] = [];
+    });
+  });
+}
+
 
   setVista(tipo: 'tabella' | 'progressi') {
     this.vistaAttiva = tipo;

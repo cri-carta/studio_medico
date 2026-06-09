@@ -45,8 +45,11 @@ router.get('/paziente/:paziente_id/andamento', async (req, res) => {
 // POST nuova visita
 router.post('/', async (req, res) => {
     try {
-        const { paziente_id, medico_id, data_visita, peso, bmi, bf } = req.body;
-        const result = await createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf);
+        // Estrai anche note_visita dal body
+        const { paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita } = req.body;
+        
+        // Passalo alla funzione del modello
+        const result = await createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita);
         res.status(201).json({ ok: true, id: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -56,8 +59,11 @@ router.post('/', async (req, res) => {
 // PUT aggiorna visita
 router.put('/:id', async (req, res) => {
     try {
-        const { data_visita, peso, bmi, bf } = req.body;
-        await updateVisita(req.params.id, data_visita, peso, bmi, bf);
+        // Estrai anche note_visita dal body
+        const { data_visita, peso, bmi, bf, note_visita } = req.body;
+        
+        // Passalo alla funzione del modello
+        await updateVisita(req.params.id, data_visita, peso, bmi, bf, note_visita);
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -56,12 +56,43 @@
             <app-visualizza-piano [piano]="pianoStrutturato"></app-visualizza-piano>
           } @else {
             <div class="progress-container">
-              <h3>Progressi Visite</h3>
-              <p>Confronto storico del peso e parametri corporei.</p>
+              <h3>Progressi e Storico Visite</h3>
+              <p>Confronto dei parametri corporei rilevati durante le visite in studio.</p>
 
-              <div class="table-placeholder">
-                <p>Nessun grafico caricato. Storico visite pronto.</p>
-              </div>
+              @if (storicoVisite.length > 0) {
+                <div class="tabella-scroll">
+                  <table class="piano-table">
+                    <thead>
+                      <tr>
+                        <th>Data Visita</th>
+                        <th>Peso</th>
+                        <th>B.M.I.</th>
+                        <th>Massa Grassa (BF)</th>
+                        <th>Note del Medico</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (visita of storicoVisite; track visita.id) {
+                        <tr>
+                          <td class="giorno-cell">
+                            <strong>{{ visita.data_visita | date:'dd/MM/yyyy' }}</strong>
+                          </td>
+                          <td>{{ visita.peso }} kg</td>
+                          <td>{{ visita.bmi }}</td>
+                          <td>{{ visita.bf }}%</td>
+                          <td class="nota-cell">
+                            <small>{{ visita.note_visita ? visita.note_visita : 'Nessuna nota inserita' }}</small>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              } @else {
+                <div class="table-placeholder">
+                  <p>Non sono ancora presenti visite registrate nello storico di questo paziente.</p>
+                </div>
+              }
             </div>
           }
 

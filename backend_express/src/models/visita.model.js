@@ -60,7 +60,26 @@ async function deleteVisita(id) {
     );
     return result;
 }
+// Inserisce una nuova visita includendo note_visita
+async function createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita) {
+    const [result] = await db.query(
+        `INSERT INTO visite (paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita] // <-- Aggiunto qui
+    );
+    return result;
+}
 
+// Aggiorna i dati clinici includendo note_visita
+async function updateVisita(id, data_visita, peso, bmi, bf, note_visita) {
+    const [result] = await db.query(
+        `UPDATE visite
+         SET data_visita = ?, peso = ?, bmi = ?, bf = ?, note_visita = ?
+         WHERE id = ?`,
+        [data_visita, peso, bmi, bf, note_visita, id] // <-- Aggiunto qui
+    );
+    return result;
+}
 module.exports = {
     getAllVisits,
     getVisiteByPaziente,
