@@ -30,7 +30,7 @@ load_dotenv()
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL",   "http://localhost:11434")
 OLLAMA_CHAT     = os.getenv("OLLAMA_MODEL",       "llama3.2")
 OLLAMA_EMBED    = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
-CHROMA_PATH     = os.getenv("CHROMA_PATH",        "./rag_db")
+CHROMA_PATH = os.getenv("CHROMA_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag_db"))
 
 
 # ---------------------------------------------------------------------------
@@ -127,6 +127,21 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Chunking
     # ------------------------------------------------------------------
+
+    def genera_tabella(self, domanda: str, paziente_id: str = None) -> dict:
+        import sys
+        print(f"[DEBUG] chroma_path: {self.col_pazienti._client._settings.persist_directory}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] pazienti count: {self.col_pazienti.count()}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] conoscenza count: {self.col_conoscenza.count()}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] paziente_id cercato: {paziente_id}", file=sys.stderr, flush=True)
+        
+        contesto = self.retrieval(domanda, solo_paziente_id=paziente_id)
+        print(f"[DEBUG] contesto trovato: {len(contesto)} risultati", file=sys.stderr, flush=True)
+        
+        risultato = self._genera_tabella(domanda, contesto)
+        return risultato
+
+
 
     def _chunking(self, testo: str, chunk_size: int = 60, overlap: int = 15) -> list[str]:
         parole = testo.split()
