@@ -1,4 +1,5 @@
 <div class="dashboard-layout">
+  
   <aside class="sidebar-pazienti">
     <div class="lista-pazienti-scroll">
       <div class="lista-header">
@@ -83,7 +84,7 @@
             <div class="form-row">
               <div class="field-input">
                 <label for="peso">Peso (kg)</label>
-                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaBmiBf($event, 'peso')">
+                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaParametriAutomatici()" placeholder="0.0">
               </div>
               <div class="field-input">
                 <label for="bmi">BMI</label>

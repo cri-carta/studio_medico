@@ -12,12 +12,12 @@
 
       <div class="role-buttons">
         <button class="role-btn btn-medico" (click)="selezionaRuolo('medico')">
-          <span class="role-btn-icon">👨‍⚕️</span>
+          <span class="role-btn-icon">👨🏼‍⚕️</span>
           <span class="role-btn-label">Accedi come Medico</span>
         </button>
 
         <button class="role-btn btn-paziente" (click)="selezionaRuolo('paziente')">
-          <span class="role-btn-icon">🧑</span>
+          <span class="role-btn-icon">👴🏼</span>
           <span class="role-btn-label">Accedi come Paziente</span>
         </button>
       </div>
@@ -26,7 +26,7 @@
     @else if (step === 'credenziali') {
 
       <div class="login-header">
-        <div class="login-icon">{{ ruoloSelezionato === 'medico' ? '👨‍⚕️' : '🧑' }}</div>
+        <div class="login-icon">{{ ruoloSelezionato === 'medico' ? '👨🏼‍⚕️' : '👴🏼' }}</div>
         <h2>{{ ruoloSelezionato === 'medico' ? 'Area Medico' : 'Area Paziente' }}</h2>
         <p>Inserisci le tue credenziali</p>
       </div>

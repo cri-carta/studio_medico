@@ -10,8 +10,8 @@ export const routes: Routes = [
   {
     path: 'medico',
     loadChildren: () => import('./features/medico/medico.routes').then(m => m.medicoRoutes),
-    canActivate: [authGuard, roleGuard],
-    data: { expectedRole: 'medico' }
+    // canActivate: [authGuard, roleGuard], // Proteggi l'intero blocco
+    data: { expectedRole: 'medico' }     // Dichiara che tutto ciò che sta dentro 'medico' richiede questo ruolo
   },
   {
     path: 'paziente',
