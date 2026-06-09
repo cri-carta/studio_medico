@@ -30,6 +30,21 @@ export class AuthService {
     }
   }
 
+  // Metodo che estrae l'ID dell'utente dal token JWT
+  userId(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      return decoded.id ?? null;
+    } catch (error) {
+      console.error('Token non valido o corrotto:', error);
+      this.logout();
+      return null;
+    }
+  }
+
   // Al login salviamo ESCLUSIVAMENTE il token JWT
   login(token: string): void {
     localStorage.setItem('token', token);

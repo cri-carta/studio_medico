@@ -4,6 +4,7 @@ const mysql = require('mysql2/promise');
 // Creiamo un pool di connessioni, più efficiente per le app web rispetto a una connessione singola
 const pool = mysql.createPool({
   host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'root',
   database: process.env.DB_DATABASE || 'studio_medico',

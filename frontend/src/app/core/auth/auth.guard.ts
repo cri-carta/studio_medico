@@ -8,5 +8,5 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   // Se esiste un ruolo, l'utente è "autenticato"
-  return authService.userRole() !== null ? true : router.createUrlTree(['/login']);
+  return authService.userRole() !== null ? true : router.createUrlTree(['/auth/login']);
 };

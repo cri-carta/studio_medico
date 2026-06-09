@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
-import { MedicoService } from '../../medico/medico.service';
+import { MedicoService, PianoVoce, Visita } from '../../medico/medico.service';
 import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
+import { AuthService } from '../../../core/auth/auth.service';
 import { VisualizzaPianoComponent } from '../visualizza-piano/visualizza-piano';
 @Component({
   selector: 'app-dashboard-paziente',
@@ -16,28 +17,27 @@ export class DashboardPazienteComponent implements OnInit {
   paziente: Paziente | null = null;
   vistaAttiva: 'tabella' | 'progressi' = 'tabella';
   isLoading: boolean = true;
-  pianoStrutturato: any = {};
-  storicoVisite: any[] = [];
+  pianoStrutturato: Record<string, Record<string, PianoVoce[]>> = {};
+  storicoVisite: Visita[] = [];
 
   giorniChiave = ['lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato', 'domenica'];
   pastiChiave = ['colazione', 'pranzo', 'spuntino', 'cena'];
 
   constructor(
     private medicoService: MedicoService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // 1. Recuperiamo la stringa salvata nel browser al momento del login
-    const stringaUtenteId = localStorage.getItem('utenteId');
+    // Recuperiamo l'ID utente decodificato dal token JWT
+    const idNumerico = this.authService.userId();
 
-    // 2. Se esiste, facciamo il cast a numero e chiamiamo il backend
-    if (stringaUtenteId) {
-      const idNumerico = Number(stringaUtenteId);
-
+    if (idNumerico !== null) {
       this.medicoService.getProfiloPaziente(idNumerico).subscribe({
-        next: (dati) => {
+        next: (dati: Paziente) => {
           this.paziente = dati; // I dati corrispondono alle colonne della tabella 'pazienti'
+          this.caricaDatiConnessi(dati.id);
           this.isLoading = false;
         },
         error: (err) => {
@@ -46,17 +46,17 @@ export class DashboardPazienteComponent implements OnInit {
         }
       });
     } else {
-      // Se non c'è traccia dell'ID (es. localStorage svuotato), rimandalo al login per sicurezza
-      this.router.navigate(['/login']);
+      // Se non c'è traccia dell'ID, rimandalo al login per sicurezza
+      this.router.navigate(['/auth/login']);
     }
   }
 // NUOVA FUNZIONE: Recupera la dieta e lo storico visite dal database
 caricaDatiConnessi(pazienteId: number): void {
   this.medicoService.getPianoCompletoPaziente(pazienteId).subscribe({
-    next: (vociPiano) => {
+    next: (vociPiano: PianoVoce[]) => {
       this.inizializzaMappaVuota();
 
-      vociPiano.forEach(voce => {
+      vociPiano.forEach((voce: PianoVoce) => {
         // ========================================================
         // QUI C'È IL "PUNTO 2": Protezione per maiuscole e spazi
         // ========================================================
@@ -71,7 +71,7 @@ caricaDatiConnessi(pazienteId: number): void {
       // Spegniamo il caricamento solo quando i dati della tabella sono pronti
       this.isLoading = false;
     },
-    error: (err) => {
+    error: (err: any) => {
       console.error("Errore recupero piano alimentare", err);
       this.isLoading = false;
     }
@@ -79,10 +79,10 @@ caricaDatiConnessi(pazienteId: number): void {
 
   // Recupera anche l'elenco delle visite passate per la sezione progressi
   this.medicoService.getStoricoVisite(pazienteId).subscribe({
-    next: (visite) => {
+    next: (visite: Visita[]) => {
       this.storicoVisite = visite;
     },
-    error: (err) => console.error("Errore recupero storico visite", err)
+    error: (err: any) => console.error("Errore recupero storico visite", err)
   });
 }
 
@@ -104,6 +104,6 @@ private inizializzaMappaVuota(): void {
   logout() {
     console.log("Esecuzione Logout...");
     localStorage.clear(); // Svuota i dati di sessione (token, ruolo, utenteId)
-    this.router.navigate(['/login']); // Reindirizza l'utente alla pagina di login
+    this.router.navigate(['/auth/login']); // Reindirizza l'utente alla pagina di login
   }
 }

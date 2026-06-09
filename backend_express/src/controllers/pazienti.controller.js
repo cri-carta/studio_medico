@@ -17,6 +17,7 @@ const { spawn } = require('child_process');
 
 // path: utilizzato per costruire i percorsi ai file Python in modo sicuro
 const path = require('path');
+const os = require('os');
 
 
 // ------------------------------------------------------------
@@ -24,8 +25,10 @@ const path = require('path');
 // PYTHON:     percorso all'eseguibile Python nel venv del backend AI
 // RAG_SCRIPT: percorso allo script Python che gestisce il sistema RAG
 // ------------------------------------------------------------
-const PYTHON     = path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe');
 const RAG_SCRIPT = path.join(__dirname, '../..', 'backend_AI', 'rag_system.py');
+const PYTHON = os.platform() === 'win32'
+  ? path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe')
+  : path.join(__dirname, '../..', 'backend_AI', 'venv', 'bin', 'python');
 
 
 // ------------------------------------------------------------
