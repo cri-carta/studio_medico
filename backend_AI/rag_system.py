@@ -162,17 +162,6 @@ class SistemaRAG:
 
 
 
-    """
-    Scopo:
-        Suddivide un documento in chunk sovrapposti per migliorare il retrieval.
-
-    Input:
-        testo (str), chunk_size (int), overlap (int).
-
-    Return:
-        list[str]: lista dei chunk generati.
-    """
-    # Mantiene parte del contesto tra chunk consecutivi.
     def _chunking(self, testo: str, chunk_size: int = 60, overlap: int = 15) -> list[str]:
         parole = testo.split()
         chunks, i = [], 0
