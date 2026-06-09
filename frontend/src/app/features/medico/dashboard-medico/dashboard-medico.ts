@@ -4,6 +4,7 @@ import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
 import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
 import { MedicoService } from '../medico.service';
 import { RispostaAnalisiAI, RispostaTabellaAI } from '../../../core/models/outputAI.model';
+import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
 
 @Component({
   selector: 'app-dashboard-medico',
@@ -54,7 +55,10 @@ export class DashboardMedicoComponent implements OnInit {
   successMsg: string = '';
 
   // Iniezione del servizio tramite costruttore
-  constructor(private medicoService: MedicoService) {}
+  constructor(
+    private medicoService: MedicoService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.pazientiFiltrati = this.pazienti;
@@ -82,7 +86,9 @@ export class DashboardMedicoComponent implements OnInit {
     this.bf = 0.0;
   }
 
-  private calcolaEta(dataNascitaInput: any): number {
+  private calcolaEta(dataNascitaInput: Date | string | undefined | null): number {
+    if (!dataNascitaInput) return 0;
+    // Converte istantaneamente in un oggetto Date indipendente se è una stringa
     const nascita = new Date(dataNascitaInput);
     const oggi = new Date();
     let eta = oggi.getFullYear() - nascita.getFullYear();
@@ -94,17 +100,27 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   calcolaParametriAutomatici(): void {
-    if (!this.peso || this.peso <= 0 || !this.pazienteSelezionato) {
+    // Recupera l'elemento input dal DOM per prelevare il peso inserito dall'utente
+    const inputPeso = document.getElementById('peso') as HTMLInputElement;
+    if (!inputPeso) return;
+  
+    const pesoDigitato = parseFloat(inputPeso.value);
+  
+    if (!pesoDigitato || pesoDigitato <= 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
+      this.peso = null;
       this.bmi = 0.0;
       this.bf = 0.0;
       return;
     }
-
+  
+    // Aggiorna la variabile locale con il valore digitato
+    this.peso = pesoDigitato;
+  
     // 1. Calcolo del BMI basato sull'altezza del paziente selezionato
-    const altezzaInMetri = this.pazienteSelezionato.altezza / 100;
+    const altezzaInMetri = this.pazienteSelezionato?.altezza / 100;
     this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
-
-    // 2. Calcolo della Body Fat (BF) stimata tramite formula standard degli adulti
+  
+    // 2. Calcolo della Body Fat (BF) stimata
     const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
     const sessoFattore = 1; // Default a 1 (uomo) o personalizzabile se hai il campo sesso
     
@@ -213,5 +229,11 @@ export class DashboardMedicoComponent implements OnInit {
       this.pazienteSelezionatoId = null;
       this.pazienteSelezionato = null;
     }
+  }
+
+  logout() {
+    console.log("Esecuzione Logout...");
+    localStorage.clear(); // Svuota i dati di sessione (token, ruolo, utenteId)
+    this.router.navigate(['/login']); // Reindirizza l'utente alla pagina di login
   }
 }

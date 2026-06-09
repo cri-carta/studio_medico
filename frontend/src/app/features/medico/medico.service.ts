@@ -14,14 +14,13 @@ export interface NuovaVisita {
 
 export interface Paziente {
   id: number;
-  utente_id: number;
   medico_id: number;
   nome: string;
   cognome: string;
-  data_nascita: string;
-  altezza: number;
-  obiettivo: string;
-  anamnesi: string | null;
+  data_nascita?: Date | string;
+  altezza?: number;
+  obiettivo?: string;
+  anamnesi?: string;
 }
 
 @Injectable({

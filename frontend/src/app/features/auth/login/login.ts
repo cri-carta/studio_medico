@@ -50,9 +50,12 @@ export class LoginComponent {
 
     this.authService.login(token);
 
+    // --- Salvataggio dell'ID utente nel LocalStorage ---
     if (this.ruoloSelezionato === 'medico') {
+      localStorage.setItem('utenteId', '4');
       this.router.navigate(['/medico']);
     } else {
+      localStorage.setItem('utenteId', '1');
       this.router.navigate(['/paziente']);
     }
   }
