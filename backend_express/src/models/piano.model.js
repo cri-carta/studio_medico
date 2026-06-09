@@ -1,29 +1,21 @@
 const db = require('../config/database');
 
 async function getPlanById(id) {
-
     const [rows] = await db.query(
-
-        `SELECT * FROM piani_alimentari
-        WHERE id = ?`,
-
+        `SELECT * FROM piani_alimentari WHERE id = ?`,
         [id]
-
     );
-
     return rows[0];
 }
 
-
-
+// Nota: Ho rimosso le colonne gp.totale_kcal, ecc. perché non presenti in db.sql
 async function getFullPlan(pianoId) {
     const query = `
         SELECT 
             gp.giorno, 
             p.tipo_pasto, 
             vp.alimento, 
-            vp.grammi,
-            gp.totale_kcal, gp.totale_proteine, gp.totale_carboidrati, gp.totale_grassi
+            vp.grammi
         FROM piani_alimentari pa
         JOIN giorni_piano gp ON pa.id = gp.piano_id
         JOIN pasti p ON gp.id = p.giorno_id
@@ -36,85 +28,35 @@ async function getFullPlan(pianoId) {
     return rows;
 }
 
-async function createPlan(
-    paziente_id,
-    nome_piano,
-    calorie,
-    descrizione,
-    data_creazione
-) {
-
+// Aggiornato secondo la struttura: id, paziente_id, medico_id, created_at
+async function createPlan(paziente_id, medico_id) {
     const [result] = await db.query(
-
-        `INSERT INTO piani_alimentari
-        (
-            paziente_id,
-            nome_piano,
-            calorie,
-            descrizione,
-            data_creazione
-        )
-        VALUES (?, ?, ?, ?, ?)`,
-
-        [
-            paziente_id,
-            nome_piano,
-            calorie,
-            descrizione,
-            data_creazione
-        ]
-
+        `INSERT INTO piani_alimentari (paziente_id, medico_id) VALUES (?, ?)`,
+        [paziente_id, medico_id]
     );
-
     return result;
 }
 
-async function updatePlan(
-    id,
-    paziente_id,
-    nome_piano,
-    calorie,
-    descrizione,
-    data_creazione
-) {
-
+// In questo caso, data la struttura del DB, l'update è limitato
+async function updatePlan(id, paziente_id, medico_id) {
     const [result] = await db.query(
-
-        `UPDATE piani_alimentari
-        SET
-            paziente_id = ?,
-            nome_piano = ?,
-            calorie = ?,
-            descrizione = ?,
-            data_creazione = ?
-        WHERE id = ?`,
-
-        [
-            paziente_id,
-            nome_piano,
-            calorie,
-            descrizione,
-            data_creazione,
-            id
-        ]
-
+        `UPDATE piani_alimentari SET paziente_id = ?, medico_id = ? WHERE id = ?`,
+        [paziente_id, medico_id, id]
     );
-
     return result;
 }
 
 async function deletePlan(id) {
-
     const [result] = await db.query(
-
-        `DELETE FROM piani_alimentari
-        WHERE id = ?`,
-
+        `DELETE FROM piani_alimentari WHERE id = ?`,
         [id]
-
     );
-
     return result;
+}
+
+async function getAllPlans() {
+    const [rows] = await db.query('SELECT * FROM piani_alimentari');
+    return rows;
 }
 
 module.exports = {
@@ -122,5 +64,7 @@ module.exports = {
     getFullPlan,
     createPlan,
     updatePlan,
-    deletePlan
+    deletePlan,
+    getAllPlans // <--- AGGIUNGI QUESTA RIGA PER ESPORTARLA
 };
+

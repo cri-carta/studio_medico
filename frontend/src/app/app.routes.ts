@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-// Importa le guardie che abbiamo creato
 import { authGuard } from './core/auth/auth.guard';
 import { roleGuard } from './core/auth/role.guard';
+
 export const routes: Routes = [
-    {
-    path: 'auth',
-    // Carica pigramente il componente di login (o un sotto-routing standalone)
-    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
+  {
+    // Corretto: ora combacia con il percorso cercato dalla guardia
+    path: 'auth/login',
+    loadChildren: () => import('./features/auth/login/login.routes').then(m => m.loginRoutes)
   },
   {
     path: 'medico',
@@ -16,13 +16,12 @@ export const routes: Routes = [
   },
   {
     path: 'paziente',
-    // Carica pigramente le rotte figlie per il paziente
     loadChildren: () => import('./features/paziente/paziente.routes').then(m => m.pazienteRoutes)
   },
 
-  // Reindirizzamento alla homepage del medico (o ad auth se preferisci far fare prima il login)
-  { path: '', redirectTo: 'medico', pathMatch: 'full' },
+  // Quando l'app parte vuota, prova ad andare su login
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
-  // Wildcard per gestire le rotte inesistenti
-  { path: '**', redirectTo: 'medico' }
+  // IMPORTANTE: il jolly deve mandare al LOGIN, non a medico, altrimenti crea il loop!
+  { path: '**', redirectTo: 'auth/login' }
 ];

@@ -1,22 +1,21 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from './auth.service'; 
+import { AuthService } from './auth.service';
 
-export const roleGuard: CanActivateFn = (route, state) => {
+export const roleGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   const expectedRole = route.data['expectedRole'];
-  
-  // 1. Usiamo la proprietà suggerita da TS (senza parentesi tonde!)
-  const userRole = authService.userRole; 
+  const userRole = authService.userRole();
 
-  // 2. Se non hai 'isAuthenticated', controlliamo solo se il ruolo esiste ed è quello giusto
-  if (userRole && userRole === expectedRole) {
-    return true; 
+  console.log(`[RoleGuard] Richiesto: ${expectedRole} | Utente: ${userRole}`);
+
+  if (userRole === expectedRole) {
+    return true; // Ruolo corretto, passa pure!
   }
 
-  // Altrimenti, via dalle palle!
-  router.navigate(['/auth']);
-  return false;
+  // Se il ruolo non coincide, blocca la navigazione e rimanda al login
+  console.warn(`[RoleGuard] Accesso negato per il ruolo: ${userRole}`);
+  return router.parseUrl('/auth/login');
 };
