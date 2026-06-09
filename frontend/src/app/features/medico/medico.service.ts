@@ -4,13 +4,48 @@ import { Observable } from 'rxjs';
 import { PianoAlimentare, Visita } from '../../core/models/database.model';
 import { RispostaTabellaAI, RispostaAnalisiAI } from '../../core/models/outputAI.model';
 
+export interface NuovaVisita {
+  paziente_id: number;
+  data_visita: string; // Formato YYYY-MM-DD
+  peso: number;
+  bmi: number;
+  bf: number;
+}
+
+export interface Paziente {
+  id: number;
+  utente_id: number;
+  medico_id: number;
+  nome: string;
+  cognome: string;
+  data_nascita: string;
+  altezza: number;
+  obiettivo: string;
+  anamnesi: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class MedicoService {
   private readonly API_URL = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
+
+  /**
+   * 1. MEDICO: Recupera la lista di tutti i pazienti assegnati a un determinato medico
+   */
+  getPazientiPerMedico(medicoId: number): Observable<Paziente[]> {
+    return this.http.get<Paziente[]>(`${this.API_URL}/medici/${medicoId}/pazienti`);
+  }
+
+  /**
+   * 2. PAZIENTE: Recupera i dettagli anagrafici del singolo paziente partendo dal suo utente_id
+   */
+  getProfiloPaziente(utenteId: number): Observable<Paziente> {
+    return this.http.get<Paziente>(`${this.API_URL}/pazienti/utente/${utenteId}`);
+  }
 
   // 1. Chiama il RAG per generare la tabella del piano settimanale
   generaTabellaPiano(pazienteId: number): Observable<RispostaTabellaAI> {
@@ -23,7 +58,7 @@ export class MedicoService {
   }
 
   // 3. Effettua una nuova visita salvando i parametri clinici
-  salvaVisita(visita: { paziente_id: number; medico_id: number; data_visita: string; peso: number; bmi: number; bf: number }): Observable<any> {
-    return this.http.post(`${this.API_URL}/visite`, visita);
+  salvaVisita(visita: NuovaVisita): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/visite`, visita);
   }
 }
