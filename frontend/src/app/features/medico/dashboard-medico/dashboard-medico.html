@@ -1,4 +1,5 @@
 <div class="dashboard-layout">
+  
   <aside class="sidebar-pazienti">
     <div class="lista-pazienti-scroll">
       <div class="lista-header">
@@ -27,27 +28,13 @@
       </div>
 
       <div class="action-buttons-grid">
-        <button
-          class="btn-ctrl btn-add"
-          (click)="aggiungiPaziente()"
-          title="Aggiungi nuovo paziente"
-        >
+        <button class="btn-ctrl btn-add" (click)="aggiungiPaziente()" title="Aggiungi nuovo paziente">
           ➕ Inserisci
         </button>
-        <button
-          class="btn-ctrl btn-edit"
-          [disabled]="!pazienteSelezionatoId"
-          (click)="modificaPaziente()"
-          title="Modifica dati paziente selezionato"
-        >
+        <button class="btn-ctrl btn-edit" [disabled]="!pazienteSelezionatoId" (click)="modificaPaziente()" title="Modifica dati paziente selezionato">
           ✏️ Modifica
         </button>
-        <button
-          class="btn-ctrl btn-delete"
-          [disabled]="!pazienteSelezionatoId"
-          (click)="eliminaPaziente()"
-          title="Elimina paziente selezionato"
-        >
+        <button class="btn-ctrl btn-delete" [disabled]="!pazienteSelezionatoId" (click)="eliminaPaziente()" title="Elimina paziente selezionato">
           🗑️ Elimina
         </button>
       </div>
@@ -56,35 +43,52 @@
 
   <main class="contenuto-destra">
     @if (pazienteSelezionatoId && pazienteSelezionato) {
-      <div class="placeholder-content">
-        <h1 style="text-align: center">Scheda Paziente ID: {{ pazienteSelezionatoId }}</h1>
-        <br />
+      <div class="placeholder-content" style="text-align: left; max-width: 100%;">
+        <h1 style="text-align: center; margin-bottom: 1.5rem;">Cartella Clinica: {{ pazienteSelezionato.nome }} {{ pazienteSelezionato.cognome }}</h1>
+        
         <div class="dati-anagrafici">
           <div class="field">
             <label>Nome</label>
-            <input type="text" [value]="pazienteSelezionato.nome" readonly />
-          </div>
-          <div class="field">
-            <label>Altezza</label>
-            <input type="text" [value]="pazienteSelezionato.altezza" readonly />
-          </div>          
-          <div class="field">
-            <label>Data Nascita</label>
-            <input
-              type="text"
-              [value]="pazienteSelezionato.data_nascita | date: 'dd/MM/yyyy'"
-              readonly
-            />
+            <input type="text" [(ngModel)]="pazienteSelezionato.nome" />
           </div>
           <div class="field">
             <label>Cognome</label>
-            <input type="text" [value]="pazienteSelezionato.cognome" readonly />
+            <input type="text" [(ngModel)]="pazienteSelezionato.cognome" />
+          </div>
+          <div class="field">
+            <label>Peso (kg)</label>
+            <input type="number" [(ngModel)]="pazienteSelezionato.peso" placeholder="Es: 75" />
+          </div>          
+          <div class="field">
+            <label>Altezza (cm)</label>
+            <input type="number" [(ngModel)]="pazienteSelezionato.altezza" />
           </div>
           <div class="field">
             <label>Obiettivo</label>
-            <input type="text" [value]="pazienteSelezionato.obiettivo" readonly />
+            <input type="text" [(ngModel)]="pazienteSelezionato.obiettivo" />
           </div>
         </div>
+
+        <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #e9ecef;" />
+
+        <div class="sezione-ia-laboratorio" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border: 1px dashed #ced4da;">
+          <h3 style="color: #0d6efd; margin-bottom: 0.5rem;">🧠 Assistente Nutrizionale RAG</h3>
+          <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem;">
+            Chiedi qualunque cosa. Il sistema incrocerà le linee guida OMS con i dati di questo paziente.
+          </p>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" placeholder="Es: Che alimenti consigli per la sua situazione?" 
+                   style="flex-grow: 1; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 6px;" />
+            <button class="btn-ctrl btn-add" style="margin: 0; padding: 0 1.5rem;">Chiedi all'IA</button>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.95rem; font-weight: bold;">Generazione Piano Settimanale Automatico:</span>
+            <button class="btn-ctrl btn-edit" style="margin: 0; background: #198754; color: white;">✨ Genera Dieta JSON</button>
+          </div>
+        </div>
+
       </div>
     } @else {
       <div class="placeholder-content">
