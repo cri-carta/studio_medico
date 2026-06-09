@@ -1,11 +1,11 @@
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
-import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
-import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
+import { Component, OnInit, inject } from '@angular/core';
+import { AuthService } from '../../../core/auth/auth.service';
 import { MedicoService } from '../medico.service';
-import { RispostaAnalisiAI, RispostaTabellaAI } from '../../../core/models/outputAI.model';
-import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
+import { Router } from '@angular/router';
+import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from '../../../core/models/outputAI.model';
 
 @Component({
   selector: 'app-dashboard-medico',
@@ -14,10 +14,8 @@ import { Router } from '@angular/router'; // Inserito per gestire il reindirizza
   templateUrl: './dashboard-medico.html',
   styleUrls: ['./dashboard-medico.css']
 })
-
 export class DashboardMedicoComponent implements OnInit {
-  // 3. Inietta il servizio
-  private authService = inject(AuthService); //test
+  private authService = inject(AuthService);
 
   pazienti: Paziente[] = [
     { id: 1, medico_id: 4, nome: 'Mario', cognome: 'Rossi', data_nascita: new Date('1985-04-12'), altezza: 178, obiettivo: 'Dimagrimento' },
@@ -34,29 +32,25 @@ export class DashboardMedicoComponent implements OnInit {
     { id: 12, medico_id: 4, nome: 'Elena', cognome: 'Mancini', data_nascita: new Date('1996-10-11'), altezza: 166, obiettivo: 'Mantenimento' },
   ];
 
-  pazientiFiltrati: Paziente[] = [];    
-  pazienteSelezionatoId: number | null = null; // Tiene traccia dell'ID del paziente attualmente selezionato nella colonna di sinistra  
-  pazienteSelezionato: Paziente | null = null; // Variabile che contiene l'oggetto completo del paziente da mostrare a destra
+  pazientiFiltrati: Paziente[] = [];
+  pazienteSelezionatoId: number | null = null;
+  pazienteSelezionato: Paziente | null = null;
 
-  // VARIABILI DI STATO PER IL TASK
   nuovaVisita = { bmi: 0.0, bf: 0.0 };
   caricamentoPiano: boolean = false;
   caricamentoAnalisi: boolean = false;
   testoAnalisiOllama: RispostaAnalisiAI | null = null;
-  pianoAlimentareGenerato: RispostaTabellaAI | null = null;
+  pianoAlimentareGenerato: PianoSettimanaleAI | null = null;
 
-  // Array di utilità per ciclare i giorni ordinati nell'HTML
   giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
   tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'] as const;
 
-  // --- INTEGRAZIONE: Variabili per la gestione del Form Visite ---
   peso: number | null = null;
   bmi: number = 0.0;
   bf: number = 0.0;
   errorMsg: string = '';
   successMsg: string = '';
 
-  // Iniezione del servizio tramite costruttore
   constructor(
     private medicoService: MedicoService,
     private router: Router
@@ -77,8 +71,6 @@ export class DashboardMedicoComponent implements OnInit {
   selezionaPaziente(id: number): void {
     this.pazienteSelezionatoId = id;
     this.pazienteSelezionato = this.pazienti.find(p => p.id === id) || null;
-
-    // Resetta i vecchi output e i campi del form al cambio paziente
     this.testoAnalisiOllama = null;
     this.pianoAlimentareGenerato = null;
     this.errorMsg = '';
@@ -90,7 +82,6 @@ export class DashboardMedicoComponent implements OnInit {
 
   private calcolaEta(dataNascitaInput: Date | string | undefined | null): number {
     if (!dataNascitaInput) return 0;
-    // Converte istantaneamente in un oggetto Date indipendente se è una stringa
     const nascita = new Date(dataNascitaInput);
     const oggi = new Date();
     let eta = oggi.getFullYear() - nascita.getFullYear();
@@ -102,27 +93,22 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   calcolaParametriAutomatici(): void {
-    // Recupera l'elemento input dal DOM per prelevare il peso inserito dall'utente
     const inputPeso = document.getElementById('peso') as HTMLInputElement;
     if (!inputPeso) return;
-  
+
     const pesoDigitato = parseFloat(inputPeso.value);
-  
+
     if (!pesoDigitato || pesoDigitato <= 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
       this.peso = null;
       this.bmi = 0.0;
       this.bf = 0.0;
       return;
     }
-  
-    // Aggiorna la variabile locale con il valore digitato
+
     this.peso = pesoDigitato;
-  
-    // 1. Calcolo del BMI basato sull'altezza del paziente selezionato
-    const altezzaInMetri = this.pazienteSelezionato?.altezza / 100;
+    const altezzaInMetri = this.pazienteSelezionato.altezza / 100;
     this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
-  
-    // 2. Calcolo della Body Fat (BF) stimata
+
     const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
     const sessoFattore = 1;
     const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * sessoFattore) - 5.4;
@@ -130,53 +116,73 @@ export class DashboardMedicoComponent implements OnInit {
 
     this.nuovaVisita.bmi = this.bmi;
     this.nuovaVisita.bf = this.bf;
-}
-  
+  }
 
-  // TASK A: Tasto "Genera tabella" -> /api/rag/tabella
   onGeneraTabella(): void {
-    if (!this.pazienteSelezionatoId) return;    
+    if (!this.pazienteSelezionatoId) return;
     this.caricamentoPiano = true;
-    this.pianoAlimentareGenerato = null; // Resetta vecchi dati
+    this.pianoAlimentareGenerato = null;
 
-    // Il servizio chiamerà la rotta Express passandogli il pazienteId
     this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
       next: (res: RispostaTabellaAI) => {
-        this.pianoAlimentareGenerato = res;
+        console.log('[TABELLA] Risposta ricevuta:', res);
+        console.log('[TABELLA] risposta:', res.risposta);
+
+        if (res.risposta?.piano_settimanale) {
+          const pianoCorretto: any = { piano_settimanale: {} };
+          const mappaGiorni: {[key: string]: string} = {
+            'Luned\u00ec': 'Lunedì',
+            'Marted\u00ec': 'Martedì',
+            'Mercoled\u00ec': 'Mercoledì',
+            'Gioved\u00ec': 'Giovedì',
+            'Venerd\u00ec': 'Venerdì',
+            'Sabato': 'Sabato',
+            'Domenica': 'Domenica'
+          };
+
+          for (const [chiave, valore] of Object.entries(res.risposta.piano_settimanale)) {
+            console.log('[DEBUG] chiave originale:', JSON.stringify(chiave));
+            const chiaveCorretta = mappaGiorni[chiave] || chiave;
+            console.log('[DEBUG] chiave corretta:', chiaveCorretta);
+            pianoCorretto.piano_settimanale[chiaveCorretta] = valore;
+          }
+
+          console.log('[DEBUG] piano finale:', pianoCorretto);
+          this.pianoAlimentareGenerato = pianoCorretto;
+        } else {
+          this.pianoAlimentareGenerato = res.risposta;
+        }
         this.caricamentoPiano = false;
       },
       error: (err) => {
-        console.error(err);
+        console.error('[TABELLA] Errore:', err);
         alert('Errore durante la generazione del piano con il RAG.');
         this.caricamentoPiano = false;
       }
     });
   }
 
-  // TASK B: Tasto "Analisi andamento" -> /api/rag/analisi/:id
   onAnalisiAndamento(): void {
     if (!this.pazienteSelezionatoId) return;
     this.caricamentoAnalisi = true;
-    this.testoAnalisiOllama = null; // Resetta vecchi dati
+    this.testoAnalisiOllama = null;
 
-    // Il servizio invia l'ID; Express estrapolerà l'anagrafica del paziente, 
-    // la sua prima visita storica e l'ultima registrata per fornirle al file Python
     this.medicoService.getAnalisiAndamento(this.pazienteSelezionatoId).subscribe({
       next: (res: RispostaAnalisiAI) => {
+        console.log('[ANALISI] Risposta ricevuta:', res);
         this.testoAnalisiOllama = res;
         this.caricamentoAnalisi = false;
       },
       error: (err) => {
-        console.error(err);
+        console.error('[ANALISI] Errore:', err);
         alert("Errore durante l'elaborazione dell'analisi clinica.");
         this.caricamentoAnalisi = false;
       }
     });
   }
 
-  // TASK C: Form "Effettua visita" -> POST /api/visite
   onSalvaVisita(event: Event): void {
-    event.preventDefault(); // Blocca il refresh nativo della pagina
+    event.preventDefault();
 
     if (!this.pazienteSelezionatoId || !this.peso || this.peso <= 0) {
       this.errorMsg = 'Inserisci un peso valido prima di salvare.';
@@ -189,7 +195,7 @@ export class DashboardMedicoComponent implements OnInit {
 
     const payload = {
       paziente_id: this.pazienteSelezionatoId,
-      data_visita: dataVisita, // Data odierna YYYY-MM-DD
+      data_visita: dataVisita,
       peso: this.peso,
       bmi: this.bmi,
       bf: this.bf
@@ -199,8 +205,6 @@ export class DashboardMedicoComponent implements OnInit {
       next: (res) => {
         this.successMsg = 'Visita salvata con successo nel database!';
         this.errorMsg = '';
-
-        // Reset del form dopo il corretto inserimento
         this.peso = null;
         this.bmi = 0.0;
         this.bf = 0.0;
@@ -213,10 +217,8 @@ export class DashboardMedicoComponent implements OnInit {
     });
   }
 
-  // CRUD pulsanti in basso
   aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
   modificaPaziente(): void { console.log('Azione: Modifica', this.pazienteSelezionatoId); }
-
 
   eliminaPaziente(): void {
     if (this.pazienteSelezionatoId) {
@@ -227,9 +229,21 @@ export class DashboardMedicoComponent implements OnInit {
     }
   }
 
+  getGiorni(): {giorno: string, dati: any}[] {
+    if (!this.pianoAlimentareGenerato?.piano_settimanale) return [];
+    return Object.entries(this.pianoAlimentareGenerato.piano_settimanale)
+      .map(([giorno, dati]) => ({ giorno, dati }));
+  }
+
+  getPasti(datiGiorno: any): {tipo: string, alimenti: any[]}[] {
+    if (!datiGiorno?.pasti) return [];
+    return Object.entries(datiGiorno.pasti)
+      .map(([tipo, alimenti]) => ({ tipo, alimenti: alimenti as any[] }));
+  }
+
   logout() {
     console.log("Esecuzione Logout...");
-    localStorage.clear(); // Svuota i dati di sessione (token, ruolo, utenteId)
-    this.router.navigate(['/login']); // Reindirizza l'utente alla pagina di login
+    localStorage.clear();
+    this.router.navigate(['/auth/login']);
   }
 }

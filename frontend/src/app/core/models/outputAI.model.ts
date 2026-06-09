@@ -1,5 +1,3 @@
-// Interfacce per mappare ed elaborare correttamente le risposte strutturate provenienti dallo script dell'IA
-
 export interface VoceAlimento {
   alimento: string;
   grammatura: string;
@@ -20,10 +18,18 @@ export interface GiornoPianoAI {
   };
 }
 
-export interface RispostaTabellaAI {
+export interface PianoSettimanaleAI {
   piano_settimanale: {
-    [giorno: string]: GiornoPianoAI; // Dinamico per Lunedì, Martedì, ecc.
+    [giorno: string]: GiornoPianoAI;
   };
+}
+
+export interface RispostaTabellaAI {
+  risposta: PianoSettimanaleAI;
+  fonti: string[];
+  doc_ids: string[];
+  similarita: number[];
+  ha_contesto: boolean;
 }
 
 export interface RispostaAnalisiAI {

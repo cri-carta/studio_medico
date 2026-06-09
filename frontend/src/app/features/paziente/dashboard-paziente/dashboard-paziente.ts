@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
 import { MedicoService } from '../../medico/medico.service';
 import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
-
+import { VisualizzaPianoComponent } from '../visualizza-piano/visualizza-piano';
 @Component({
   selector: 'app-dashboard-paziente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VisualizzaPianoComponent],
   templateUrl: './dashboard-paziente.html',
   styleUrls: ['./dashboard-paziente.css']
 })
@@ -16,6 +16,11 @@ export class DashboardPazienteComponent implements OnInit {
   paziente: Paziente | null = null;
   vistaAttiva: 'tabella' | 'progressi' = 'tabella';
   isLoading: boolean = true;
+  pianoStrutturato: any = {};
+  storicoVisite: any[] = [];
+
+  giorniChiave = ['lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato', 'domenica'];
+  pastiChiave = ['colazione', 'pranzo', 'spuntino', 'cena'];
 
   constructor(
     private medicoService: MedicoService,

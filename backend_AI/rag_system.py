@@ -30,7 +30,7 @@ load_dotenv()
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL",   "http://localhost:11434")
 OLLAMA_CHAT     = os.getenv("OLLAMA_MODEL",       "llama3.2")
 OLLAMA_EMBED    = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
-CHROMA_PATH     = os.getenv("CHROMA_PATH",        "./rag_db")
+CHROMA_PATH = os.getenv("CHROMA_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag_db"))
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +80,16 @@ LINEE_GUIDA = [
 # ---------------------------------------------------------------------------
 # Helper
 # ---------------------------------------------------------------------------
+"""
+    Scopo:
+        Costruisce il testo descrittivo del paziente da indicizzare nel database vettoriale.
 
+    Input:
+        dati (dict): informazioni anagrafiche e cliniche.
+
+    Return:
+        str: testo normalizzato del paziente.
+"""
 def _build_testo_paziente(dati: dict) -> str:
     righe = [f"PAZIENTE: {dati['nome']}"]
     if dati.get("eta"):       righe.append(f"Età: {dati['eta']} anni.")
@@ -97,6 +106,16 @@ def _build_testo_paziente(dati: dict) -> str:
 # ---------------------------------------------------------------------------
 
 class SistemaRAG:
+    """
+    Scopo:
+        Inizializza ChromaDB, modello di embedding e collezioni RAG.
+
+    Input:
+        Parametri di configurazione del sistema.
+
+    Return:
+        Nessuno.
+    """
 
     def __init__(
         self,
@@ -128,6 +147,21 @@ class SistemaRAG:
     # Chunking
     # ------------------------------------------------------------------
 
+    def genera_tabella(self, domanda: str, paziente_id: str = None) -> dict:
+        import sys
+        print(f"[DEBUG] chroma_path: {self.col_pazienti._client._settings.persist_directory}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] pazienti count: {self.col_pazienti.count()}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] conoscenza count: {self.col_conoscenza.count()}", file=sys.stderr, flush=True)
+        print(f"[DEBUG] paziente_id cercato: {paziente_id}", file=sys.stderr, flush=True)
+        
+        contesto = self.retrieval(domanda, solo_paziente_id=paziente_id)
+        print(f"[DEBUG] contesto trovato: {len(contesto)} risultati", file=sys.stderr, flush=True)
+        
+        risultato = self._genera_tabella(domanda, contesto)
+        return risultato
+
+
+
     def _chunking(self, testo: str, chunk_size: int = 60, overlap: int = 15) -> list[str]:
         parole = testo.split()
         chunks, i = [], 0
@@ -136,7 +170,16 @@ class SistemaRAG:
             chunks.append(chunk)
             i += chunk_size - overlap
         return chunks
+    """
+    Scopo:
+        Trasforma documenti in chunk e li salva nella collection.
 
+    Input:
+        collection, documenti (list[dict]).
+
+    Return:
+        int: numero di chunk indicizzati.
+    """
     def _indicizza_in(self, collection, documenti: list[dict]) -> int:
         ids, testi, metadati = [], [], []
         for doc in documenti:
@@ -156,14 +199,29 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Seed
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Carica le linee guida nutrizionali nel database vettoriale.
 
+    Return:
+        int: numero di chunk creati.
+    """
     def seed_conoscenza(self) -> int:
         return self._indicizza_in(self.col_conoscenza, LINEE_GUIDA)
 
     # ------------------------------------------------------------------
     # CRUD pazienti
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Indicizza un nuovo paziente.
 
+    Input:
+        dati (dict): dati del paziente.
+
+    Return:
+        dict: esito operazione.
+    """
     def aggiungi_paziente(self, dati: dict) -> dict:
         if not dati.get("id") or not dati.get("nome"):
             return {"ok": False, "errore": "Campi 'id' e 'nome' obbligatori."}
@@ -171,6 +229,17 @@ class SistemaRAG:
         doc   = {"id": dati["id"], "testo": testo, "categoria": "paziente"}
         n     = self._indicizza_in(self.col_pazienti, [doc])
         return {"ok": True, "id": dati["id"], "chunks": n}
+    """
+    Scopo:
+        Elimina tutti i chunk associati ad un paziente.
+
+    Input:
+        paziente_id (str).
+
+    Return:
+        dict: esito operazione.
+    """
+        # Un paziente può essere distribuito su più chunk.
 
     def rimuovi_paziente(self, paziente_id: str) -> dict:
         risultati = self.col_pazienti.get(where={"doc_id": paziente_id}, include=[])
@@ -179,11 +248,26 @@ class SistemaRAG:
             return {"ok": False, "errore": f"Paziente '{paziente_id}' non trovato."}
         self.col_pazienti.delete(ids=ids_da_rimuovere)
         return {"ok": True, "rimossi": len(ids_da_rimuovere)}
+    """
+    Scopo:
+        Aggiorna un paziente sostituendo completamente i dati indicizzati.
 
+    Input:
+        dati (dict).
+
+    Return:
+        dict: esito operazione.
+    """
     def aggiorna_paziente(self, dati: dict) -> dict:
         self.rimuovi_paziente(dati["id"])
         return self.aggiungi_paziente(dati)
+    """
+    Scopo:
+        Restituisce l'elenco dei pazienti presenti nel sistema.
 
+    Return:
+        list[dict]: lista con id e anteprima.
+    """
     def lista_pazienti(self) -> list[dict]:
         tutti = self.col_pazienti.get(include=["documents", "metadatas"])
         visti = {}
@@ -196,7 +280,17 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Retrieval
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Esegue ricerca semantica su una collection.
 
+    Input:
+        collection, query (str).
+
+    Return:
+        list[dict]: risultati filtrati per similarità.
+    """
+    # Converte la distanza restituita da Chroma in similarità.
     def _retrieval_da(self, collection, query: str) -> list[dict]:
         try:
             n = min(self.n_risultati, collection.count())
@@ -226,7 +320,16 @@ class SistemaRAG:
                     "doc_id":     meta.get("doc_id", "N/A"),
                 })
         return filtrati
+    """
+    Scopo:
+        Recupera informazioni da knowledge base e dati paziente.
 
+    Input:
+        query (str), solo_paziente_id (str|None).
+
+    Return:
+        list[dict]: risultati ordinati per similarità.
+    """
     def retrieval(self, query: str, solo_paziente_id: str = None) -> list[dict]:
         risultati = self._retrieval_da(self.col_conoscenza, query)
         if solo_paziente_id:
@@ -240,7 +343,17 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Generazione — risposta testuale libera
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Genera una risposta RAG basata esclusivamente sul contesto recuperato.
 
+    Input:
+        query (str), contesto (list[dict]).
+
+    Return:
+        dict: risposta, fonti e metadati.
+    """
+    # Inserisce nel prompt solo informazioni recuperate dal retrieval.
     def _genera_risposta(self, query: str, contesto: list[dict]) -> dict:
         if not contesto:
             return {
@@ -295,7 +408,17 @@ RISPOSTA:"""
     # ------------------------------------------------------------------
     # Generazione — tabella nutrizionale settimanale
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Genera un piano alimentare settimanale in formato JSON.
 
+    Input:
+        query (str), contesto (list[dict]).
+
+    Return:
+        dict: piano alimentare strutturato.
+    """
+    # Lo schema JSON guida il modello e riduce errori di parsing.
     def _genera_tabella(self, query: str, contesto: list[dict]) -> dict:
         if not contesto:
             return {
@@ -378,7 +501,17 @@ RISPONDI ESCLUSIVAMENTE IN FORMATO JSON seguendo esattamente questa struttura:
     # ------------------------------------------------------------------
     # Generazione — analisi andamento su tutte le visite
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Analizza l'evoluzione del paziente tra le visite.
 
+    Input:
+        paziente (dict), visite (list[dict]).
+
+    Return:
+        dict: analisi e indicatori sintetici.
+    """
+    # Calcola il trend confrontando prima e ultima visita.
     def analisi_andamento(self, paziente: dict, visite: list[dict]) -> dict:
         if len(visite) < 2:
             return {"ok": False, "errore": "Servono almeno 2 visite per l'analisi."}
@@ -444,12 +577,30 @@ Rispondi in italiano, in modo professionale ma comprensibile."""
     # ------------------------------------------------------------------
     # Pipeline completa
     # ------------------------------------------------------------------
+    """
+    Scopo:
+        Pipeline completa retrieval + generazione risposta.
 
+    Input:
+        domanda (str), paziente_id (str|None).
+
+    Return:
+        dict: risultato finale.
+    """
     def query(self, domanda: str, paziente_id: str = None) -> dict:
         contesto  = self.retrieval(domanda, solo_paziente_id=paziente_id)
         risultato = self._genera_risposta(domanda, contesto)
         return risultato
+    """
+    Scopo:
+        Pipeline completa retrieval + generazione piano alimentare.
 
+    Input:
+        domanda (str), paziente_id (str|None).
+
+    Return:
+        dict: piano nutrizionale generato.
+    """
     def genera_tabella(self, domanda: str, paziente_id: str = None) -> dict:
         contesto  = self.retrieval(domanda, solo_paziente_id=paziente_id)
         risultato = self._genera_tabella(domanda, contesto)
@@ -459,7 +610,16 @@ Rispondi in italiano, in modo professionale ma comprensibile."""
 # ---------------------------------------------------------------------------
 # Entry point CLI
 # ---------------------------------------------------------------------------
+    """
+    Scopo:
+        Entry point CLI utilizzato da terminale o processi esterni.
 
+    Input:
+        Comando e payload JSON.
+
+    Return:
+        Output JSON su stdout.
+    """
 def main():
     import sys
 

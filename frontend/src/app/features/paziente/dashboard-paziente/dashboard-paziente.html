@@ -1,5 +1,5 @@
 <div class="dashboard-container">
-  <!-- Header: Benvenuto e Logout -->
+
   <header class="dashboard-header">
     <div class="welcome-text">
       <h1>Benvenuto, {{ paziente?.nome }} {{ paziente?.cognome }}</h1>
@@ -9,7 +9,7 @@
   </header>
 
   <main class="dashboard-content">
-    <!-- Colonna Sinistra: Dati Anagrafici -->
+
     <aside class="info-sidebar">
       <div class="card">
         <h3>Dati Anagrafici</h3>
@@ -45,39 +45,43 @@
       </div>
     </aside>
 
-    <!-- Colonna Destra: Spazio Dinamico (Tabella Nutrizionale / Progressi) -->
     <section class="dynamic-view">
       <div class="card main-card">
-        @if (vistaAttiva === 'tabella') {
-          <div class="rag-container">
-            <h3>Il tuo Piano Nutrizionale</h3>
-            <p class="rag-hint">Elaborato dall'IA in base ai dati del tuo medico</p>
-            <!-- Qui verrà iniettata la tabella generata dal RAG -->
-            <div class="table-placeholder">
-              <p>Caricamento della tabella nutrizionale personalizzata...</p>
-            </div>
+
+        @if (isLoading) {
+          <div class="table-placeholder">
+            <p>Caricamento dei dati sanitari in corso...</p>
           </div>
         } @else {
-          <div class="progress-container">
-            <h3>Progressi Visite</h3>
-            <p>Confronto storico del peso e parametri corporei.</p>
-            <!-- Qui andrà il grafico o la lista delle visite precedenti -->
-            <div class="table-placeholder">
-              <p>Caricamento storico visite e grafici...</p>
+
+          @if (vistaAttiva === 'tabella') {
+            <app-visualizza-piano [piano]="pianoStrutturato"></app-visualizza-piano>
+          } @else {
+            <div class="progress-container">
+              <h3>Progressi Visite</h3>
+              <p>Confronto storico del peso e parametri corporei.</p>
+
+              <div class="table-placeholder">
+                <p>Nessun grafico caricato. Storico visite pronto.</p>
+              </div>
             </div>
-          </div>
+          }
+
         }
       </div>
     </section>
   </main>
 
-  <!-- Pulsanti di Azione in Basso -->
   <footer class="dashboard-actions">
     <div class="button-group">
-      <button [class.active]="vistaAttiva === 'tabella'" (click)="setVista('tabella')">
+      <button
+        [class.active]="vistaAttiva === 'tabella'"
+        (click)="setVista('tabella')">
         📋 Visualizza Tabella
       </button>
-      <button [class.active]="vistaAttiva === 'progressi'" (click)="setVista('progressi')">
+      <button
+        [class.active]="vistaAttiva === 'progressi'"
+        (click)="setVista('progressi')">
         📈 Visualizza Progressi
       </button>
     </div>
