@@ -4,9 +4,8 @@ import { Paziente } from '../../../core/models/database.model';
 import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
 import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
 import { MedicoService } from '../medico.service';
-import { RispostaAnalisiAI, RispostaTabellaAI } from '../../../core/models/outputAI.model';
 import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
-
+import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from '../../../core/models/outputAI.model';
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
@@ -43,7 +42,7 @@ export class DashboardMedicoComponent implements OnInit {
   caricamentoPiano: boolean = false;
   caricamentoAnalisi: boolean = false;
   testoAnalisiOllama: RispostaAnalisiAI | null = null;
-  pianoAlimentareGenerato: RispostaTabellaAI | null = null;
+  pianoAlimentareGenerato: PianoSettimanaleAI | null = null;
 
   // Array di utilità per ciclare i giorni ordinati nell'HTML
   giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
@@ -142,7 +141,7 @@ export class DashboardMedicoComponent implements OnInit {
     // Il servizio chiamerà la rotta Express passandogli il pazienteId
     this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
       next: (res: RispostaTabellaAI) => {
-        this.pianoAlimentareGenerato = res;
+        this.pianoAlimentareGenerato = res.risposta;
         this.caricamentoPiano = false;
       },
       error: (err) => {
