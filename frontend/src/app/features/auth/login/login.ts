@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/auth/auth.service'; // Percorso corretto da questa cartella
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl:'./login.html',
+  templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
@@ -19,10 +20,12 @@ export class LoginComponent {
   email = '';
   password = '';
   errorMsg = '';
+  caricamento = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   selezionaRuolo(ruolo: 'medico' | 'paziente') {
@@ -43,20 +46,28 @@ export class LoginComponent {
       return;
     }
 
-    // Per ora token mock, poi sostituisci con chiamata HTTP reale
-    const token = this.ruoloSelezionato === 'medico'
-      ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiRG90dG9yIFJvc3NpIiwicm9sZSI6Im1lZGljbyJ9.dummy_signature'
-      : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUGF6aWVudGUgVGVzdCIsInJvbGUiOiJwYXppZW50ZSJ9.dummy_signature';
+    this.caricamento = true;
+    this.errorMsg = '';
 
-    this.authService.login(token);
+    this.http.post<any>('http://localhost:3000/auth/login', {
+      email: this.email,
+      password: this.password
+    }).subscribe({
+      next: (res) => {
+        this.authService.login(res.token);
+        this.caricamento = false;
 
-    // --- Salvataggio dell'ID utente nel LocalStorage ---
-    if (this.ruoloSelezionato === 'medico') {
-      localStorage.setItem('utenteId', '4');
-      this.router.navigate(['/medico']);
-    } else {
-      localStorage.setItem('utenteId', '1');
-      this.router.navigate(['/paziente']);
-    }
+        if (this.ruoloSelezionato === 'medico') {
+          this.router.navigate(['/medico']);
+        } else {
+          this.router.navigate(['/paziente']);
+        }
+      },
+      error: (err) => {
+        this.caricamento = false;
+        this.errorMsg = 'Credenziali non valide. Riprova.';
+        console.error('[LOGIN] Errore:', err);
+      }
+    });
   }
 }

@@ -36,6 +36,14 @@ app.use((err, req, res, next) => {
     console.error("ERRORE RILEVATO DAL MIDDLEWARE GLOBALE:", err.stack);
     res.status(500).json({ error: 'Errore interno del server', details: err.message });
 });
+
+// Aumenta il timeout del server a 10 minuti per le chiamate RAG
+app.use((req, res, next) => {
+    res.setTimeout(600000); // 10 minuti
+    next();
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server avviato sulla porta ${PORT}`);

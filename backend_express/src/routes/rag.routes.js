@@ -2,6 +2,7 @@ const express   = require('express');
 const router    = express.Router();
 const { spawn } = require('child_process');
 const path      = require('path');
+const jwt       = require('jsonwebtoken');
 const { getVisiteByPaziente } = require('../models/visita.model');
 const { getPatientById }      = require('../models/paziente.model');
 
@@ -41,36 +42,58 @@ function callPython(comando, payload) {
     });
 }
 
-// POST /rag/tabella
-router.post('/tabella', async (req, res) => {
+// GET /rag/tabella/:paziente_id — SSE
+router.get('/tabella/:paziente_id', async (req, res) => {
+    // Verifica token passato come query param
+    const token = req.query.token;
+    if (!token) {
+        return res.status(401).json({ error: 'Token mancante.' });
+    }
     try {
-        const { paziente_id } = req.body;
-        console.log('[RAG] paziente_id ricevuto:', paziente_id);
+        jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(403).json({ error: 'Token non valido.' });
+    }
 
-        if (!paziente_id) {
-            return res.status(400).json({ error: 'Campo paziente_id obbligatorio.' });
-        }
+    // Headers SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const sendEvent = (tipo, dati) => {
+        res.write(`event: ${tipo}\n`);
+        res.write(`data: ${JSON.stringify(dati)}\n\n`);
+    };
+
+    try {
+        const { paziente_id } = req.params;
+        console.log('[RAG SSE] paziente_id:', paziente_id);
 
         const paziente = await getPatientById(paziente_id);
         if (!paziente) {
-            return res.status(404).json({ error: 'Paziente non trovato.' });
+            sendEvent('errore', { message: 'Paziente non trovato.' });
+            res.end();
+            return;
         }
 
         const ragId = `paz_${String(paziente_id).padStart(3, '0')}`;
-        console.log('[RAG] ID formattato:', ragId);
+        console.log('[RAG SSE] ID formattato:', ragId);
+        sendEvent('stato', { message: 'Elaborazione in corso...' });
 
         const risultato = await callPython('tabella', {
             domanda:     'Genera un piano nutrizionale settimanale personalizzato.',
             paziente_id: ragId,
         });
 
-        console.log('[RAG] ha_contesto:', risultato.ha_contesto);
-        console.log('[RAG] fonti:', risultato.fonti);
-        res.json(risultato);
+        console.log('[RAG SSE] ha_contesto:', risultato.ha_contesto);
+        sendEvent('completo', risultato);
+        res.end();
 
     } catch (err) {
-        console.error('[RAG] Errore tabella:', err.message);
-        res.status(500).json({ error: err.message });
+        console.error('[RAG SSE] Errore:', err.message);
+        sendEvent('errore', { message: err.message });
+        res.end();
     }
 });
 
