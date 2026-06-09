@@ -1,1 +1,91 @@
-<p>dashboard-paziente works!</p>
+<div class="dashboard-container">
+  
+  <!-- Header: Benvenuto e Logout -->
+  <header class="dashboard-header">
+    <div class="welcome-text">
+      <h1>Benvenuto, {{ paziente?.nome }} {{ paziente?.cognome }}</h1>
+      <p>Gestisci il tuo percorso di salute e visualizza i tuoi progressi.</p>
+    </div>
+    <button class="btn-logout" (click)="logout()">
+      <span>🚪</span> Logout
+    </button>
+  </header>
+
+  <main class="dashboard-content">
+    
+    <!-- Colonna Sinistra: Dati Anagrafici -->
+    <aside class="info-sidebar">
+      <div class="card">
+        <h3>Dati Anagrafici</h3>
+        <hr>
+        <div class="info-item">
+          <label>ID Utente:</label>
+          <span>#{{ paziente?.utente_id }}</span>
+        </div>
+        <div class="info-item">
+          <label>Nome:</label>
+          <span>{{ paziente?.nome }}</span>
+        </div>
+        <div class="info-item">
+          <label>Cognome:</label>
+          <span>{{ paziente?.cognome }}</span>
+        </div>
+        <div class="info-item">
+          <label>Data di Nascita:</label>
+          <span>{{ paziente?.data_nascita | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="info-item">
+          <label>Altezza:</label>
+          <span>{{ paziente?.altezza }} cm</span>
+        </div>
+        <div class="info-item">
+          <label>Obiettivo:</label>
+          <span class="badge-obiettivo">{{ paziente?.obiettivo }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Colonna Destra: Spazio Dinamico (Tabella Nutrizionale / Progressi) -->
+    <section class="dynamic-view">
+      <div class="card main-card">
+        @if (vistaAttiva === 'tabella') {
+          <div class="rag-container">
+            <h3>Il tuo Piano Nutrizionale</h3>
+            <p class="rag-hint">Elaborato dall'IA in base ai dati del tuo medico</p>
+            <!-- Qui verrà iniettata la tabella generata dal RAG -->
+            <div class="table-placeholder">
+              <p>Caricamento della tabella nutrizionale personalizzata...</p>
+            </div>
+          </div>
+        } @else {
+          <div class="progress-container">
+            <h3>Progressi Visite</h3>
+            <p>Confronto storico del peso e parametri corporei.</p>
+            <!-- Qui andrà il grafico o la lista delle visite precedenti -->
+            <div class="table-placeholder">
+              <p>Caricamento storico visite e grafici...</p>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pulsanti di Azione in Basso -->
+  <footer class="dashboard-actions">
+    <div class="button-group">
+      <button 
+        [class.active]="vistaAttiva === 'tabella'" 
+        (click)="setVista('tabella')">
+        📋 Visualizza Tabella
+      </button>
+      <button 
+        [class.active]="vistaAttiva === 'progressi'" 
+        (click)="setVista('progressi')">
+        📈 Visualizza Progressi
+      </button>
+    </div>
+  </footer>
+
+</div>
