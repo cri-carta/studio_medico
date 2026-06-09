@@ -224,7 +224,17 @@ async function getFullPlan(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+async function getFullPlanByPazienteId(req, res) {
+    try {
+        const { pazienteId } = req.params;
+        const plan = await PianoModel.getFullPlanByPazienteId(pazienteId);
+        res.json(plan);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
+// Esporta la funzione insieme alle altre
 
 // Esporta tutte le funzioni del controller per essere usate nelle rotte
 module.exports = {
@@ -234,5 +244,6 @@ module.exports = {
     deletePlan,
     getAllPlans,
     getPlanById,
-    getFullPlan
+    getFullPlan,
+    getFullPlanByPazienteId
 };

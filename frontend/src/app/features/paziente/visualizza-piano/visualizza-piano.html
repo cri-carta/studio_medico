@@ -1,1 +1,39 @@
-<p>visualizza-piano works!</p>
+<div class="rag-container">
+  <h3>Il tuo Piano Nutrizionale</h3>
+  <p class="rag-hint">Elaborato in base ai dati del tuo medico di riferimento</p>
+
+  <div class="tabella-scroll">
+    <table class="piano-table">
+      <thead>
+        <tr>
+          <th>Giorno</th>
+          <th>Dettaglio Pasti Settimanali</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (giorno of giorniChiave; track giorno) {
+          <tr>
+            <td class="giorno-cell"><strong>{{ labelGiorni[giorno] | uppercase }}</strong></td>
+            <td>
+              <div class="pasti-giorno-grid">
+                @for (pasto of pastiChiave; track pasto) {
+                  <div class="pasto-blocco">
+                    <span class="pasto-titolo-label">{{ labelPasti[pasto] }}:</span>
+
+                    @for (voce of piano[giorno]?.[pasto]; track voce.alimento) {
+                      <span class="alimento-item">
+                        • {{ voce.alimento }} <strong>({{ voce.grammi }}g)</strong>
+                      </span>
+                    } @empty {
+                      <span class="alimento-vuoto">Non previsto</span>
+                    }
+                  </div>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
