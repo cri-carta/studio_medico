@@ -23,4 +23,8 @@ export class VisualizzaPianoComponent {
   labelPasti: { [key: string]: string } = {
     colazione: '🍳 Colazione', pranzo: '☀️ Pranzo', spuntino: '🍎 Spuntino', cena: '🌙 Cena'
   };
+
+  isEmptyPiano(): boolean {
+    return !this.piano || Object.keys(this.piano).length === 0;
+  }
 }

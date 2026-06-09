@@ -16,6 +16,15 @@ async function getPatientById(id) {
     return rows[0];
 }
 
+// Recupera un singolo paziente tramite l'ID dell'utente collegato.
+async function getPatientByUtenteId(utenteId) {
+    const [rows] = await db.query(
+        'SELECT * FROM pazienti WHERE utente_id = ?',
+        [utenteId]
+    );
+    return rows[0];
+}
+
 // Crea un nuovo paziente e la sua prima visita insieme.
 // Se una delle due operazioni fallisce, nessuna delle due viene salvata nel DB e viene eseguito il rollback.
 // Restituisce un oggetto con l'insertId del paziente appena creato.
@@ -73,6 +82,7 @@ async function deletePatient(id) {
 module.exports = {
     getAllPatients,
     getPatientById,
+    getPatientByUtenteId,
     createPatient,
     updatePatient
 };

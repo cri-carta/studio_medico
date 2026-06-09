@@ -61,6 +61,35 @@
               <h3>Progressi e Storico Visite</h3>
               <p>Confronto dei parametri corporei rilevati durante le visite in studio.</p>
 
+              @if (storicoVisite.length > 1) {
+                <div class="progress-summary">
+                  <div class="summary-card">
+                    <h4>Andamento Complessivo</h4>
+                    <div class="summary-grid">
+                      <div>
+                        <span class="summary-label">Periodo</span>
+                        <p>{{ progressSummary.dataInizio | date:'dd/MM/yyyy' }} → {{ progressSummary.dataFine | date:'dd/MM/yyyy' }}</p>
+                      </div>
+                      <div>
+                        <span class="summary-label">Peso</span>
+                        <p>{{ progressSummary.primoPeso }} kg → {{ progressSummary.ultimoPeso }} kg</p>
+                        <small>{{ progressSummary.pesoDelta >= 0 ? '+' : '' }}{{ progressSummary.pesoDelta }} kg</small>
+                      </div>
+                      <div>
+                        <span class="summary-label">BMI</span>
+                        <p>{{ progressSummary.primoBMI }} → {{ progressSummary.ultimoBMI }}</p>
+                        <small>{{ progressSummary.bmiDelta >= 0 ? '+' : '' }}{{ progressSummary.bmiDelta }}</small>
+                      </div>
+                      <div>
+                        <span class="summary-label">Grasso Corporeo</span>
+                        <p>{{ progressSummary.primoBF }}% → {{ progressSummary.ultimoBF }}%</p>
+                        <small>{{ progressSummary.bfDelta >= 0 ? '+' : '' }}{{ progressSummary.bfDelta }}%</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
               @if (storicoVisite.length > 0) {
                 <div class="tabella-scroll">
                   <table class="piano-table">

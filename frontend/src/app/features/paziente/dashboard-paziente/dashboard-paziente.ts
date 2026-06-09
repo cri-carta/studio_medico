@@ -19,6 +19,19 @@ export class DashboardPazienteComponent implements OnInit {
   isLoading: boolean = true;
   pianoStrutturato: Record<string, Record<string, PianoVoce[]>> = {};
   storicoVisite: Visita[] = [];
+  progressSummary = {
+    primoPeso: 0,
+    ultimoPeso: 0,
+    pesoDelta: 0,
+    primoBMI: 0,
+    ultimoBMI: 0,
+    bmiDelta: 0,
+    primoBF: 0,
+    ultimoBF: 0,
+    bfDelta: 0,
+    dataInizio: '',
+    dataFine: ''
+  };
 
   giorniChiave = ['lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato', 'domenica'];
   pastiChiave = ['colazione', 'pranzo', 'spuntino', 'cena'];
@@ -81,9 +94,37 @@ caricaDatiConnessi(pazienteId: number): void {
   this.medicoService.getStoricoVisite(pazienteId).subscribe({
     next: (visite: Visita[]) => {
       this.storicoVisite = visite;
+      this.calcolaProgressi(visite);
     },
     error: (err: any) => console.error("Errore recupero storico visite", err)
   });
+}
+
+private calcolaProgressi(visite: Visita[]): void {
+  if (!visite || visite.length < 2) {
+    return;
+  }
+
+  const sorted = [...visite].sort(
+    (a, b) => new Date(a.data_visita).getTime() - new Date(b.data_visita).getTime()
+  );
+
+  const primo = sorted[0];
+  const ultimo = sorted[sorted.length - 1];
+
+  this.progressSummary = {
+    primoPeso: primo.peso,
+    ultimoPeso: ultimo.peso,
+    pesoDelta: Number((ultimo.peso - primo.peso).toFixed(1)),
+    primoBMI: primo.bmi,
+    ultimoBMI: ultimo.bmi,
+    bmiDelta: Number((ultimo.bmi - primo.bmi).toFixed(1)),
+    primoBF: primo.bf,
+    ultimoBF: ultimo.bf,
+    bfDelta: Number((ultimo.bf - primo.bf).toFixed(1)),
+    dataInizio: primo.data_visita,
+    dataFine: ultimo.data_visita
+  };
 }
 
 // NUOVA FUNZIONE: Genera la struttura iniziale ad albero vuota
