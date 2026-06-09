@@ -1,5 +1,7 @@
+//backend_express/src/models/utente.model.js
 const db = require('../config/database');
 
+// Cerca un utente nel DB tramite email. Restituisce l'oggetto utente (incluso password_hash) o undefined se non trovato.
 async function findUserByEmail(email) {
 
     const [rows] = await db.query(
@@ -14,6 +16,7 @@ async function findUserByEmail(email) {
     return rows[0];
 }
 
+// Crea un nuovo utente con email, password già hashata e ruolo. Restituisce il risultato della query (include insertId).
 async function createUser(
     email,
     password_hash,
@@ -40,6 +43,7 @@ async function createUser(
 
 }
 
+// Recupera tutti gli utenti dal DB, escludendo la password. Restituisce un array con id, email e ruolo.
 async function getAllUsers() {
 
     const [rows] = await db.query(
