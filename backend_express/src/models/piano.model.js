@@ -66,6 +66,30 @@ async function getAllPlans() {
     const [rows] = await db.query('SELECT * FROM piani_alimentari');
     return rows;
 }
+// Recupera il piano alimentare specifico dal DB.
+async function getFullPlanByPazienteId(pazienteId) {
+    const query = `
+        SELECT 
+            gp.giorno, 
+            p.tipo_pasto, 
+            vp.alimento, 
+            vp.grammi,
+            vp.kcal,
+            vp.proteine,
+            vp.carboidrati,
+            vp.grassi
+        FROM piani_alimentari pa
+            JOIN giorni_piano gp ON pa.id = gp.piano_id
+            JOIN pasti p ON gp.id = p.giorno_id
+            JOIN voci_pasto vp ON p.id = vp.pasto_id
+        WHERE pa.paziente_id = ?
+        ORDER BY pa.created_at DESC, gp.giorno, p.tipo_pasto;
+    `;
+
+    const [rows] = await db.query(query, [pazienteId]);
+    return rows;
+}
+
 
 module.exports = {
     getPlanById,
@@ -73,5 +97,6 @@ module.exports = {
     createPlan,
     updatePlan,
     deletePlan,
-    getAllPlans
+    getAllPlans,
+    getFullPlanByPazienteId
 };
