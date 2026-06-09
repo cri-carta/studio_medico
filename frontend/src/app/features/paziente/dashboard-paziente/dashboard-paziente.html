@@ -5,9 +5,7 @@
       <h1>Benvenuto, {{ paziente?.nome }} {{ paziente?.cognome }}</h1>
       <p>Gestisci il tuo percorso di salute e visualizza i tuoi progressi.</p>
     </div>
-    <button class="btn-logout" (click)="logout()">
-      <span>🚪</span> Logout
-    </button>
+    <button class="btn-logout" (click)="logout()"><span>🚪</span> Logout</button>
   </header>
 
   <main class="dashboard-content">
@@ -15,31 +13,35 @@
     <aside class="info-sidebar">
       <div class="card">
         <h3>Dati Anagrafici</h3>
-        <hr>
-        <div class="info-item">
-          <label>ID Utente:</label>
-          <span>#{{ paziente?.id }}</span>
-        </div>
-        <div class="info-item">
-          <label>Nome:</label>
-          <span>{{ paziente?.nome }}</span>
-        </div>
-        <div class="info-item">
-          <label>Cognome:</label>
-          <span>{{ paziente?.cognome }}</span>
-        </div>
-        <div class="info-item">
-          <label>Data di Nascita:</label>
-          <span>{{ paziente?.data_nascita | date:'dd/MM/yyyy' }}</span>
-        </div>
-        <div class="info-item">
-          <label>Altezza:</label>
-          <span>{{ paziente?.altezza }} cm</span>
-        </div>
-        <div class="info-item">
-          <label>Obiettivo:</label>
-          <span class="badge-obiettivo">{{ paziente?.obiettivo }}</span>
-        </div>
+        <hr />
+        @if (isLoading) {
+          <div class="loading-spinner">Caricamento dati profilo in corso...</div>
+        } @else {
+          <div class="info-item">
+            <label>ID Utente:</label>
+            <span>#{{ paziente?.id }}</span>
+          </div>
+          <div class="info-item">
+            <label>Nome:</label>
+            <span>{{ paziente?.nome }}</span>
+          </div>
+          <div class="info-item">
+            <label>Cognome:</label>
+            <span>{{ paziente?.cognome }}</span>
+          </div>
+          <div class="info-item">
+            <label>Data di Nascita:</label>
+            <span>{{ paziente?.data_nascita | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Altezza:</label>
+            <span>{{ paziente?.altezza }} cm</span>
+          </div>
+          <div class="info-item">
+            <label>Obiettivo:</label>
+            <span class="badge-obiettivo">{{ paziente?.obiettivo }}</span>
+          </div>
+        }
       </div>
     </aside>
 
@@ -99,7 +101,6 @@
         }
       </div>
     </section>
-
   </main>
 
   <footer class="dashboard-actions">
@@ -116,5 +117,4 @@
       </button>
     </div>
   </footer>
-
 </div>
