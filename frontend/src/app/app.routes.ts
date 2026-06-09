@@ -4,7 +4,6 @@ import { roleGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
   {
-    // Corretto: ora combacia con il percorso cercato dalla guardia
     path: 'auth/login',
     loadChildren: () => import('./features/auth/login/login.routes').then(m => m.loginRoutes)
   },
@@ -16,12 +15,11 @@ export const routes: Routes = [
   },
   {
     path: 'paziente',
-    loadChildren: () => import('./features/paziente/paziente.routes').then(m => m.pazienteRoutes)
+    loadChildren: () => import('./features/paziente/paziente.routes').then(m => m.pazienteRoutes),
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRole: 'paziente' }
   },
 
-  // Quando l'app parte vuota, prova ad andare su login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-
-  // IMPORTANTE: il jolly deve mandare al LOGIN, non a medico, altrimenti crea il loop!
   { path: '**', redirectTo: 'auth/login' }
 ];
