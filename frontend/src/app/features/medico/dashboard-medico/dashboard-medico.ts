@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
 import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
@@ -9,7 +10,7 @@ import { Router } from '@angular/router'; // Inserito per gestire il reindirizza
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard-medico.html',
   styleUrls: ['./dashboard-medico.css']
 })
@@ -38,6 +39,7 @@ export class DashboardMedicoComponent implements OnInit {
   pazienteSelezionato: Paziente | null = null; // Variabile che contiene l'oggetto completo del paziente da mostrare a destra
 
   // VARIABILI DI STATO PER IL TASK
+  nuovaVisita = { bmi: 0.0, bf: 0.0 };
   caricamentoPiano: boolean = false;
   caricamentoAnalisi: boolean = false;
   testoAnalisiOllama: RispostaAnalisiAI | null = null;
@@ -122,11 +124,13 @@ export class DashboardMedicoComponent implements OnInit {
   
     // 2. Calcolo della Body Fat (BF) stimata
     const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
-    const sessoFattore = 1; // Default a 1 (uomo) o personalizzabile se hai il campo sesso
-    
+    const sessoFattore = 1;
     const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * sessoFattore) - 5.4;
     this.bf = bfCalcolata > 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
-  }
+
+    this.nuovaVisita.bmi = this.bmi;
+    this.nuovaVisita.bf = this.bf;
+}
   
 
   // TASK A: Tasto "Genera tabella" -> /api/rag/tabella
@@ -210,20 +214,12 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   // CRUD pulsanti in basso
-  aggiungiPaziente(): void {
-    console.log('Azione: Apertura form/modale per Nuovo Paziente');
-  }
+  aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
+  modificaPaziente(): void { console.log('Azione: Modifica', this.pazienteSelezionatoId); }
 
-  modificaPaziente(): void {
-    if (this.pazienteSelezionatoId) {
-      console.log('Azione: Modifica dati del paziente con ID:', this.pazienteSelezionatoId);
-    }
-  }
 
   eliminaPaziente(): void {
     if (this.pazienteSelezionatoId) {
-      console.log('Azione: Elimina definitivo dal database del paziente ID:', this.pazienteSelezionatoId);
-      // Logica per rimuovere l'elemento dall'array (finto) per feedback visivo immediato
       this.pazienti = this.pazienti.filter(p => p.id !== this.pazienteSelezionatoId);
       this.pazientiFiltrati = this.pazienti;
       this.pazienteSelezionatoId = null;

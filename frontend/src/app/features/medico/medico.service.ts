@@ -28,7 +28,7 @@ export interface Paziente {
 })
 
 export class MedicoService {
-  private readonly API_URL = 'http://localhost:3000/api';
+  private readonly API_URL = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
@@ -48,8 +48,8 @@ export class MedicoService {
 
   // 1. Chiama il RAG per generare la tabella del piano settimanale
   generaTabellaPiano(pazienteId: number): Observable<RispostaTabellaAI> {
-    return this.http.post<RispostaTabellaAI>(`${this.API_URL}/rag/tabella`, { pazienteId });
-  }
+    return this.http.post<RispostaTabellaAI>(`${this.API_URL}/rag/tabella`, { paziente_id: pazienteId });
+}
 
   // 2. Chiama il RAG per l'analisi dell'andamento (ritorna del testo/stringa da Ollama)
   getAnalisiAndamento(pazienteId: number): Observable<RispostaAnalisiAI> {
