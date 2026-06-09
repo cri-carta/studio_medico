@@ -1,4 +1,5 @@
 <div class="dashboard-layout">
+  
   <aside class="sidebar-pazienti">
     <div class="lista-pazienti-scroll">
       <div class="lista-header">
@@ -56,6 +57,9 @@
           <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">
             @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
           </button>
+          <button class="btn-logout" (click)="logout()">
+            <span>🚪</span> Logout
+          </button>
         </div>
       </header>
 
@@ -83,16 +87,16 @@
             <div class="form-row">
               <div class="field-input">
                 <label for="peso">Peso (kg)</label>
-                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaBmiBf($event, 'peso')">
+                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaParametriAutomatici()" placeholder="0.0">
               </div>
               <div class="field-input">
                 <label for="bmi">BMI</label>
-                <input type="number" id="bmi" name="bmi" [value]="nuovaVisita.bmi | number:'1.1-2'" readonly
+                <input type="number" id="bmi" name="bmi" [value]="bmi | number:'1.1-2'" readonly
                   class="input-readonly">
               </div>
               <div class="field-input">
                 <label for="bf">Body Fat (%)</label>
-                <input type="number" id="bf" name="bf" [value]="nuovaVisita.bf | number:'1.1-1'" readonly
+                <input type="number" id="bf" name="bf" [value]="bf | number:'1.1-1'" readonly
                   class="input-readonly">
               </div>
             </div>
@@ -123,7 +127,7 @@
           </div>
         </div>
         <div class="output-content text-markdown">
-          <p>{{ testoAnalisiOllama }}</p>
+          <p>{{ testoAnalisiOllama.analisi }}</p>
         </div>
       </section>
       }

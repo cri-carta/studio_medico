@@ -181,6 +181,15 @@
   opacity: 0.9;
 }
 
+.btn-logout {
+  background: #ffeded;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 /* --- AREA DESTRA (CONTENUTO) --- */
 .contenuto-destra {
   background-color: var(--bg-content);

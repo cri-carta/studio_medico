@@ -11,7 +11,7 @@ export interface Paziente {
   medico_id: number;
   nome: string;
   cognome: string;
-  data_nascita?: Date;
+  data_nascita?: Date | string;
   altezza?: number;
   obiettivo?: string;
   anamnesi?: string;

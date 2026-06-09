@@ -1,14 +1,16 @@
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
 import { Component, OnInit, inject } from '@angular/core'; // 1. Aggiungi inject
 import { AuthService } from '../../../core/auth/auth.service'; // 2. Importa il servizio
 import { MedicoService } from '../medico.service';
 import { RispostaAnalisiAI, RispostaTabellaAI } from '../../../core/models/outputAI.model';
+import { Router } from '@angular/router'; // Inserito per gestire il reindirizzamento al logout
 
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard-medico.html',
   styleUrls: ['./dashboard-medico.css']
 })
@@ -37,6 +39,7 @@ export class DashboardMedicoComponent implements OnInit {
   pazienteSelezionato: Paziente | null = null; // Variabile che contiene l'oggetto completo del paziente da mostrare a destra
 
   // VARIABILI DI STATO PER IL TASK
+  nuovaVisita = { bmi: 0.0, bf: 0.0 };
   caricamentoPiano: boolean = false;
   caricamentoAnalisi: boolean = false;
   testoAnalisiOllama: RispostaAnalisiAI | null = null;
@@ -46,20 +49,20 @@ export class DashboardMedicoComponent implements OnInit {
   giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
   tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'] as const;
 
-  // Oggetto di appoggio per il Form Nuova Visita
-  nuovaVisita = {
-    peso: 0,
-    bmi: 0,
-    bf: 0
-  };
+  // --- INTEGRAZIONE: Variabili per la gestione del Form Visite ---
+  peso: number | null = null;
+  bmi: number = 0.0;
+  bf: number = 0.0;
+  errorMsg: string = '';
+  successMsg: string = '';
 
   // Iniezione del servizio tramite costruttore
-  constructor(private medicoService: MedicoService) {}
+  constructor(
+    private medicoService: MedicoService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // 4. TEST DI SIMULAZIONE:
-    // Forza il login come 'medico' per testare se le Guardie ti fanno passare
-    this.authService.login('INCOLLA_IL_LUNGO_TOKEN_DI_JWT_IO');;
     this.pazientiFiltrati = this.pazienti;
   }
 
@@ -74,25 +77,61 @@ export class DashboardMedicoComponent implements OnInit {
   selezionaPaziente(id: number): void {
     this.pazienteSelezionatoId = id;
     this.pazienteSelezionato = this.pazienti.find(p => p.id === id) || null;
+
     // Resetta i vecchi output e i campi del form al cambio paziente
     this.testoAnalisiOllama = null;
     this.pianoAlimentareGenerato = null;
-    this.nuovaVisita = { peso: 0, bmi: 0, bf: 0 };
+    this.errorMsg = '';
+    this.successMsg = '';
+    this.peso = null;
+    this.bmi = 0.0;
+    this.bf = 0.0;
   }
 
-  calcolaBmiBf(event: Event, field: string): void {
-  const inputVal = parseFloat((event.target as HTMLInputElement).value);
-  if (!inputVal || !this.pazienteSelezionato?.altezza) return;
+  private calcolaEta(dataNascitaInput: Date | string | undefined | null): number {
+    if (!dataNascitaInput) return 0;
+    // Converte istantaneamente in un oggetto Date indipendente se è una stringa
+    const nascita = new Date(dataNascitaInput);
+    const oggi = new Date();
+    let eta = oggi.getFullYear() - nascita.getFullYear();
+    const mese = oggi.getMonth() - nascita.getMonth();
+    if (mese < 0 || (mese === 0 && oggi.getDate() < nascita.getDate())) {
+      eta--;
+    }
+    return eta;
+  }
 
-  this.nuovaVisita.peso = inputVal;
+  calcolaParametriAutomatici(): void {
+    // Recupera l'elemento input dal DOM per prelevare il peso inserito dall'utente
+    const inputPeso = document.getElementById('peso') as HTMLInputElement;
+    if (!inputPeso) return;
   
-  // Formula standard: BMI = peso / (altezza_metri ^ 2)
-  const altezzaMetri = this.pazienteSelezionato.altezza / 100;
-  this.nuovaVisita.bmi = this.nuovaVisita.peso / (altezzaMetri * altezzaMetri);
+    const pesoDigitato = parseFloat(inputPeso.value);
+  
+    if (!pesoDigitato || pesoDigitato <= 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
+      this.peso = null;
+      this.bmi = 0.0;
+      this.bf = 0.0;
+      return;
+    }
+  
+    // Aggiorna la variabile locale con il valore digitato
+    this.peso = pesoDigitato;
+  
+    // 1. Calcolo del BMI basato sull'altezza del paziente selezionato
+    const altezzaInMetri = this.pazienteSelezionato?.altezza / 100;
+    this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
+  
+    // 2. Calcolo della Body Fat (BF) stimata
+    const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
+    const sessoFattore = 1;
+    const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * sessoFattore) - 5.4;
+    this.bf = bfCalcolata > 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
 
-  // Formula stimata della Body Fat (BF)
-  this.nuovaVisita.bf = (1.20 * this.nuovaVisita.bmi) - 5; 
+    this.nuovaVisita.bmi = this.bmi;
+    this.nuovaVisita.bf = this.bf;
 }
+  
 
   // TASK A: Tasto "Genera tabella" -> /api/rag/tabella
   onGeneraTabella(): void {
@@ -138,50 +177,59 @@ export class DashboardMedicoComponent implements OnInit {
   // TASK C: Form "Effettua visita" -> POST /api/visite
   onSalvaVisita(event: Event): void {
     event.preventDefault(); // Blocca il refresh nativo della pagina
-    if (!this.pazienteSelezionatoId || this.nuovaVisita.peso <= 0) return;
+
+    if (!this.pazienteSelezionatoId || !this.peso || this.peso <= 0) {
+      this.errorMsg = 'Inserisci un peso valido prima di salvare.';
+      this.successMsg = '';
+      return;
+    }
+
+    const oggi = new Date();
+    const dataVisita = oggi.toISOString().split('T')[0];
 
     const payload = {
       paziente_id: this.pazienteSelezionatoId,
-      medico_id: 4, // Il medico loggato ricavato dal DB
-      data_visita: new Date().toISOString().split('T')[0], // Data odierna YYYY-MM-DD
-      peso: this.nuovaVisita.peso,
-      bmi: this.nuovaVisita.bmi,
-      bf: this.nuovaVisita.bf
+      data_visita: dataVisita, // Data odierna YYYY-MM-DD
+      peso: this.peso,
+      bmi: this.bmi,
+      bf: this.bf
     };
 
     this.medicoService.salvaVisita(payload).subscribe({
       next: (res) => {
-        alert('Visita salvata con successo nel database!');
-        // Svuota il form
-        (event.target as HTMLFormElement).reset();
-        this.nuovaVisita = { peso: 0, bmi: 0, bf: 0 };
+        this.successMsg = 'Visita salvata con successo nel database!';
+        this.errorMsg = '';
+
+        // Reset del form dopo il corretto inserimento
+        this.peso = null;
+        this.bmi = 0.0;
+        this.bf = 0.0;
       },
       error: (err) => {
+        this.errorMsg = "Errore durante il salvataggio della visita sul server.";
+        this.successMsg = '';
         console.error(err);
-        alert("Errore durante il salvataggio della visita.");
       }
     });
   }
 
   // CRUD pulsanti in basso
-  aggiungiPaziente(): void {
-    console.log('Azione: Apertura form/modale per Nuovo Paziente');
-  }
+  aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
+  modificaPaziente(): void { console.log('Azione: Modifica', this.pazienteSelezionatoId); }
 
-  modificaPaziente(): void {
-    if (this.pazienteSelezionatoId) {
-      console.log('Azione: Modifica dati del paziente con ID:', this.pazienteSelezionatoId);
-    }
-  }
 
   eliminaPaziente(): void {
     if (this.pazienteSelezionatoId) {
-      console.log('Azione: Elimina definitivo dal database del paziente ID:', this.pazienteSelezionatoId);
-      // Logica per rimuovere l'elemento dall'array (finto) per feedback visivo immediato
       this.pazienti = this.pazienti.filter(p => p.id !== this.pazienteSelezionatoId);
       this.pazientiFiltrati = this.pazienti;
       this.pazienteSelezionatoId = null;
       this.pazienteSelezionato = null;
     }
+  }
+
+  logout() {
+    console.log("Esecuzione Logout...");
+    localStorage.clear(); // Svuota i dati di sessione (token, ruolo, utenteId)
+    this.router.navigate(['/login']); // Reindirizza l'utente alla pagina di login
   }
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PianoAlimentare } from './piano-alimentare';
+import { PianoAlimentareComponent } from './piano-alimentare';
 
 describe('PianoAlimentare', () => {
-  let component: PianoAlimentare;
-  let fixture: ComponentFixture<PianoAlimentare>;
+  let component: PianoAlimentareComponent;
+  let fixture: ComponentFixture<PianoAlimentareComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PianoAlimentare]
+      imports: [PianoAlimentareComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PianoAlimentare);
+    fixture = TestBed.createComponent(PianoAlimentareComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
