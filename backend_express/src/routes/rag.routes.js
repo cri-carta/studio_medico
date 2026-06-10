@@ -3,8 +3,10 @@ const router    = express.Router();
 const { spawn } = require('child_process');
 const path      = require('path');
 const jwt       = require('jsonwebtoken');
-const { getVisiteByPaziente } = require('../models/visita.model');
-const { getPatientById }      = require('../models/paziente.model');
+const { getVisiteByPaziente }                  = require('../models/visita.model');
+const { getPatientById }                       = require('../models/paziente.model');
+const { savePianoJSON, getPianoJSONByPaziente } = require('../models/piano.model');
+const { getMedicoByUtenteId }                  = require('../models/medico.model');
 
 const PYTHON     = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\venv\\Scripts\\python.exe';
 const RAG_SCRIPT = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\rag_system.py';
@@ -44,18 +46,18 @@ function callPython(comando, payload) {
 
 // GET /rag/tabella/:paziente_id — SSE
 router.get('/tabella/:paziente_id', async (req, res) => {
-    // Verifica token passato come query param
     const token = req.query.token;
     if (!token) {
         return res.status(401).json({ error: 'Token mancante.' });
     }
+
+    let decoded;
     try {
-        jwt.verify(token, process.env.JWT_SECRET);
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
         return res.status(403).json({ error: 'Token non valido.' });
     }
 
-    // Headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -87,6 +89,29 @@ router.get('/tabella/:paziente_id', async (req, res) => {
         });
 
         console.log('[RAG SSE] ha_contesto:', risultato.ha_contesto);
+        console.log('[RAG SSE] risposta keys:', risultato.risposta ? Object.keys(risultato.risposta) : 'null');
+
+        // Salva il piano JSON nel DB
+        if (risultato.ha_contesto && risultato.risposta && Object.keys(risultato.risposta).length > 0) {
+            try {
+                const medico = await getMedicoByUtenteId(decoded.id);
+                const medico_id = medico ? medico.id : null;
+
+                if (!medico_id) {
+                    console.error('[RAG SSE] Medico non trovato per utente_id:', decoded.id);
+                } else {
+                    console.log('[RAG SSE] Salvataggio - paziente_id:', paziente_id, '| medico_id:', medico_id);
+                    const saved = await savePianoJSON(paziente_id, medico_id, risultato.risposta);
+                    console.log('[RAG SSE] Piano salvato nel DB:', JSON.stringify(saved));
+                }
+            } catch (saveErr) {
+                console.error('[RAG SSE] ERRORE salvataggio:', saveErr.message);
+                console.error('[RAG SSE] Stack:', saveErr.stack);
+            }
+        } else {
+            console.warn('[RAG SSE] Salvataggio saltato - ha_contesto:', risultato.ha_contesto);
+        }
+
         sendEvent('completo', risultato);
         res.end();
 
@@ -94,6 +119,22 @@ router.get('/tabella/:paziente_id', async (req, res) => {
         console.error('[RAG SSE] Errore:', err.message);
         sendEvent('errore', { message: err.message });
         res.end();
+    }
+});
+
+// GET /rag/piano/:paziente_id — recupera piano salvato
+router.get('/piano/:paziente_id', async (req, res) => {
+    try {
+        const { paziente_id } = req.params;
+        const piano = await getPianoJSONByPaziente(paziente_id);
+
+        if (!piano) {
+            return res.status(404).json({ error: 'Nessun piano trovato per questo paziente.' });
+        }
+
+        res.json(piano);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 

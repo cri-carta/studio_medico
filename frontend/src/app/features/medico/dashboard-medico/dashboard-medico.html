@@ -54,6 +54,10 @@
           <button class="btn-ia btn-genera" (click)="onGeneraTabella()" [disabled]="caricamentoPiano">
             @if (caricamentoPiano) { ⏳ Generazione... } @else { 🍏 Genera Tabella }
           </button>
+          <button class="btn-ia btn-visualizza" 
+              (click)="onVisualizzaPiano()">
+              📋 Visualizza Piano
+          </button>
           <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">
             @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
           </button>
@@ -137,7 +141,7 @@
           <div class="giorno-block">
             <h4 class="giorno-titolo">{{ entry.giorno }}</h4>
             <div class="pasti-grid">
-              @for (pasto of getPasti(entry.dati); track pasto.tipo) {
+              @for (pasto of getPasti(entry.dati); track $index) {
               <div class="pasto-card">
                 <span class="pasto-tipo">{{ pasto.tipo }}</span>
                 @for (alimento of pasto.alimenti; track alimento.alimento) {
@@ -147,10 +151,10 @@
               }
             </div>
             <div class="macro-row">
-              🔥 {{ entry.dati.totale_giornaliero.calorie_totali }} kcal |
-              🥩 {{ entry.dati.totale_giornaliero.proteine_g }}g prot |
-              🍞 {{ entry.dati.totale_giornaliero.carboidrati_g }}g carb |
-              🥑 {{ entry.dati.totale_giornaliero.grassi_g }}g grassi
+              🔥 {{ entry.dati.totale_giornaliero?.calorie_totali || 0 }} kcal |
+              🥩 {{ entry.dati.totale_giornaliero?.proteine_g || 0 }}g prot |
+              🍞 {{ entry.dati.totale_giornaliero?.carboidrati_g || 0 }}g carb |
+              🥑 {{ entry.dati.totale_giornaliero?.grassi_g || 0 }}g grassi
             </div>
           </div>
           }
