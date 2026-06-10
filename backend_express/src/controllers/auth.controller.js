@@ -122,7 +122,7 @@ async function login(req, res) {
                 error: 'Credenziali non valide'
             });
         }
-
+        const secretKey = process.env.JWT_SECRET || 'chiave_segreta_molto_lunga_e_sicura';
         // Genera il token JWT contenente id, email e ruolo dell'utente
         // Il token scade dopo 24 ore
         const token = jwt.sign(
@@ -131,7 +131,7 @@ async function login(req, res) {
                 email: user.email,
                 role:  user.ruolo    // ← era 'ruolo', ora 'role'
             },
-            process.env.JWT_SECRET,  // Chiave segreta letta dalle variabili d'ambiente
+            secretKey,  // Chiave segreta letta dalle variabili d'ambiente
             { expiresIn: '24h' }
         );
 
