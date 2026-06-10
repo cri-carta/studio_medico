@@ -1,12 +1,21 @@
 // Mappatura database studio_medico_db.sql
 
+/**
+ * Rappresenta un utente autenticato nel sistema.
+ */
 export interface Utente {
+  /** ID univoco generato dal DB */
   id?: number;
   email: string;
+  /** Ruolo per il controllo accessi (RBAC) */
   ruolo: 'medico' | 'paziente';
 }
 
+/**
+ * Dati anagrafici e clinici del paziente.
+ */
 export interface Paziente {
+  /** ID univoco generato dal DB */
   id: number;
   medico_id: number;
   nome: string;
@@ -35,11 +44,16 @@ export interface VocePasto {
   grassi?: number;     // DEFAULT NULL nel DB
 }
 
+/**
+ * Struttura di un pasto all'interno di un piano alimentare.
+ * Contiene una lista di alimenti (voci).
+ */
 export interface Pasto {
   id: number;
   giorno_id: number;
-  tipo_pasto: 'colazione' | 'pranzo' | 'cena' | 'spuntino'; // Basato sull'ENUM del DB
-  voci_pasto: VocePasto[]; // Array di alimenti associati a questo pasto
+  tipo_pasto: 'colazione' | 'pranzo' | 'cena' | 'spuntino';
+  /** Lista degli alimenti che compongono il pasto */
+  voci_pasto: VocePasto[];
 }
 
 export interface PianoAlimentare {

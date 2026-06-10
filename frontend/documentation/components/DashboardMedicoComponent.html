@@ -1,0 +1,2605 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>frontend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">frontend documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  DashboardMedicoComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#styleData" class="nav-link"
+                role="tab" id="styleData-tab" data-bs-toggle="tab" data-link="style">Styles</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/features/medico/dashboard-medico/dashboard-medico.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                    <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-dashboard-medico</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="https://angular.io/api/common/CommonModule" target="_blank" >CommonModule</a></code>
+                                <code><a href="https://angular.io/api/forms/FormsModule" target="_blank" >FormsModule</a></code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">styleUrls</td>
+                <td class="col-md-9"><code>./dashboard-medico.css</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./dashboard-medico.html</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#authService" >authService</a>
+                            </li>
+                            <li>
+                                <a href="#bf" >bf</a>
+                            </li>
+                            <li>
+                                <a href="#bmi" >bmi</a>
+                            </li>
+                            <li>
+                                <a href="#caricamentoAnalisi" >caricamentoAnalisi</a>
+                            </li>
+                            <li>
+                                <a href="#caricamentoPiano" >caricamentoPiano</a>
+                            </li>
+                            <li>
+                                <a href="#errorMsg" >errorMsg</a>
+                            </li>
+                            <li>
+                                <a href="#giorniDellaSettimana" >giorniDellaSettimana</a>
+                            </li>
+                            <li>
+                                <a href="#nuovaVisita" >nuovaVisita</a>
+                            </li>
+                            <li>
+                                <a href="#pazienteSelezionato" >pazienteSelezionato</a>
+                            </li>
+                            <li>
+                                <a href="#pazienteSelezionatoId" >pazienteSelezionatoId</a>
+                            </li>
+                            <li>
+                                <a href="#pazienti" >pazienti</a>
+                            </li>
+                            <li>
+                                <a href="#pazientiFiltrati" >pazientiFiltrati</a>
+                            </li>
+                            <li>
+                                <a href="#peso" >peso</a>
+                            </li>
+                            <li>
+                                <a href="#pianoAlimentareGenerato" >pianoAlimentareGenerato</a>
+                            </li>
+                            <li>
+                                <a href="#successMsg" >successMsg</a>
+                            </li>
+                            <li>
+                                <a href="#testoAnalisiOllama" >testoAnalisiOllama</a>
+                            </li>
+                            <li>
+                                <a href="#tipiPasto" >tipiPasto</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#aggiungiPaziente" >aggiungiPaziente</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#calcolaEta" >calcolaEta</a>
+                            </li>
+                            <li>
+                                <a href="#calcolaParametriAutomatici" >calcolaParametriAutomatici</a>
+                            </li>
+                            <li>
+                                <a href="#eliminaPaziente" >eliminaPaziente</a>
+                            </li>
+                            <li>
+                                <a href="#getGiorni" >getGiorni</a>
+                            </li>
+                            <li>
+                                <a href="#getPasti" >getPasti</a>
+                            </li>
+                            <li>
+                                <a href="#logout" >logout</a>
+                            </li>
+                            <li>
+                                <a href="#modificaPaziente" >modificaPaziente</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                            <li>
+                                <a href="#onAnalisiAndamento" >onAnalisiAndamento</a>
+                            </li>
+                            <li>
+                                <a href="#onGeneraTabella" >onGeneraTabella</a>
+                            </li>
+                            <li>
+                                <a href="#onSalvaVisita" >onSalvaVisita</a>
+                            </li>
+                            <li>
+                                <a href="#onSearch" >onSearch</a>
+                            </li>
+                            <li>
+                                <a href="#selezionaPaziente" >selezionaPaziente</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(medicoService: <a href="../injectables/MedicoService.html" target="_self">MedicoService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:52</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>medicoService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MedicoService.html" target="_self" >MedicoService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>router</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/router/Router" target="_blank" >Router</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="aggiungiPaziente"></a>
+                    <span class="name">
+                        <span ><b>aggiungiPaziente</b></span>
+                        <a href="#aggiungiPaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>aggiungiPaziente()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="220"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:220</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="calcolaEta"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>calcolaEta</b></span>
+                        <a href="#calcolaEta"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>calcolaEta(dataNascitaInput: Date | string | undefined | null)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="83"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:83</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>dataNascitaInput</td>
+                                            <td>
+                                                        <code>Date | string | undefined | null</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="calcolaParametriAutomatici"></a>
+                    <span class="name">
+                        <span ><b>calcolaParametriAutomatici</b></span>
+                        <a href="#calcolaParametriAutomatici"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>calcolaParametriAutomatici()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="95"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:95</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="eliminaPaziente"></a>
+                    <span class="name">
+                        <span ><b>eliminaPaziente</b></span>
+                        <a href="#eliminaPaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>eliminaPaziente()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="223"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:223</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getGiorni"></a>
+                    <span class="name">
+                        <span ><b>getGiorni</b></span>
+                        <a href="#getGiorni"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getGiorni()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="232"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:232</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>literal type[]</code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getPasti"></a>
+                    <span class="name">
+                        <span ><b>getPasti</b></span>
+                        <a href="#getPasti"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getPasti(datiGiorno: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="238"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:238</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>datiGiorno</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>literal type[]</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="logout"></a>
+                    <span class="name">
+                        <span ><b>logout</b></span>
+                        <a href="#logout"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>logout()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="244"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:244</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="modificaPaziente"></a>
+                    <span class="name">
+                        <span ><b>modificaPaziente</b></span>
+                        <a href="#modificaPaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>modificaPaziente()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="221"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:221</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="59"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onAnalisiAndamento"></a>
+                    <span class="name">
+                        <span ><b>onAnalisiAndamento</b></span>
+                        <a href="#onAnalisiAndamento"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onAnalisiAndamento()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="165"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:165</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onGeneraTabella"></a>
+                    <span class="name">
+                        <span ><b>onGeneraTabella</b></span>
+                        <a href="#onGeneraTabella"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onGeneraTabella()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="121"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:121</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSalvaVisita"></a>
+                    <span class="name">
+                        <span ><b>onSalvaVisita</b></span>
+                        <a href="#onSalvaVisita"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSalvaVisita(event: <a href="https://angular.io/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="184"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:184</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onSearch"></a>
+                    <span class="name">
+                        <span ><b>onSearch</b></span>
+                        <a href="#onSearch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onSearch(event: <a href="https://angular.io/api/router/Event" target="_blank">Event</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="63"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                            <code><a href="https://angular.io/api/router/Event" target="_blank" >Event</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selezionaPaziente"></a>
+                    <span class="name">
+                        <span ><b>selezionaPaziente</b></span>
+                        <a href="#selezionaPaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>selezionaPaziente(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="71"
+                                    class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:71</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="authService"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>authService</b></span>
+                        <a href="#authService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>inject(AuthService)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:18</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="bf"></a>
+                    <span class="name">
+                        <span ><b>bf</b></span>
+                        <a href="#bf"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0.0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="bmi"></a>
+                    <span class="name">
+                        <span ><b>bmi</b></span>
+                        <a href="#bmi"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0.0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="caricamentoAnalisi"></a>
+                    <span class="name">
+                        <span ><b>caricamentoAnalisi</b></span>
+                        <a href="#caricamentoAnalisi"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:41</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="caricamentoPiano"></a>
+                    <span class="name">
+                        <span ><b>caricamentoPiano</b></span>
+                        <a href="#caricamentoPiano"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="40" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:40</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="errorMsg"></a>
+                    <span class="name">
+                        <span ><b>errorMsg</b></span>
+                        <a href="#errorMsg"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="51" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:51</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="giorniDellaSettimana"></a>
+                    <span class="name">
+                        <span ><b>giorniDellaSettimana</b></span>
+                        <a href="#giorniDellaSettimana"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[&#x27;Lunedì&#x27;, &#x27;Martedì&#x27;, &#x27;Mercoledì&#x27;, &#x27;Giovedì&#x27;, &#x27;Venerdì&#x27;, &#x27;Sabato&#x27;, &#x27;Domenica&#x27;]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="45" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="nuovaVisita"></a>
+                    <span class="name">
+                        <span ><b>nuovaVisita</b></span>
+                        <a href="#nuovaVisita"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{ bmi: 0.0, bf: 0.0 }</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pazienteSelezionato"></a>
+                    <span class="name">
+                        <span ><b>pazienteSelezionato</b></span>
+                        <a href="#pazienteSelezionato"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Paziente | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="37" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:37</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pazienteSelezionatoId"></a>
+                    <span class="name">
+                        <span ><b>pazienteSelezionatoId</b></span>
+                        <a href="#pazienteSelezionatoId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>number | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pazienti"></a>
+                    <span class="name">
+                        <span ><b>pazienti</b></span>
+                        <a href="#pazienti"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Paziente[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[
+    { id: 1, medico_id: 4, nome: &#x27;Mario&#x27;, cognome: &#x27;Rossi&#x27;, data_nascita: new Date(&#x27;1985-04-12&#x27;), altezza: 178, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 2, medico_id: 4, nome: &#x27;Giulia&#x27;, cognome: &#x27;Bianchi&#x27;, data_nascita: new Date(&#x27;1992-11-23&#x27;), altezza: 165, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 3, medico_id: 4, nome: &#x27;Luca&#x27;, cognome: &#x27;Verdi&#x27;, data_nascita: new Date(&#x27;1978-07-05&#x27;), altezza: 180, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 4, medico_id: 4, nome: &#x27;Chiara&#x27;, cognome: &#x27;Ferrari&#x27;, data_nascita: new Date(&#x27;1990-03-18&#x27;), altezza: 162, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 5, medico_id: 4, nome: &#x27;Alessandro&#x27;, cognome: &#x27;Ricci&#x27;, data_nascita: new Date(&#x27;1983-09-07&#x27;), altezza: 183, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 6, medico_id: 4, nome: &#x27;Francesca&#x27;, cognome: &#x27;Esposito&#x27;, data_nascita: new Date(&#x27;1995-01-30&#x27;), altezza: 168, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 7, medico_id: 4, nome: &#x27;Davide&#x27;, cognome: &#x27;Colombo&#x27;, data_nascita: new Date(&#x27;1980-06-14&#x27;), altezza: 176, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 8, medico_id: 4, nome: &#x27;Sara&#x27;, cognome: &#x27;Marino&#x27;, data_nascita: new Date(&#x27;1998-12-02&#x27;), altezza: 170, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 9, medico_id: 4, nome: &#x27;Matteo&#x27;, cognome: &#x27;Greco&#x27;, data_nascita: new Date(&#x27;1975-08-21&#x27;), altezza: 174, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 10, medico_id: 4, nome: &#x27;Valentina&#x27;, cognome: &#x27;Bruno&#x27;, data_nascita: new Date(&#x27;1993-05-09&#x27;), altezza: 160, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 11, medico_id: 4, nome: &#x27;Stefano&#x27;, cognome: &#x27;Conti&#x27;, data_nascita: new Date(&#x27;1987-02-25&#x27;), altezza: 181, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 12, medico_id: 4, nome: &#x27;Elena&#x27;, cognome: &#x27;Mancini&#x27;, data_nascita: new Date(&#x27;1996-10-11&#x27;), altezza: 166, obiettivo: &#x27;Mantenimento&#x27; },
+  ]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pazientiFiltrati"></a>
+                    <span class="name">
+                        <span ><b>pazientiFiltrati</b></span>
+                        <a href="#pazientiFiltrati"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Paziente[]</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="peso"></a>
+                    <span class="name">
+                        <span ><b>peso</b></span>
+                        <a href="#peso"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>number | null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pianoAlimentareGenerato"></a>
+                    <span class="name">
+                        <span ><b>pianoAlimentareGenerato</b></span>
+                        <a href="#pianoAlimentareGenerato"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/PianoSettimanaleAI.html" target="_self" >PianoSettimanaleAI | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="43" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:43</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="successMsg"></a>
+                    <span class="name">
+                        <span ><b>successMsg</b></span>
+                        <a href="#successMsg"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>&#x27;&#x27;</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="testoAnalisiOllama"></a>
+                    <span class="name">
+                        <span ><b>testoAnalisiOllama</b></span>
+                        <a href="#testoAnalisiOllama"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/RispostaAnalisiAI.html" target="_self" >RispostaAnalisiAI | null</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tipiPasto"></a>
+                    <span class="name">
+                        <span ><b>tipiPasto</b></span>
+                        <a href="#tipiPasto"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>unknown</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[&#x27;Colazione&#x27;, &#x27;Pranzo&#x27;, &#x27;Merenda&#x27;, &#x27;Cena&#x27;] as const</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">src/app/features/medico/dashboard-medico/dashboard-medico.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { FormsModule } from &#x27;@angular/forms&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { Paziente } from &#x27;../../../core/models/database.model&#x27;;
+import { Component, OnInit, inject } from &#x27;@angular/core&#x27;;
+import { AuthService } from &#x27;../../../core/auth/auth.service&#x27;;
+import { MedicoService } from &#x27;../medico.service&#x27;;
+import { Router } from &#x27;@angular/router&#x27;;
+import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from &#x27;../../../core/models/outputAI.model&#x27;;
+
+@Component({
+  selector: &#x27;app-dashboard-medico&#x27;,
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: &#x27;./dashboard-medico.html&#x27;,
+  styleUrls: [&#x27;./dashboard-medico.css&#x27;]
+})
+export class DashboardMedicoComponent implements OnInit {
+  private authService &#x3D; inject(AuthService);
+
+  pazienti: Paziente[] &#x3D; [
+    { id: 1, medico_id: 4, nome: &#x27;Mario&#x27;, cognome: &#x27;Rossi&#x27;, data_nascita: new Date(&#x27;1985-04-12&#x27;), altezza: 178, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 2, medico_id: 4, nome: &#x27;Giulia&#x27;, cognome: &#x27;Bianchi&#x27;, data_nascita: new Date(&#x27;1992-11-23&#x27;), altezza: 165, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 3, medico_id: 4, nome: &#x27;Luca&#x27;, cognome: &#x27;Verdi&#x27;, data_nascita: new Date(&#x27;1978-07-05&#x27;), altezza: 180, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 4, medico_id: 4, nome: &#x27;Chiara&#x27;, cognome: &#x27;Ferrari&#x27;, data_nascita: new Date(&#x27;1990-03-18&#x27;), altezza: 162, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 5, medico_id: 4, nome: &#x27;Alessandro&#x27;, cognome: &#x27;Ricci&#x27;, data_nascita: new Date(&#x27;1983-09-07&#x27;), altezza: 183, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 6, medico_id: 4, nome: &#x27;Francesca&#x27;, cognome: &#x27;Esposito&#x27;, data_nascita: new Date(&#x27;1995-01-30&#x27;), altezza: 168, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 7, medico_id: 4, nome: &#x27;Davide&#x27;, cognome: &#x27;Colombo&#x27;, data_nascita: new Date(&#x27;1980-06-14&#x27;), altezza: 176, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 8, medico_id: 4, nome: &#x27;Sara&#x27;, cognome: &#x27;Marino&#x27;, data_nascita: new Date(&#x27;1998-12-02&#x27;), altezza: 170, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 9, medico_id: 4, nome: &#x27;Matteo&#x27;, cognome: &#x27;Greco&#x27;, data_nascita: new Date(&#x27;1975-08-21&#x27;), altezza: 174, obiettivo: &#x27;Mantenimento&#x27; },
+    { id: 10, medico_id: 4, nome: &#x27;Valentina&#x27;, cognome: &#x27;Bruno&#x27;, data_nascita: new Date(&#x27;1993-05-09&#x27;), altezza: 160, obiettivo: &#x27;Dimagrimento&#x27; },
+    { id: 11, medico_id: 4, nome: &#x27;Stefano&#x27;, cognome: &#x27;Conti&#x27;, data_nascita: new Date(&#x27;1987-02-25&#x27;), altezza: 181, obiettivo: &#x27;Ipertrofia&#x27; },
+    { id: 12, medico_id: 4, nome: &#x27;Elena&#x27;, cognome: &#x27;Mancini&#x27;, data_nascita: new Date(&#x27;1996-10-11&#x27;), altezza: 166, obiettivo: &#x27;Mantenimento&#x27; },
+  ];
+
+  pazientiFiltrati: Paziente[] &#x3D; [];
+  pazienteSelezionatoId: number | null &#x3D; null;
+  pazienteSelezionato: Paziente | null &#x3D; null;
+
+  nuovaVisita &#x3D; { bmi: 0.0, bf: 0.0 };
+  caricamentoPiano: boolean &#x3D; false;
+  caricamentoAnalisi: boolean &#x3D; false;
+  testoAnalisiOllama: RispostaAnalisiAI | null &#x3D; null;
+  pianoAlimentareGenerato: PianoSettimanaleAI | null &#x3D; null;
+
+  giorniDellaSettimana &#x3D; [&#x27;Lunedì&#x27;, &#x27;Martedì&#x27;, &#x27;Mercoledì&#x27;, &#x27;Giovedì&#x27;, &#x27;Venerdì&#x27;, &#x27;Sabato&#x27;, &#x27;Domenica&#x27;];
+  tipiPasto &#x3D; [&#x27;Colazione&#x27;, &#x27;Pranzo&#x27;, &#x27;Merenda&#x27;, &#x27;Cena&#x27;] as const;
+
+  peso: number | null &#x3D; null;
+  bmi: number &#x3D; 0.0;
+  bf: number &#x3D; 0.0;
+  errorMsg: string &#x3D; &#x27;&#x27;;
+  successMsg: string &#x3D; &#x27;&#x27;;
+
+  constructor(
+    private medicoService: MedicoService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.pazientiFiltrati &#x3D; this.pazienti;
+  }
+
+  onSearch(event: Event): void {
+    const query &#x3D; (event.target as HTMLInputElement).value.toLowerCase();
+    this.pazientiFiltrati &#x3D; this.pazienti.filter(p &#x3D;&gt;
+      p.nome.toLowerCase().includes(query) ||
+      p.cognome.toLowerCase().includes(query)
+    );
+  }
+
+  selezionaPaziente(id: number): void {
+    this.pazienteSelezionatoId &#x3D; id;
+    this.pazienteSelezionato &#x3D; this.pazienti.find(p &#x3D;&gt; p.id &#x3D;&#x3D;&#x3D; id) || null;
+    this.testoAnalisiOllama &#x3D; null;
+    this.pianoAlimentareGenerato &#x3D; null;
+    this.errorMsg &#x3D; &#x27;&#x27;;
+    this.successMsg &#x3D; &#x27;&#x27;;
+    this.peso &#x3D; null;
+    this.bmi &#x3D; 0.0;
+    this.bf &#x3D; 0.0;
+  }
+
+  private calcolaEta(dataNascitaInput: Date | string | undefined | null): number {
+    if (!dataNascitaInput) return 0;
+    const nascita &#x3D; new Date(dataNascitaInput);
+    const oggi &#x3D; new Date();
+    let eta &#x3D; oggi.getFullYear() - nascita.getFullYear();
+    const mese &#x3D; oggi.getMonth() - nascita.getMonth();
+    if (mese &lt; 0 || (mese &#x3D;&#x3D;&#x3D; 0 &amp;&amp; oggi.getDate() &lt; nascita.getDate())) {
+      eta--;
+    }
+    return eta;
+  }
+
+  calcolaParametriAutomatici(): void {
+    const inputPeso &#x3D; document.getElementById(&#x27;peso&#x27;) as HTMLInputElement;
+    if (!inputPeso) return;
+
+    const pesoDigitato &#x3D; parseFloat(inputPeso.value);
+
+    if (!pesoDigitato || pesoDigitato &lt;&#x3D; 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
+      this.peso &#x3D; null;
+      this.bmi &#x3D; 0.0;
+      this.bf &#x3D; 0.0;
+      return;
+    }
+
+    this.peso &#x3D; pesoDigitato;
+    const altezzaInMetri &#x3D; this.pazienteSelezionato.altezza / 100;
+    this.bmi &#x3D; parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
+
+    const eta &#x3D; this.calcolaEta(this.pazienteSelezionato.data_nascita);
+    const sessoFattore &#x3D; 1;
+    const bfCalcolata &#x3D; (1.20 * this.bmi) + (0.23 * eta) - (10.8 * sessoFattore) - 5.4;
+    this.bf &#x3D; bfCalcolata &gt; 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
+
+    this.nuovaVisita.bmi &#x3D; this.bmi;
+    this.nuovaVisita.bf &#x3D; this.bf;
+  }
+
+  onGeneraTabella(): void {
+    if (!this.pazienteSelezionatoId) return;
+    this.caricamentoPiano &#x3D; true;
+    this.pianoAlimentareGenerato &#x3D; null;
+
+    this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
+      next: (res: RispostaTabellaAI) &#x3D;&gt; {
+        console.log(&#x27;[TABELLA] Risposta ricevuta:&#x27;, res);
+        console.log(&#x27;[TABELLA] risposta:&#x27;, res.risposta);
+
+        if (res.risposta?.piano_settimanale) {
+          const pianoCorretto: any &#x3D; { piano_settimanale: {} };
+          const mappaGiorni: {[key: string]: string} &#x3D; {
+            &#x27;Luned\u00ec&#x27;: &#x27;Lunedì&#x27;,
+            &#x27;Marted\u00ec&#x27;: &#x27;Martedì&#x27;,
+            &#x27;Mercoled\u00ec&#x27;: &#x27;Mercoledì&#x27;,
+            &#x27;Gioved\u00ec&#x27;: &#x27;Giovedì&#x27;,
+            &#x27;Venerd\u00ec&#x27;: &#x27;Venerdì&#x27;,
+            &#x27;Sabato&#x27;: &#x27;Sabato&#x27;,
+            &#x27;Domenica&#x27;: &#x27;Domenica&#x27;
+          };
+
+          for (const [chiave, valore] of Object.entries(res.risposta.piano_settimanale)) {
+            console.log(&#x27;[DEBUG] chiave originale:&#x27;, JSON.stringify(chiave));
+            const chiaveCorretta &#x3D; mappaGiorni[chiave] || chiave;
+            console.log(&#x27;[DEBUG] chiave corretta:&#x27;, chiaveCorretta);
+            pianoCorretto.piano_settimanale[chiaveCorretta] &#x3D; valore;
+          }
+
+          console.log(&#x27;[DEBUG] piano finale:&#x27;, pianoCorretto);
+          this.pianoAlimentareGenerato &#x3D; pianoCorretto;
+        } else {
+          this.pianoAlimentareGenerato &#x3D; res.risposta;
+        }
+        this.caricamentoPiano &#x3D; false;
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;[TABELLA] Errore:&#x27;, err);
+        alert(&#x27;Errore durante la generazione del piano con il RAG.&#x27;);
+        this.caricamentoPiano &#x3D; false;
+      }
+    });
+  }
+
+  onAnalisiAndamento(): void {
+    if (!this.pazienteSelezionatoId) return;
+    this.caricamentoAnalisi &#x3D; true;
+    this.testoAnalisiOllama &#x3D; null;
+
+    this.medicoService.getAnalisiAndamento(this.pazienteSelezionatoId).subscribe({
+      next: (res: RispostaAnalisiAI) &#x3D;&gt; {
+        console.log(&#x27;[ANALISI] Risposta ricevuta:&#x27;, res);
+        this.testoAnalisiOllama &#x3D; res;
+        this.caricamentoAnalisi &#x3D; false;
+      },
+      error: (err) &#x3D;&gt; {
+        console.error(&#x27;[ANALISI] Errore:&#x27;, err);
+        alert(&quot;Errore durante l&#x27;elaborazione dell&#x27;analisi clinica.&quot;);
+        this.caricamentoAnalisi &#x3D; false;
+      }
+    });
+  }
+
+  onSalvaVisita(event: Event): void {
+    event.preventDefault();
+
+    if (!this.pazienteSelezionatoId || !this.peso || this.peso &lt;&#x3D; 0) {
+      this.errorMsg &#x3D; &#x27;Inserisci un peso valido prima di salvare.&#x27;;
+      this.successMsg &#x3D; &#x27;&#x27;;
+      return;
+    }
+
+    const oggi &#x3D; new Date();
+    const dataVisita &#x3D; oggi.toISOString().split(&#x27;T&#x27;)[0];
+
+    const payload &#x3D; {
+      paziente_id: this.pazienteSelezionatoId,
+      data_visita: dataVisita,
+      peso: this.peso,
+      bmi: this.bmi,
+      bf: this.bf
+    };
+
+    this.medicoService.salvaVisita(payload).subscribe({
+      next: (res) &#x3D;&gt; {
+        this.successMsg &#x3D; &#x27;Visita salvata con successo nel database!&#x27;;
+        this.errorMsg &#x3D; &#x27;&#x27;;
+        this.peso &#x3D; null;
+        this.bmi &#x3D; 0.0;
+        this.bf &#x3D; 0.0;
+      },
+      error: (err) &#x3D;&gt; {
+        this.errorMsg &#x3D; &quot;Errore durante il salvataggio della visita sul server.&quot;;
+        this.successMsg &#x3D; &#x27;&#x27;;
+        console.error(err);
+      }
+    });
+  }
+
+  aggiungiPaziente(): void { console.log(&#x27;Azione: Nuovo Paziente&#x27;); }
+  modificaPaziente(): void { console.log(&#x27;Azione: Modifica&#x27;, this.pazienteSelezionatoId); }
+
+  eliminaPaziente(): void {
+    if (this.pazienteSelezionatoId) {
+      this.pazienti &#x3D; this.pazienti.filter(p &#x3D;&gt; p.id !&#x3D;&#x3D; this.pazienteSelezionatoId);
+      this.pazientiFiltrati &#x3D; this.pazienti;
+      this.pazienteSelezionatoId &#x3D; null;
+      this.pazienteSelezionato &#x3D; null;
+    }
+  }
+
+  getGiorni(): {giorno: string, dati: any}[] {
+    if (!this.pianoAlimentareGenerato?.piano_settimanale) return [];
+    return Object.entries(this.pianoAlimentareGenerato.piano_settimanale)
+      .map(([giorno, dati]) &#x3D;&gt; ({ giorno, dati }));
+  }
+
+  getPasti(datiGiorno: any): {tipo: string, alimenti: any[]}[] {
+    if (!datiGiorno?.pasti) return [];
+    return Object.entries(datiGiorno.pasti)
+      .map(([tipo, alimenti]) &#x3D;&gt; ({ tipo, alimenti: alimenti as any[] }));
+  }
+
+  logout() {
+    console.log(&quot;Esecuzione Logout...&quot;);
+    localStorage.clear();
+    this.router.navigate([&#x27;/auth/login&#x27;]);
+  }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div class&#x3D;&quot;dashboard-layout&quot;&gt;
+  
+  &lt;aside class&#x3D;&quot;sidebar-pazienti&quot;&gt;
+    &lt;div class&#x3D;&quot;lista-pazienti-scroll&quot;&gt;
+      &lt;div class&#x3D;&quot;lista-header&quot;&gt;
+        &lt;h2&gt;Pazienti&lt;/h2&gt;
+        &lt;span class&#x3D;&quot;pazienti-count&quot;&gt;{{ pazientiFiltrati.length }}&lt;/span&gt;
+      &lt;/div&gt;
+
+      @for (paziente of pazientiFiltrati; track paziente.id) {
+      &lt;div class&#x3D;&quot;paziente-item&quot; [class.active]&#x3D;&quot;pazienteSelezionatoId &#x3D;&#x3D;&#x3D; paziente.id&quot;
+        (click)&#x3D;&quot;selezionaPaziente(paziente.id)&quot;&gt;
+        &lt;div class&#x3D;&quot;avatar&quot;&gt;{{ paziente.nome[0] }}{{ paziente.cognome[0] }}&lt;/div&gt;
+        &lt;span class&#x3D;&quot;paziente-name&quot;&gt;{{ paziente.cognome }} {{ paziente.nome }}&lt;/span&gt;
+      &lt;/div&gt;
+      } @empty {
+      &lt;div class&#x3D;&quot;empty-state&quot;&gt;Nessun paziente trovato&lt;/div&gt;
+      }
+    &lt;/div&gt;
+
+    &lt;div class&#x3D;&quot;controlli-basso&quot;&gt;
+      &lt;div class&#x3D;&quot;search-box&quot;&gt;
+        &lt;span class&#x3D;&quot;search-icon&quot;&gt;🔍&lt;/span&gt;
+        &lt;input type&#x3D;&quot;text&quot; placeholder&#x3D;&quot;Cerca paziente...&quot; (input)&#x3D;&quot;onSearch($event)&quot; /&gt;
+      &lt;/div&gt;
+
+      &lt;div class&#x3D;&quot;action-buttons-grid&quot;&gt;
+        &lt;button class&#x3D;&quot;btn-ctrl btn-add&quot; (click)&#x3D;&quot;aggiungiPaziente()&quot; title&#x3D;&quot;Aggiungi nuovo paziente&quot;&gt;
+          ➕ Inserisci
+        &lt;/button&gt;
+        &lt;button class&#x3D;&quot;btn-ctrl btn-edit&quot; [disabled]&#x3D;&quot;!pazienteSelezionatoId&quot; (click)&#x3D;&quot;modificaPaziente()&quot;
+          title&#x3D;&quot;Modifica dati paziente selezionato&quot;&gt;
+          ✏️ Modifica
+        &lt;/button&gt;
+        &lt;button class&#x3D;&quot;btn-ctrl btn-delete&quot; [disabled]&#x3D;&quot;!pazienteSelezionatoId&quot; (click)&#x3D;&quot;eliminaPaziente()&quot;
+          title&#x3D;&quot;Elimina paziente selezionato&quot;&gt;
+          🗑️ Elimina
+        &lt;/button&gt;
+        &lt;button class&#x3D;&quot;btn-logout&quot; (click)&#x3D;&quot;logout()&quot;&gt;
+          &lt;span&gt;🚪&lt;/span&gt; Logout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/aside&gt;
+
+  &lt;main class&#x3D;&quot;contenuto-destra&quot;&gt;
+    @if (pazienteSelezionatoId &amp;&amp; pazienteSelezionato) {
+    &lt;div class&#x3D;&quot;scheda-paziente-container&quot;&gt;
+      &lt;header class&#x3D;&quot;scheda-header&quot;&gt;
+        &lt;div class&#x3D;&quot;paziente-titolo&quot;&gt;
+          &lt;h1&gt;{{ pazienteSelezionato.cognome }} {{ pazienteSelezionato.nome }}&lt;/h1&gt;
+          &lt;span class&#x3D;&quot;badge-obiettivo&quot;&gt; Obiettivo: {{ pazienteSelezionato.obiettivo || &#x27;Nessun obiettivo&#x27; }}&lt;/span&gt;
+        &lt;/div&gt;
+
+        &lt;div class&#x3D;&quot;ia-actions&quot;&gt;
+          &lt;button class&#x3D;&quot;btn-ia btn-genera&quot; (click)&#x3D;&quot;onGeneraTabella()&quot; [disabled]&#x3D;&quot;caricamentoPiano&quot;&gt;
+            @if (caricamentoPiano) { ⏳ Generazione... } @else { 🍏 Genera Tabella }
+          &lt;/button&gt;
+          &lt;button class&#x3D;&quot;btn-ia btn-analisi&quot; (click)&#x3D;&quot;onAnalisiAndamento()&quot; [disabled]&#x3D;&quot;caricamentoAnalisi&quot;&gt;
+            @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
+          &lt;/button&gt;          
+        &lt;/div&gt;
+      &lt;/header&gt;
+
+      &lt;div class&#x3D;&quot;scheda-grid&quot;&gt;
+
+        &lt;section class&#x3D;&quot;card-dati dati-anagrafici&quot;&gt;
+          &lt;h3&gt;Dati Anagrafici&lt;/h3&gt;
+          &lt;div class&#x3D;&quot;field-group&quot;&gt;
+            &lt;div class&#x3D;&quot;field&quot;&gt;&lt;label&gt;Data Nascita:&lt;/label&gt; &lt;span&gt;{{ pazienteSelezionato.data_nascita | date: &#x27;dd/MM/yyyy&#x27; }}&lt;/span&gt;&lt;/div&gt;
+            &lt;div class&#x3D;&quot;field&quot;&gt;&lt;label&gt;Altezza:&lt;/label&gt; &lt;span&gt;{{ pazienteSelezionato.altezza ? pazienteSelezionato.altezza + &#x27; cm&#x27; : &#x27;---&#x27; }}&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          @if (pazienteSelezionato.anamnesi) {
+          &lt;div class&#x3D;&quot;field-anamnesi&quot;&gt;
+            &lt;label&gt;Anamnesi iniziale:&lt;/label&gt;
+            &lt;p&gt;{{ pazienteSelezionato.anamnesi }}&lt;/p&gt;
+          &lt;/div&gt;
+          }
+        &lt;/section&gt;
+
+        &lt;section class&#x3D;&quot;card-dati form-visita-box&quot;&gt;
+          &lt;h3&gt;Form &quot;Effettua Visita&quot;&lt;/h3&gt;
+          &lt;form (submit)&#x3D;&quot;onSalvaVisita($event)&quot; class&#x3D;&quot;visita-form&quot;&gt;
+            &lt;div class&#x3D;&quot;form-row&quot;&gt;
+              &lt;div class&#x3D;&quot;field-input&quot;&gt;
+                &lt;label for&#x3D;&quot;peso&quot;&gt;Peso (kg)&lt;/label&gt;
+                &lt;input type&#x3D;&quot;number&quot; id&#x3D;&quot;peso&quot; name&#x3D;&quot;peso&quot; step&#x3D;&quot;0.1&quot; required (input)&#x3D;&quot;calcolaParametriAutomatici()&quot; placeholder&#x3D;&quot;0.0&quot;&gt;
+              &lt;/div&gt;
+              &lt;div class&#x3D;&quot;field-input&quot;&gt;
+                &lt;label for&#x3D;&quot;bmi&quot;&gt;BMI&lt;/label&gt;
+                &lt;input type&#x3D;&quot;number&quot; id&#x3D;&quot;bmi&quot; name&#x3D;&quot;bmi&quot; [value]&#x3D;&quot;bmi | number:&#x27;1.1-2&#x27;&quot; readonly class&#x3D;&quot;input-readonly&quot;&gt;
+              &lt;/div&gt;
+              &lt;div class&#x3D;&quot;field-input&quot;&gt;
+                &lt;label for&#x3D;&quot;bf&quot;&gt;Body Fat (%)&lt;/label&gt;
+                &lt;input type&#x3D;&quot;number&quot; id&#x3D;&quot;bf&quot; name&#x3D;&quot;bf&quot; [value]&#x3D;&quot;bf | number:&#x27;1.1-1&#x27;&quot; readonly class&#x3D;&quot;input-readonly&quot;&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;button type&#x3D;&quot;submit&quot; class&#x3D;&quot;btn-submit-visita&quot;&gt;💾 Salva Dati Visita&lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/section&gt;
+      &lt;/div&gt;
+
+      @if (testoAnalisiOllama) {
+      &lt;section class&#x3D;&quot;card-dati output-ia-box analisi-box animate-fade&quot;&gt;
+        &lt;div class&#x3D;&quot;output-header&quot;&gt;
+          &lt;h3&gt;🧠 Analisi Clinica Avanzata (Ollama AI)&lt;/h3&gt;
+          &lt;button class&#x3D;&quot;btn-close-output&quot; (click)&#x3D;&quot;testoAnalisiOllama &#x3D; null&quot;&gt;❌ Chiudi&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;quadro-clinico-grid&quot;&gt;
+          &lt;div class&#x3D;&quot;widget-delta&quot; [class.migliorato]&#x3D;&quot;testoAnalisiOllama.delta_peso &lt;&#x3D; 0&quot;&gt;
+            &lt;span class&#x3D;&quot;delta-label&quot;&gt;Variazione Peso&lt;/span&gt;
+            &lt;span class&#x3D;&quot;delta-valore&quot;&gt;{{ testoAnalisiOllama.delta_peso | number:&#x27;1.1-1&#x27; }} kg&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;widget-delta&quot; [class.migliorato]&#x3D;&quot;testoAnalisiOllama.delta_bmi &lt;&#x3D; 0&quot;&gt;
+            &lt;span class&#x3D;&quot;delta-label&quot;&gt;Variazione BMI&lt;/span&gt;
+            &lt;span class&#x3D;&quot;delta-valore&quot;&gt;{{ testoAnalisiOllama.delta_bmi | number:&#x27;1.1-2&#x27; }}&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class&#x3D;&quot;widget-status-badge&quot; [class.successo]&#x3D;&quot;testoAnalisiOllama.ha_migliorato&quot;&gt;
+            Status Obiettivo: &lt;strong&gt;{{ testoAnalisiOllama.ha_migliorato ? &#x27;In Miglioramento&#x27; : &#x27;Stazionario / Monitorare&#x27; }}&lt;/strong&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;output-content text-markdown&quot;&gt;
+          &lt;p&gt;{{ testoAnalisiOllama.analisi }}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      }
+
+      @if (pianoAlimentareGenerato &amp;&amp; pianoAlimentareGenerato.piano_settimanale) {
+      &lt;section class&#x3D;&quot;card-dati output-ia-box tabella-box animate-fade&quot;&gt;
+        &lt;div class&#x3D;&quot;output-header&quot;&gt;
+          &lt;h3&gt;🍏 Piano Alimentare Settimanale Generato&lt;/h3&gt;
+          &lt;button class&#x3D;&quot;btn-close-output&quot; (click)&#x3D;&quot;pianoAlimentareGenerato &#x3D; null&quot;&gt;❌ Chiudi&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class&#x3D;&quot;tabella-scroll&quot;&gt;
+          @for (entry of getGiorni(); track entry.giorno) {
+          &lt;div class&#x3D;&quot;giorno-block&quot;&gt;
+            &lt;h4 class&#x3D;&quot;giorno-titolo&quot;&gt;{{ entry.giorno }}&lt;/h4&gt;
+            &lt;div class&#x3D;&quot;pasti-grid&quot;&gt;
+              @for (pasto of getPasti(entry.dati); track pasto.tipo) {
+              &lt;div class&#x3D;&quot;pasto-card&quot;&gt;
+                &lt;span class&#x3D;&quot;pasto-tipo&quot;&gt;{{ pasto.tipo }}&lt;/span&gt;
+                @for (alimento of pasto.alimenti; track alimento.alimento) {
+                &lt;span class&#x3D;&quot;alimento-row&quot;&gt;• {{ alimento.alimento }} &lt;strong&gt;({{ alimento.grammatura }})&lt;/strong&gt;&lt;/span&gt;
+                }
+              &lt;/div&gt;
+              }
+            &lt;/div&gt;
+            &lt;div class&#x3D;&quot;macro-row&quot;&gt;
+              🔥 {{ entry.dati.totale_giornaliero.calorie_totali }} kcal |
+              🥩 {{ entry.dati.totale_giornaliero.proteine_g }}g prot |
+              🍞 {{ entry.dati.totale_giornaliero.carboidrati_g }}g carb |
+              🥑 {{ entry.dati.totale_giornaliero.grassi_g }}g grassi
+            &lt;/div&gt;
+          &lt;/div&gt;
+          }
+        &lt;/div&gt;
+      &lt;/section&gt;
+      }
+
+    &lt;/div&gt;
+    } @else {
+    &lt;div class&#x3D;&quot;placeholder-content&quot;&gt;
+      &lt;h1&gt;Benvenuto nel Gestionale Medico&lt;/h1&gt;
+      &lt;p&gt;Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o configurare le attività.&lt;/p&gt;
+    &lt;/div&gt;
+    }
+  &lt;/main&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="styleData">
+                <p class="comment">
+                    <code>./dashboard-medico.css</code>
+                </p>
+                <pre class="line-numbers"><code class="language-scss">:host {
+  --primary: #2a6f97;
+  --primary-dark: #014f86;
+  --accent: #2ec4b6;
+  --danger: #e63946;
+  --bg-sidebar: #ffffff;
+  --bg-content: #f8f9fa;
+  --text-main: #2b2d42;
+  --text-muted: #6c757d;
+  --border-color: #e9ecef;
+  --active-color: #e2eafc;
+}
+
+/* Layout Principale a due colonne */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 25vw 75vw; /* 1/4 e 3/4 esatti della pagina */
+  height: 100vh;
+  overflow: hidden;
+  font-family: &#x27;Segoe UI&#x27;, Roboto, sans-serif;
+  color: var(--text-main);
+}
+
+/* --- COLONNA SINISTRA (SIDEBAR) --- */
+.sidebar-pazienti {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Spinge la lista in alto e i controlli in basso */
+  height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Sezione superiore della lista con scroll interno */
+.lista-pazienti-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  /* Opzionale: Rende la barra di scorrimento più sottile e moderna (funziona su Chrome/Safari/Edge) */
+  scrollbar-width: thin;
+}
+/* 3. Opzionale: Rendi la scrollbar visivamente coordinata con il tuo stile */
+.lista-pazienti-scroll::-webkit-scrollbar {
+  width: 6px; /* Larghezza della barra */
+}
+.lista-pazienti-scroll::-webkit-scrollbar-track {
+  background: transparent; /* Sfondo del binario */
+}
+.lista-pazienti-scroll::-webkit-scrollbar-thumb {
+  background-color: #ced4da; /* Colore della barra di scorrimento */
+  border-radius: 20px;       /* Smussatura degli angoli della barra */
+}
+
+.lista-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding-bottom: 0.5rem; */
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lista-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--primary-dark);
+}
+
+.pazienti-count {
+  background: var(--border-color);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Singolo elemento della lista */
+.paziente-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 0.25rem;
+}
+
+.paziente-item:hover {
+  background-color: var(--bg-content);
+}
+
+.paziente-item.active {
+  background-color: var(--active-color);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #edf2f4;
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+/* Sezione Controlli Bloccata in Basso */
+.controlli-basso {
+  padding: 1rem;
+  background-color: #fafafa;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Barra di ricerca */
+.search-box {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.6rem 0.6rem 0.6rem 2.2rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.search-box input:focus {
+  border-color: var(--primary);
+}
+
+/* Griglia dei 3 pulsanti di azione */
+.action-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.btn-ctrl {
+  border: none;
+  padding: 0.6rem 0.2rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.btn-ctrl:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-add { background-color: var(--primary); color: white; }
+.btn-edit { background-color: var(--accent); color: white; }
+.btn-delete { background-color: var(--danger); color: white; }
+
+.btn-ctrl:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+.btn-logout {
+  background: #ffeded;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* --- AREA DESTRA (CONTENUTO) --- */
+.contenuto-destra {
+  background-color: var(--bg-content);
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--text-muted);
+}
+
+.placeholder-content h1 {
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1rem;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.dati-anagrafici {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: inline-block;
+  width: 100px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+  /* padding-right: 10px; */
+  box-sizing: border-box;
+  text-align: center;
+}
+
+input[readonly] {
+  background-color: #f0f4f8;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* --- SCHEDA DETTAGLIO PAZIENTE (DESTRA) --- */
+.scheda-paziente-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.scheda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.paziente-titolo h1 {
+  margin: 0 0 0.25rem 0;
+  color: var(--primary-dark);
+  font-size: 1.8rem;
+}
+
+/* Pulsanti IA Generativi */
+.ia-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-ia {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+  color: white;
+}
+
+.btn-ia:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-genera { background-color: #38b000; }
+.btn-genera:hover:not(:disabled) { background-color: #007200; }
+.btn-analisi { background-color: #7209b7; }
+.btn-analisi:hover:not(:disabled) { background-color: #560bad; }
+
+/* Griglia Dati / Form */
+.scheda-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.card-dati {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.card-dati h3 {
+  margin: 0 0 1rem 0;
+  color: var(--primary-dark);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Form Effettua Visita Allineato */
+.visita-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.field-input label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.field-input input {
+  padding: 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.field-input input:focus {
+  border-color: var(--primary);
+}
+
+.input-readonly {
+  background-color: #f1f3f5;
+  color: #495057;
+  font-weight: 600;
+}
+
+.btn-submit-visita {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.btn-submit-visita:hover { background-color: var(--primary-dark); }
+
+/* Output IA ed Elaborazioni */
+.output-ia-box {
+  border-left: 5px solid;
+}
+.analisi-box { border-left-color: #7209b7; background-color: #fcf6ff; }
+.tabella-box { border-left-color: #38b000; background-color: #f7fff0; }
+
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.btn-close-output {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.output-content {
+  line-height: 1.6;
+  font-size: 0.95rem;
+  white-space: pre-line; /* Mantiene la formattazione a capo del testo IA */
+}
+
+/* Tabella dei Piani Alimentari */
+.tabella-scroll { overflow-x: auto; margin-top: 0.5rem; }
+.piano-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.85rem;
+}
+.piano-table th, .piano-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.6rem;
+  vertical-align: top;
+}
+.piano-table th { background: #f8f9fa; color: var(--text-muted); font-weight: 600; }
+.giorno-cell { font-weight: 700; color: var(--primary-dark); background: #fdfdfd; }
+.voce-item { margin-bottom: 0.2rem; }
+
+/* Animazione fluida comparsa */
+.animate-fade {
+  animation: fadeIn 0.3s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis-network.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div class="dashboard-layout">    <aside class="sidebar-pazienti">    <div class="lista-pazienti-scroll">      <div class="lista-header">        <h2>Pazienti</h2>        <span class="pazienti-count">{{ pazientiFiltrati.length }}</span>      </div>      @for (paziente of pazientiFiltrati; track paziente.id) {      <div class="paziente-item" [class.active]="pazienteSelezionatoId === paziente.id"        (click)="selezionaPaziente(paziente.id)">        <div class="avatar">{{ paziente.nome[0] }}{{ paziente.cognome[0] }}</div>        <span class="paziente-name">{{ paziente.cognome }} {{ paziente.nome }}</span>      </div>      } @empty {      <div class="empty-state">Nessun paziente trovato</div>      }    </div>    <div class="controlli-basso">      <div class="search-box">        <span class="search-icon">🔍</span>        <input type="text" placeholder="Cerca paziente..." (input)="onSearch($event)" />      </div>      <div class="action-buttons-grid">        <button class="btn-ctrl btn-add" (click)="aggiungiPaziente()" title="Aggiungi nuovo paziente">          ➕ Inserisci        </button>        <button class="btn-ctrl btn-edit" [disabled]="!pazienteSelezionatoId" (click)="modificaPaziente()"          title="Modifica dati paziente selezionato">          ✏️ Modifica        </button>        <button class="btn-ctrl btn-delete" [disabled]="!pazienteSelezionatoId" (click)="eliminaPaziente()"          title="Elimina paziente selezionato">          🗑️ Elimina        </button>        <button class="btn-logout" (click)="logout()">          <span>🚪</span> Logout        </button>      </div>    </div>  </aside>  <main class="contenuto-destra">    @if (pazienteSelezionatoId && pazienteSelezionato) {    <div class="scheda-paziente-container">      <header class="scheda-header">        <div class="paziente-titolo">          <h1>{{ pazienteSelezionato.cognome }} {{ pazienteSelezionato.nome }}</h1>          <span class="badge-obiettivo"> Obiettivo: {{ pazienteSelezionato.obiettivo || \'Nessun obiettivo\' }}</span>        </div>        <div class="ia-actions">          <button class="btn-ia btn-genera" (click)="onGeneraTabella()" [disabled]="caricamentoPiano">            @if (caricamentoPiano) { ⏳ Generazione... } @else { 🍏 Genera Tabella }          </button>          <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">            @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }          </button>                  </div>      </header>      <div class="scheda-grid">        <section class="card-dati dati-anagrafici">          <h3>Dati Anagrafici</h3>          <div class="field-group">            <div class="field"><label>Data Nascita:</label> <span>{{ pazienteSelezionato.data_nascita | date: \'dd/MM/yyyy\' }}</span></div>            <div class="field"><label>Altezza:</label> <span>{{ pazienteSelezionato.altezza ? pazienteSelezionato.altezza + \' cm\' : \'---\' }}</span></div>          </div>          @if (pazienteSelezionato.anamnesi) {          <div class="field-anamnesi">            <label>Anamnesi iniziale:</label>            <p>{{ pazienteSelezionato.anamnesi }}</p>          </div>          }        </section>        <section class="card-dati form-visita-box">          <h3>Form "Effettua Visita"</h3>          <form (submit)="onSalvaVisita($event)" class="visita-form">            <div class="form-row">              <div class="field-input">                <label for="peso">Peso (kg)</label>                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaParametriAutomatici()" placeholder="0.0">              </div>              <div class="field-input">                <label for="bmi">BMI</label>                <input type="number" id="bmi" name="bmi" [value]="bmi | number:\'1.1-2\'" readonly class="input-readonly">              </div>              <div class="field-input">                <label for="bf">Body Fat (%)</label>                <input type="number" id="bf" name="bf" [value]="bf | number:\'1.1-1\'" readonly class="input-readonly">              </div>            </div>            <button type="submit" class="btn-submit-visita">💾 Salva Dati Visita</button>          </form>        </section>      </div>      @if (testoAnalisiOllama) {      <section class="card-dati output-ia-box analisi-box animate-fade">        <div class="output-header">          <h3>🧠 Analisi Clinica Avanzata (Ollama AI)</h3>          <button class="btn-close-output" (click)="testoAnalisiOllama = null">❌ Chiudi</button>        </div>        <div class="quadro-clinico-grid">          <div class="widget-delta" [class.migliorato]="testoAnalisiOllama.delta_peso <= 0">            <span class="delta-label">Variazione Peso</span>            <span class="delta-valore">{{ testoAnalisiOllama.delta_peso | number:\'1.1-1\' }} kg</span>          </div>          <div class="widget-delta" [class.migliorato]="testoAnalisiOllama.delta_bmi <= 0">            <span class="delta-label">Variazione BMI</span>            <span class="delta-valore">{{ testoAnalisiOllama.delta_bmi | number:\'1.1-2\' }}</span>          </div>          <div class="widget-status-badge" [class.successo]="testoAnalisiOllama.ha_migliorato">            Status Obiettivo: <strong>{{ testoAnalisiOllama.ha_migliorato ? \'In Miglioramento\' : \'Stazionario / Monitorare\' }}</strong>          </div>        </div>        <div class="output-content text-markdown">          <p>{{ testoAnalisiOllama.analisi }}</p>        </div>      </section>      }      @if (pianoAlimentareGenerato && pianoAlimentareGenerato.piano_settimanale) {      <section class="card-dati output-ia-box tabella-box animate-fade">        <div class="output-header">          <h3>🍏 Piano Alimentare Settimanale Generato</h3>          <button class="btn-close-output" (click)="pianoAlimentareGenerato = null">❌ Chiudi</button>        </div>        <div class="tabella-scroll">          @for (entry of getGiorni(); track entry.giorno) {          <div class="giorno-block">            <h4 class="giorno-titolo">{{ entry.giorno }}</h4>            <div class="pasti-grid">              @for (pasto of getPasti(entry.dati); track pasto.tipo) {              <div class="pasto-card">                <span class="pasto-tipo">{{ pasto.tipo }}</span>                @for (alimento of pasto.alimenti; track alimento.alimento) {                <span class="alimento-row">• {{ alimento.alimento }} <strong>({{ alimento.grammatura }})</strong></span>                }              </div>              }            </div>            <div class="macro-row">              🔥 {{ entry.dati.totale_giornaliero.calorie_totali }} kcal |              🥩 {{ entry.dati.totale_giornaliero.proteine_g }}g prot |              🍞 {{ entry.dati.totale_giornaliero.carboidrati_g }}g carb |              🥑 {{ entry.dati.totale_giornaliero.grassi_g }}g grassi            </div>          </div>          }        </div>      </section>      }    </div>    } @else {    <div class="placeholder-content">      <h1>Benvenuto nel Gestionale Medico</h1>      <p>Seleziona un paziente dalla colonna di sinistra per visualizzarne la cartella clinica o configurare le attività.</p>    </div>    }  </main></div></div>'
+    var COMPONENTS = [{'name': 'App', 'selector': 'app-root'},{'name': 'DashboardMedicoComponent', 'selector': 'app-dashboard-medico'},{'name': 'DashboardPazienteComponent', 'selector': 'app-dashboard-paziente'},{'name': 'LoginComponent', 'selector': 'app-login'},{'name': 'PianoAlimentareComponent', 'selector': 'app-piano-alimentare'},{'name': 'SchedaPazienteComponent', 'selector': 'app-scheda-paziente'},{'name': 'VisualizzaPianoComponent', 'selector': 'app-visualizza-piano'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'DashboardMedicoComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'DashboardMedicoComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
