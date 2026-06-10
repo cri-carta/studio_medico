@@ -30,7 +30,7 @@ load_dotenv()
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL",   "http://localhost:11434")
 OLLAMA_CHAT     = os.getenv("OLLAMA_MODEL",       "llama3.2")
 OLLAMA_EMBED    = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
-CHROMA_PATH = os.getenv("CHROMA_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag_db"))
+CHROMA_PATH     = os.getenv("CHROMA_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag_db"))
 
 
 # ---------------------------------------------------------------------------
@@ -38,33 +38,41 @@ CHROMA_PATH = os.getenv("CHROMA_PATH", os.path.join(os.path.dirname(os.path.absp
 # ---------------------------------------------------------------------------
 
 LINEE_GUIDA = [
-
-    # ── LINEE GUIDA GENERALI ────────────────────────────────────────────────
-
     {
         "id": "lin_001",
-        "testo": """LINEE GUIDA NUTRIZIONALI — OMS (Organizzazione Mondiale della Sanità)
-        Adulti: almeno 400g di frutta e verdura al giorno, preferibilmente di stagione e colori diversi.
-        Zuccheri liberi: meno del 10% dell'apporto calorico totale giornaliero; ridurre ulteriormente al 5% per benefici aggiuntivi.
-        Grassi saturi: meno del 10% delle calorie giornaliere. Preferire grassi insaturi (olio d'oliva, frutta secca, pesce).
-        Grassi trans industriali: meno dell'1% dell'apporto energetico totale; da eliminare il più possibile.
-        Sale: meno di 5g al giorno per prevenire ipertensione e malattie cardiovascolari.
-        Fibre: almeno 25-30g al giorno da cereali integrali, legumi, frutta e verdura.
-        Acqua: almeno 1.5-2 litri al giorno, aumentare con il caldo o attività fisica intensa.""",
+        "testo": """LINEE GUIDA NUTRIZIONALI — OMS
+        Adulti: almeno 400g di frutta e verdura al giorno.
+        Zuccheri liberi: meno del 10% dell'apporto calorico totale.
+        Grassi saturi: meno del 10% delle calorie giornaliere.
+        Sale: meno di 5g al giorno per prevenire ipertensione.""",
         "categoria": "linee guida",
     },
     {
         "id": "lin_002",
-        "testo": """LINEE GUIDA — LARN (Livelli di Assunzione di Riferimento di Nutrienti, Italia)
-        Proteine: 0.9g per kg di peso corporeo al giorno per adulti sedentari. Aumentare a 1.2-1.6g/kg per sportivi.
-        Carboidrati: 45-60% dell'energia totale giornaliera, privilegiando fonti a basso indice glicemico.
-        Grassi totali: 20-35% dell'energia totale. Acidi grassi omega-3: almeno 250mg di EPA+DHA al giorno.
-        Calcio: 1000mg/giorno per adulti, 1200mg per over 50 e donne in menopausa.
-        Ferro: 10mg/giorno per uomini adulti, 18mg per donne in età fertile.
-        Vitamina D: 15 microgrammi (600 UI) al giorno per adulti, 20 microgrammi per over 70.
-        Folati: 400 microgrammi al giorno; 600 microgrammi in gravidanza per prevenire difetti del tubo neurale.
-        Iodio: 150 microgrammi al giorno; usare sale iodato.""",
+        "testo": """LINEE GUIDA — INTOLLERANZA AL LATTOSIO
+        Evitare latte vaccino, formaggi freschi, panna, burro.
+        Consentiti: formaggi stagionati, yogurt fermentato, latte senza lattosio.
+        Alternative vegetali: latte di soia, avena, mandorle.
+        Integrare calcio con broccoli, sardine, tofu, mandorle.""",
         "categoria": "linee guida",
+    },
+    {
+        "id": "ali_001",
+        "testo": """ALIMENTI CONSIGLIATI PER IPERTENSIONE
+        Privilegiare: frutta fresca, verdure a foglia verde, legumi, pesce azzurro.
+        Ridurre: sale, insaccati, formaggi stagionati, cibi in scatola.
+        Dieta DASH raccomandata: ricca di potassio, magnesio, calcio.
+        Evitare alcol e caffeina in eccesso.""",
+        "categoria": "alimenti",
+    },
+    {
+        "id": "ali_002",
+        "testo": """FONTI DI PROTEINE PER VEGETARIANI
+        Legumi: lenticchie, ceci, fagioli — 18-25g di proteine per 100g secchi.
+        Cereali: quinoa, amaranto — proteine complete con tutti gli aminoacidi.
+        Derivati soia: tofu, tempeh, edamame.
+        Integrare vitamina B12 obbligatoriamente con supplementi o alimenti fortificati.""",
+        "categoria": "alimenti",
     },
     {
         "id": "lin_003",
@@ -74,421 +82,210 @@ LINEE_GUIDA = [
         Frutta e verdura: 5 porzioni al giorno di colori diversi per massimizzare i micronutrienti.
         Legumi: almeno 3-4 volte a settimana come fonte proteica principale alternativa alla carne.
         Pesce: 2-3 volte a settimana, privilegiando pesce azzurro (sardine, sgombro, acciughe) ricco di omega-3.
-        Carne rossa: massimo 1-2 volte a settimana. Carne bianca (pollo, tacchino, coniglio) fino a 3 volte.
+        Carne rossa: massimo 1-2 volte a settimana. Carne bianca fino a 3 volte.
         Uova: 2-4 a settimana.
-        Formaggi e latticini: con moderazione, preferire yogurt e formaggi freschi a basso contenuto di grassi.
         Olio extravergine d'oliva: condimento principale, 2-4 cucchiai al giorno.
-        Frutta secca e semi: una piccola manciata al giorno (30g). Mandorle, noci, pistacchi.
-        Dolci e zuccheri: occasionalmente, non più di 2-3 volte a settimana.
-        Vino rosso: se consumato, massimo 1 bicchiere al giorno per le donne, 2 per gli uomini, solo durante i pasti.""",
+        Frutta secca e semi: una piccola manciata al giorno (30g).""",
         "categoria": "linee guida",
     },
-
-    # ── PATOLOGIE E CONDIZIONI ───────────────────────────────────────────────
-
     {
         "id": "pat_001",
         "testo": """GESTIONE NUTRIZIONALE — IPERTENSIONE ARTERIOSA
-        L'ipertensione arteriosa colpisce circa il 30% della popolazione adulta italiana.
-        Dieta DASH (Dietary Approaches to Stop Hypertension): riduce la pressione sistolica di 8-14 mmHg.
-        Alimenti da privilegiare: frutta fresca (banane, arance, kiwi ricchi di potassio), verdure a foglia verde
-        (spinaci, bietole), legumi, pesce azzurro, latticini scremati, cereali integrali.
-        Alimenti da ridurre drasticamente: sale da cucina (max 5g/giorno incluso quello nascosto nei cibi),
-        insaccati (salame, prosciutto, mortadella), formaggi stagionati, cibi in scatola, dadi da brodo,
-        salse industriali, patatine, snack salati.
-        Alimenti da evitare: alcol in eccesso (max 1 unità alcolica al giorno), caffeina in eccesso (max 2 caffè),
-        liquirizia (aumenta la pressione), energy drink.
-        Potassio: fondamentale per abbassare la pressione — fabbisogno 3.5g/giorno. Fonti: banane, patate,
-        fagioli, spinaci, avocado, albicocche secche.
-        Magnesio: 300-400mg/giorno. Fonti: mandorle, semi di zucca, spinaci, cioccolato fondente, legumi.
-        Riduzione peso: ogni kg perso riduce la pressione sistolica di circa 1 mmHg.""",
+        Dieta DASH raccomandata: riduce la pressione sistolica di 8-14 mmHg.
+        Alimenti da privilegiare: frutta fresca (banane, arance, kiwi ricchi di potassio), verdure a foglia verde,
+        legumi, pesce azzurro, latticini scremati, cereali integrali.
+        Alimenti da ridurre drasticamente: sale (max 5g/giorno), insaccati, formaggi stagionati,
+        cibi in scatola, dadi da brodo, salse industriali, patatine, snack salati.
+        Alimenti da evitare: alcol in eccesso, caffeina in eccesso, liquirizia, energy drink.
+        Potassio: fondamentale — fabbisogno 3.5g/giorno. Fonti: banane, patate, fagioli, spinaci, avocado.
+        Magnesio: 300-400mg/giorno. Fonti: mandorle, semi di zucca, spinaci, legumi.""",
         "categoria": "patologie",
     },
     {
         "id": "pat_002",
         "testo": """GESTIONE NUTRIZIONALE — DIABETE TIPO 2 E RESISTENZA ALL'INSULINA
-        Il diabete tipo 2 è spesso prevenibile e gestibile con dieta e stile di vita.
-        Indice glicemico (IG): preferire alimenti a basso IG (< 55). Pane integrale IG 50, pane bianco IG 75.
-        Carico glicemico: più importante dell'IG, considera anche la quantità di carboidrati per porzione.
-        Carboidrati: non eliminare ma distribuire uniformemente nei pasti (45-60% delle calorie totali).
-        Evitare picchi glicemici: non saltare i pasti, associare sempre carboidrati con proteine e grassi.
+        Preferire alimenti a basso indice glicemico (IG < 55).
+        Carboidrati: distribuire uniformemente nei pasti, non eliminare.
         Fibre solubili: fondamentali per rallentare l'assorbimento degli zuccheri. Avena, legumi, mele, orzo.
-        Alimenti consigliati: cereali integrali, legumi, verdure non amidacee, frutta a basso IG (ciliegie,
-        mele, pere), pesce, carni magre, olio d'oliva.
-        Alimenti da limitare: zuccheri semplici, bevande zuccherate, succhi di frutta, dolci, pane bianco,
-        riso bianco, patate (IG alto), frutta tropicale (mango, banane mature, uva).
-        Alimenti da evitare: zucchero da tavola, miele in grandi quantità, sciroppo di glucosio-fruttosio.
-        Cannella: alcuni studi suggeriscono un effetto positivo sulla sensibilità insulinica — 1-2g/giorno.
+        Alimenti consigliati: cereali integrali, legumi, verdure non amidacee, frutta a basso IG,
+        pesce, carni magre, olio d'oliva.
+        Alimenti da limitare: zuccheri semplici, bevande zuccherate, succhi di frutta, dolci,
+        pane bianco, riso bianco, patate, frutta tropicale.
         Pasti: 3 pasti principali + 1-2 spuntini leggeri per mantenere stabile la glicemia.""",
         "categoria": "patologie",
     },
     {
         "id": "pat_003",
         "testo": """GESTIONE NUTRIZIONALE — INTOLLERANZA AL LATTOSIO
-        Il lattosio è lo zucchero naturalmente presente nel latte e nei derivati. Circa il 50% degli italiani
-        ha ridotta capacità di digerirlo in età adulta per diminuzione della lattasi intestinale.
-        Sintomi: gonfiore addominale, crampi, diarrea, flatulenza dopo assunzione di latticini.
-        Soglia individuale: molti intolleranti tollerano fino a 12g di lattosio al giorno (un bicchiere di latte).
+        Molti intolleranti tollerano fino a 12g di lattosio al giorno.
         Alimenti da evitare: latte vaccino fresco, formaggi freschi (ricotta, mozzarella, stracchino),
-        panna, burro in grandi quantità, gelato cremoso, besciamella tradizionale.
-        Alimenti generalmente tollerati: formaggi stagionati (parmigiano, grana, pecorino stagionato, emmental)
-        — il lattosio si degrada durante la stagionatura. Yogurt fermentato — i batteri lattici degradano
-        parzialmente il lattosio. Latte delattosato. Burro chiarificato (ghee).
-        Alternative vegetali: latte di soia (proteico), latte di avena (dolce, buono per cottura),
-        latte di mandorla (leggero), latte di riso (molto dolce, basso contenuto proteico),
-        latte di cocco (alto contenuto di grassi saturi, usare con moderazione).
-        Calcio alternativo: broccoli (47mg/100g), cavolo riccio (150mg/100g), sardine con lische (330mg/100g),
-        tofu con calcio (350mg/100g), mandorle (264mg/100g), fichi secchi, sesamo.
-        Etichette: attenzione a "latte in polvere", "siero di latte", "caseina" negli ingredienti.""",
+        panna, burro in grandi quantità, gelato cremoso.
+        Alimenti generalmente tollerati: formaggi stagionati (parmigiano, grana, pecorino),
+        yogurt fermentato, latte delattosato, burro chiarificato.
+        Alternative vegetali: latte di soia, avena, mandorla, riso, cocco.
+        Calcio alternativo: broccoli, cavolo riccio, sardine con lische, tofu con calcio, mandorle.""",
         "categoria": "patologie",
     },
     {
         "id": "pat_004",
         "testo": """GESTIONE NUTRIZIONALE — CELIACHIA E SENSIBILITÀ AL GLUTINE
-        La celiachia è una malattia autoimmune che colpisce circa l'1% della popolazione italiana.
-        Glutine: proteina presente in frumento, farro, kamut, orzo, segale, triticale e avena contaminata.
-        Dieta: assolutamente priva di glutine per tutta la vita. Anche tracce possono causare danni intestinali.
-        Cereali e amidi consentiti: riso, mais, grano saraceno, quinoa, amaranto, miglio, sorgo, teff,
-        patate, tapioca, castagne, ceci (farina), lenticchie (farina).
-        Cereali vietati: frumento (pasta, pane, pizza tradizionale, semolino, bulgur, couscous), farro,
-        kamut, orzo, segale, triticale. Avena: consentita solo se certificata gluten-free.
-        Rischio contaminazione crociata: fondamentale in cucina — usare utensili e superfici separate,
-        olio di frittura non condiviso, toaster dedicato.
-        Prodotti industriali: verificare sempre il simbolo della spiga barrata (gluten-free certificato).
-        Etichette a rischio: "amido modificato", "malto", "sciroppo di malto", "proteine vegetali idrolizzate".
-        Carenze nutrizionali frequenti nei celiaci non trattati: ferro, folati, vitamina B12, calcio, vitamina D.
-        Reintroduzione: MAI reintrodurre il glutine autonomamente. Monitoraggio periodico con gastroenterologo.""",
+        Dieta assolutamente priva di glutine per tutta la vita.
+        Cereali vietati: frumento, farro, kamut, orzo, segale, triticale.
+        Cereali consentiti: riso, mais, grano saraceno, quinoa, amaranto, miglio, sorgo, teff, patate.
+        Rischio contaminazione crociata: usare utensili e superfici separate.
+        Carenze nutrizionali frequenti: ferro, folati, vitamina B12, calcio, vitamina D.""",
         "categoria": "patologie",
     },
     {
         "id": "pat_005",
         "testo": """GESTIONE NUTRIZIONALE — SINDROME DEL COLON IRRITABILE (IBS)
-        L'IBS colpisce il 10-15% della popolazione. Dieta a basso contenuto di FODMAP spesso efficace.
-        FODMAP: Fermentable Oligosaccharides, Disaccharides, Monosaccharides And Polyols — zuccheri
-        fermentabili che causano gonfiore e disturbi in soggetti sensibili.
-        Alimenti ad alto FODMAP da limitare: aglio, cipolla, mele, pere, anguria, miele, latte,
-        legumi in grandi quantità, grano, segale, cavolfiore, funghi, avocado, dolcificanti (sorbitolo,
-        mannitolo, xilitolo).
-        Alimenti a basso FODMAP generalmente tollerati: riso, avena, carote, zucchine, patate, pomodori,
-        arance, uva, fragole, mirtilli, carne, pesce, uova, tofu, formaggio stagionato, olio d'oliva.
-        Approccio a fasi: eliminazione totale per 4-8 settimane, poi reintroduzione graduale per identificare
-        i trigger individuali. Da fare sempre con supervisione di un dietista specializzato.
-        Probiotici: alcuni ceppi (Lactobacillus rhamnosus, Bifidobacterium infantis) possono migliorare i sintomi.
-        Fibre solubili: psillio (bucce di psillio) spesso tollerato e utile per regolarizzare il transito.""",
+        Dieta a basso contenuto di FODMAP spesso efficace.
+        Alimenti ad alto FODMAP da limitare: aglio, cipolla, mele, pere, miele, latte,
+        legumi in grandi quantità, grano, cavolfiore, funghi, avocado.
+        Alimenti a basso FODMAP tollerati: riso, avena, carote, zucchine, patate, pomodori,
+        arance, fragole, mirtilli, carne, pesce, uova, tofu, formaggio stagionato.""",
         "categoria": "patologie",
     },
     {
         "id": "pat_006",
         "testo": """GESTIONE NUTRIZIONALE — IPERCOLESTEROLEMIA
-        Il colesterolo LDL elevato è un fattore di rischio cardiovascolare modificabile con la dieta.
-        Grassi saturi: principali responsabili dell'aumento del colesterolo LDL. Ridurre carni grasse,
-        burro, formaggi grassi, olio di palma, olio di cocco, prodotti da forno industriali.
-        Grassi trans: aumentano LDL e abbassano HDL — da eliminare completamente. Margarine solide,
-        prodotti industriali con "grassi vegetali parzialmente idrogenati".
-        Grassi insaturi: abbassano il colesterolo LDL. Olio extravergine d'oliva, avocado, frutta secca,
-        olio di semi di lino, pesce grasso (salmone, sgombro, sardine).
-        Omega-3: riducono i trigliceridi. Pesce azzurro 2-3 volte/settimana, semi di lino, noci.
-        Fitosteroli: bloccano l'assorbimento del colesterolo — 2g/giorno riducono LDL del 10-15%.
-        Presenti in: frutta secca, semi, cereali integrali. Disponibili anche in alimenti arricchiti.
-        Fibre solubili: beta-glucani dell'avena e dell'orzo riducono il colesterolo LDL. 3g/giorno di
-        beta-glucani (circa 70g di avena) riducono il colesterolo del 5%.
-        Legumi: 1 porzione al giorno riduce LDL del 5%. Ricchi di fibre solubili e fitosteroli.
-        Aglio: effetto modesto ma documentato sulla riduzione del colesterolo totale.""",
+        Grassi saturi da ridurre: carni grasse, burro, formaggi grassi, olio di palma.
+        Grassi trans da eliminare: margarine solide, prodotti industriali idrogenati.
+        Grassi insaturi consigliati: olio extravergine d'oliva, avocado, frutta secca, pesce grasso.
+        Omega-3: pesce azzurro 2-3 volte/settimana, semi di lino, noci.
+        Fibre solubili: beta-glucani dell'avena riducono il colesterolo LDL. 3g/giorno di
+        beta-glucani riducono il colesterolo del 5%.
+        Legumi: 1 porzione al giorno riduce LDL del 5%.""",
         "categoria": "patologie",
     },
-    {
-        "id": "pat_007",
-        "testo": """GESTIONE NUTRIZIONALE — OSTEOPOROSI E SALUTE DELLE OSSA
-        L'osteoporosi colpisce principalmente donne in post-menopausa e anziani. Prevenzione dalla giovinezza.
-        Calcio: nutriente chiave per la mineralizzazione ossea. Fabbisogno: 1000mg/giorno adulti,
-        1200mg over 50. Fonti principali: latte e derivati, sardine e alici con lische, tofu con calcio,
-        cavolo riccio, broccoli, mandorle, semi di sesamo, legumi, acque calciche (oltre 300mg/L).
-        Vitamina D: essenziale per l'assorbimento del calcio. Prodotta dalla pelle con l'esposizione solare
-        (20 min/giorno). Fonti alimentari limitate: pesce grasso, tuorlo d'uovo, funghi esposti al sole.
-        Spesso necessaria integrazione, soprattutto in anziani e persone con poca esposizione solare.
-        Vitamina K2: fondamentale per indirizzare il calcio nelle ossa e non nelle arterie.
-        Fonti: formaggi fermentati, natto (soia fermentata), verdure a foglia verde.
-        Proteine: necessarie per la sintesi della matrice ossea. Non eliminare le proteine per paura dell'acidosi.
-        Alimenti da limitare: alcol (inibisce gli osteoblasti), caffeina in eccesso (aumenta escrezione calcio),
-        sale in eccesso (aumenta escrezione urinaria di calcio), fitati in eccesso (riducono assorbimento calcio).
-        Attività fisica: esercizio con carico (camminata, pesi) stimola la formazione ossea.""",
-        "categoria": "patologie",
-    },
-    {
-        "id": "pat_008",
-        "testo": """GESTIONE NUTRIZIONALE — ANEMIA SIDEROPENICA (CARENZA DI FERRO)
-        L'anemia da carenza di ferro è la più comune al mondo, frequente in donne in età fertile e vegetariani.
-        Sintomi: stanchezza cronica, pallore, difficoltà di concentrazione, unghie fragili, perdita capelli.
-        Ferro eme (animale): maggiore biodisponibilità (15-35%). Fonti: carne rossa, fegato, molluschi
-        (vongole, cozze), carne di cavallo, tonno.
-        Ferro non-eme (vegetale): minore biodisponibilità (2-20%). Fonti: legumi (lenticchie, ceci, fagioli),
-        tofu, tempeh, cereali integrali, spinaci, quinoa, semi di zucca, frutta secca, cacao.
-        Aumentare l'assorbimento del ferro: vitamina C nello stesso pasto potenzia l'assorbimento del ferro
-        non-eme fino a 3-6 volte. Es: lenticchie con succo di limone, spinaci con peperone crudo.
-        Ridurre l'assorbimento del ferro: tè, caffè, cacao (tannini), calcio in grandi quantità, fitati
-        (cereali integrali non ammollati). Non bere tè durante i pasti ricchi di ferro.
-        Fabbisogno: 10mg/giorno uomini, 18mg donne in età fertile, 27mg in gravidanza.
-        Cottura in pentola di ghisa: aumenta il contenuto di ferro negli alimenti acidi (pomodoro, limone).""",
-        "categoria": "patologie",
-    },
-
-    # ── STILI ALIMENTARI ─────────────────────────────────────────────────────
-
     {
         "id": "stile_001",
-        "testo": """ALIMENTAZIONE VEGETARIANA — LATTO-OVO VEGETARIANA
-        La dieta vegetariana esclude carne e pesce ma include uova e latticini.
-        Posizione ADA (American Dietetic Association): diete vegetariane ben pianificate sono salutari
-        e nutrizionalmente adeguate per tutte le fasi della vita.
-        Nutrienti critici da monitorare: vitamina B12 (solo in alimenti animali — uova e latte ne contengono
-        piccole quantità ma spesso insufficienti), ferro (non-eme, minore biodisponibilità), zinco,
-        omega-3 a catena lunga (EPA e DHA), iodio (se non si usa sale iodato).
-        Proteine complete: combinare cereali + legumi per ottenere tutti gli aminoacidi essenziali.
-        Non è necessario farlo nello stesso pasto — sufficiente nell'arco della giornata.
-        Fonti proteiche: uova, formaggi, yogurt, latte, legumi (fagioli, lenticchie, ceci, soia),
-        cereali (quinoa, amaranto proteine complete), frutta secca, semi.
-        Vitamina B12: monitorare i livelli ematici annualmente. Integrare se necessario.
-        Ferro: potenziare con vitamina C. Ammollare e cuocere bene i legumi per ridurre i fitati.
-        Omega-3: semi di lino, semi di chia, noci, olio di lino per ALA (precursore). Considerare
-        integratore di alghe DHA+EPA se i livelli ematici sono bassi.""",
+        "testo": """ALIMENTAZIONE VEGETARIANA
+        Nutrienti critici da monitorare: vitamina B12, ferro, zinco, omega-3, iodio.
+        Proteine complete: combinare cereali + legumi per tutti gli aminoacidi essenziali.
+        Fonti proteiche: uova, formaggi, yogurt, latte, legumi, quinoa, amaranto, frutta secca.
+        Ferro: potenziare con vitamina C nello stesso pasto.
+        Omega-3: semi di lino, semi di chia, noci, olio di lino.""",
         "categoria": "stili alimentari",
     },
     {
         "id": "stile_002",
         "testo": """ALIMENTAZIONE VEGANA
-        La dieta vegana esclude tutti i prodotti di origine animale: carne, pesce, uova, latticini, miele.
-        Nutrienti critici — integrazione quasi sempre necessaria:
-        Vitamina B12: OBBLIGATORIA come supplemento. Nessuna fonte vegetale affidabile. Dosaggio: 
-        2000 microgrammi settimanali o 50 microgrammi giornalieri di cianocobalamina.
-        Vitamina D3: spesso carente anche in onnivori italiani. Preferire D3 da licheni (vegana).
-        Omega-3 DHA+EPA: integratore da alghe marine (fonte originale degli omega-3 del pesce).
-        Iodio: sale iodato o integratore. Alghe marine non affidabili per dose costante.
-        Calcio: necessario monitoraggio. Fonti: tofu con calcio, bevande vegetali arricchite,
-        cavolo riccio, broccoli, mandorle, sesamo, fichi secchi.
-        Ferro: stesse strategie del vegetariano — vitamina C nei pasti.
-        Zinco: semi di zucca, legumi, cereali integrali, noci. Assorbimento migliorato con ammollo.
-        Proteine: quinoa, amaranto, soia (unica proteina vegetale completa equiparabile alle animali),
-        combinazioni cereali-legumi, seitan (da evitare nei celiaci — è glutine puro).
-        Monitoraggio: esami ematici ogni 6-12 mesi per B12, D, ferro, ferritina, zinco, omega-3.""",
+        Integrazioni quasi sempre necessarie: vitamina B12 (obbligatoria), vitamina D3,
+        omega-3 DHA+EPA da alghe, iodio.
+        Calcio: tofu con calcio, bevande vegetali arricchite, cavolo riccio, broccoli, mandorle.
+        Proteine: quinoa, amaranto, soia, combinazioni cereali-legumi.
+        Monitoraggio: esami ematici ogni 6-12 mesi per B12, D, ferro, ferritina, zinco.""",
         "categoria": "stili alimentari",
     },
     {
         "id": "stile_003",
-        "testo": """ALIMENTAZIONE — PERDITA DI PESO GRADUALE E SOSTENIBILE
-        La perdita di peso sana è di 0.5-1 kg a settimana — deficit calorico di 500-1000 kcal/giorno.
-        Deficit calorico moderato: ridurre le calorie del 20-25% rispetto al fabbisogno mantenimento.
-        Non scendere sotto: 1200 kcal/giorno per le donne, 1500 kcal per gli uomini senza supervisione medica.
-        Proteine: aumentare a 1.2-1.6g/kg per preservare la massa muscolare durante il dimagrimento.
-        Sazietà: privilegiare alimenti ad alto volume e bassa densità calorica — verdure, legumi, frutta,
-        cereali integrali, proteine magre.
-        Indice di sazietà: uova, legumi, patate bollite, avena hanno alto potere saziante.
-        Evitare: diete drastiche sotto 800 kcal (perdita di massa muscolare, carenze nutrizionali,
-        effetto yo-yo), eliminazione di interi macronutrienti, sostituti del pasto come unico alimento.
-        Distribuzione pasti: 3 pasti principali + 1-2 spuntini pianificati prevengono abbuffate.
-        Colazione: non saltarla — chi fa colazione ha migliore controllo del peso a lungo termine.
-        Idratazione: bere 500ml di acqua prima dei pasti riduce l'assunzione calorica del 13%.
-        Velocità del pasto: masticare lentamente, almeno 20 minuti per pasto — il segnale di sazietà
-        impiega 20 min per raggiungere il cervello.""",
+        "testo": """ALIMENTAZIONE — PERDITA DI PESO GRADUALE
+        Perdita sana: 0.5-1 kg a settimana — deficit calorico di 500-1000 kcal/giorno.
+        Non scendere sotto 1200 kcal/giorno per le donne, 1500 kcal per gli uomini.
+        Proteine: aumentare a 1.2-1.6g/kg per preservare la massa muscolare.
+        Sazietà: privilegiare verdure, legumi, frutta, cereali integrali, proteine magre.
+        Evitare: diete drastiche sotto 800 kcal, eliminazione di interi macronutrienti.
+        Idratazione: bere 500ml di acqua prima dei pasti riduce l'assunzione calorica del 13%.""",
         "categoria": "stili alimentari",
     },
     {
         "id": "stile_004",
-        "testo": """ALIMENTAZIONE — MANTENIMENTO DEL PESO E PESO FORMA
-        Il mantenimento del peso richiede equilibrio tra entrate e uscite caloriche nel lungo periodo.
+        "testo": """ALIMENTAZIONE — MANTENIMENTO DEL PESO
         Fabbisogno calorico basale (BMR) — formula di Mifflin-St Jeor:
         Uomini: (10 x peso kg) + (6.25 x altezza cm) - (5 x età) + 5
         Donne: (10 x peso kg) + (6.25 x altezza cm) - (5 x età) - 161
-        Moltiplicatori attività: sedentario x1.2, leggermente attivo x1.375, moderatamente attivo x1.55,
-        molto attivo x1.725, estremamente attivo x1.9.
-        Strategia: bilanciare macronutrienti — 50% carboidrati, 25% proteine, 25% grassi come punto di partenza.
-        Flessibilità: il 80-20 è sostenibile — 80% alimentazione equilibrata, 20% flessibilità.
-        Monitoraggio: pesarsi sempre nelle stesse condizioni (mattino a digiuno, dopo aver urinato).
-        Fluttuazioni normali di 1-2 kg quotidiane per ritenzione idrica, contenuto intestinale, ciclo.""",
+        Moltiplicatori attività: sedentario x1.2, leggermente attivo x1.375,
+        moderatamente attivo x1.55, molto attivo x1.725.
+        Strategia: 50% carboidrati, 25% proteine, 25% grassi come punto di partenza.""",
         "categoria": "stili alimentari",
     },
-
-    # ── MICRONUTRIENTI ───────────────────────────────────────────────────────
-
     {
         "id": "micro_001",
-        "testo": """VITAMINA B12 (COBALAMINA)
-        Vitamina essenziale presente quasi esclusivamente in alimenti di origine animale.
-        Funzioni: sintesi del DNA, formazione dei globuli rossi, funzione neurologica, metabolismo proteico.
-        Carenza: anemia megaloblastica, danni neurologici irreversibili, stanchezza cronica,
-        formicolio alle mani e ai piedi, difficoltà cognitive. La carenza può svilupparsi lentamente
-        (fegato accumula riserve per 3-5 anni).
-        Fabbisogno: 2.4 microgrammi/giorno adulti, 2.6 in gravidanza, 2.8 in allattamento.
-        Fonti animali (microgrammi/100g): fegato bovino 83, vongole 98, sardine 9, salmone 3.2,
-        manzo 2.6, tonno 2.2, uova 1.1, latte intero 0.4, yogurt 0.4, parmigiano 1.5.
-        Fonti vegetali: nessuna fonte vegetale affidabile. Alghe e lievito alimentare contengono
-        analoghi inattivi che non svolgono la funzione della vera B12.
-        Integrazione nei vegani: cianocobalamina — forma più stabile e studiata.
-        Assorbimento: dipende dal fattore intrinseco gastrico. Over 50 e persone con gastrite atrofica
-        possono avere ridotto assorbimento — preferire forme sublinguale o intramuscolare.
-        Monitoraggio: dosaggio ematico di B12 e omocisteina (marker precoce di carenza funzionale).""",
+        "testo": """VITAMINA B12
+        Fabbisogno: 2.4 microgrammi/giorno adulti.
+        Fonti animali: fegato bovino, vongole, sardine, salmone, manzo, uova, latte, parmigiano.
+        Fonti vegetali: nessuna fonte affidabile — integrazione obbligatoria per vegani.
+        Carenza: anemia megaloblastica, danni neurologici, stanchezza cronica.""",
         "categoria": "micronutrienti",
     },
     {
         "id": "micro_002",
-        "testo": """VITAMINA D (CALCIFEROLO)
-        La vitamina D è in realtà un ormone steroideo con recettori in quasi tutti i tessuti del corpo.
-        Funzioni: assorbimento del calcio e del fosforo, salute ossea, funzione immunitaria,
-        prevenzione di tumori, malattie autoimmuni, depressione, diabete tipo 2.
-        Carenza molto diffusa in Italia (oltre il 50% della popolazione ha livelli insufficienti),
-        soprattutto in inverno, negli anziani, nelle persone con carnagione scura, obese, con poca
-        esposizione solare.
-        Livelli ottimali: 25-OH-D3 nel sangue tra 40-60 ng/mL (100-150 nmol/L).
-        Sintesi cutanea: 20-30 minuti di esposizione solare su viso e braccia a mezzogiorno d'estate.
-        Vetro e protezione solare bloccano la sintesi. Impraticabile in inverno nelle latitudini italiane.
-        Fonti alimentari (scarse): salmone (600-1000 UI/100g), sgombro (250 UI), sardine (300 UI),
-        olio di fegato di merluzzo (8000 UI/cucchiaio), tuorlo d'uovo (40 UI), funghi esposti al sole.
-        Integrazione: spesso necessaria in autunno-inverno. Dosi comuni: 1000-2000 UI/giorno.
-        Dosi terapeutiche per correggere carenza: 4000-10000 UI/giorno sotto controllo medico.
-        Forma D3 (colecalciferolo) preferibile alla D2 per efficacia e durata d'azione.""",
+        "testo": """VITAMINA D
+        Livelli ottimali: 25-OH-D3 nel sangue tra 40-60 ng/mL.
+        Sintesi cutanea: 20-30 minuti di esposizione solare su viso e braccia.
+        Fonti alimentari: salmone, sgombro, sardine, olio di fegato di merluzzo, tuorlo d'uovo.
+        Integrazione spesso necessaria: 1000-2000 UI/giorno in autunno-inverno.""",
         "categoria": "micronutrienti",
     },
     {
         "id": "micro_003",
-        "testo": """OMEGA-3 — ACIDI GRASSI ESSENZIALI
-        Gli omega-3 sono acidi grassi polinsaturi essenziali che il corpo non può sintetizzare.
-        Tipi principali: ALA (acido alfa-linolenico) — vegetale, precursore. EPA e DHA — animali/alghe,
-        forme attive con effetti biologici diretti. Conversione ALA→EPA→DHA nel corpo: molto inefficiente
-        (meno del 5-10%), quindi fonti dirette di EPA e DHA sono importanti.
-        Funzioni: riduzione trigliceridi, protezione cardiovascolare, funzione cerebrale e visiva,
-        riduzione infiammazione, salute mentale (depressione, ansia), sviluppo fetale.
-        Fabbisogno EPA+DHA: almeno 250mg/giorno per adulti sani, 500mg per riduzione rischio cardiovascolare,
-        1000mg per trigliceridi alti (sotto controllo medico).
-        Fonti EPA+DHA: salmone selvaggio (2g/100g), sgombro (2.5g/100g), sardine (1.5g/100g),
-        acciughe (1.5g/100g), aringa (1.8g/100g), tonno fresco (1g/100g), cozze (0.5g/100g).
-        Fonti ALA vegetali: semi di lino (22g/100g), semi di chia (18g/100g), noci (9g/100g),
-        olio di lino (53g/100g), olio di canapa.
-        Per vegani: integratore di olio di alghe (fonte originale degli omega-3 nel pesce).
-        Rapporto omega-6/omega-3: nella dieta occidentale è 15:1 — 20:1. Ideale: 4:1 o meno.
-        Ridurre omega-6: limitare oli vegetali (mais, soia, girasole) a favore di olio d'oliva.""",
+        "testo": """OMEGA-3
+        Fabbisogno EPA+DHA: almeno 250mg/giorno per adulti sani.
+        Fonti EPA+DHA: salmone, sgombro, sardine, acciughe, aringa, tonno fresco, cozze.
+        Fonti ALA vegetali: semi di lino, semi di chia, noci, olio di lino.
+        Per vegani: integratore di olio di alghe.""",
         "categoria": "micronutrienti",
     },
-
-    # ── PASTI E TIMING ───────────────────────────────────────────────────────
-
     {
         "id": "pasti_001",
         "testo": """ORGANIZZAZIONE DEI PASTI — COLAZIONE
-        La colazione dovrebbe fornire il 20-25% dell'energia giornaliera totale.
-        Colazione ottimale: combinazione di carboidrati complessi + proteine + grassi buoni + fibre.
-        Questo mix garantisce sazietà prolungata, energia stabile e assenza di picchi glicemici.
-        Esempi di colazione equilibrata:
-        - Porridge di avena con latte/bevanda vegetale + frutta fresca + noci + cucchiaio di burro di mandorle
-        - Yogurt greco + granola integrale + frutti di bosco + semi di chia
-        - Pane integrale tostato + uova strapazzate + avocado + pomodorini
-        - Pancakes di avena e banana + yogurt + miele + frutta fresca
-        Colazione sbagliata: solo caffè e cornetto (picco glicemico → crollo energetico a metà mattina),
-        solo succo di frutta (alto contenuto di zuccheri senza fibre), biscotti industriali.
-        Tempo: idealmente entro 1-2 ore dal risveglio. Chi si allena al mattino: spuntino leggero
-        pre-allenamento o colazione post-allenamento entro 30-60 minuti.""",
+        Colazione ottimale: carboidrati complessi + proteine + grassi buoni + fibre.
+        Esempi equilibrati: porridge di avena con frutta e noci, yogurt greco con granola e frutti di bosco,
+        pane integrale con uova e avocado.
+        Colazione sbagliata: solo caffè e cornetto, solo succo di frutta, biscotti industriali.""",
         "categoria": "pasti",
     },
     {
         "id": "pasti_002",
         "testo": """ORGANIZZAZIONE DEI PASTI — PRANZO E CENA
-        Il pranzo dovrebbe rappresentare il 35-40% dell'energia giornaliera, la cena il 25-30%.
-        Piatto ideale (metodo del piatto Harvard): 50% verdure e ortaggi, 25% proteine magre,
-        25% carboidrati complessi integrali, condito con olio extravergine d'oliva.
-        Pranzo tipico equilibrato:
-        - Pasta integrale al pomodoro e legumi + insalata mista + frutta
-        - Riso integrale con verdure e tofu/pollo + minestrone
-        - Insalata di quinoa con ceci, pomodori, cetrioli, feta, olio e limone
-        Cena: preferire pasti leggeri e facilmente digeribili, soprattutto se ci si corica presto.
-        Ridurre i carboidrati la sera non è obbligatorio ma può aiutare nella perdita di peso.
-        Cena tipica equilibrata:
-        - Pesce al forno con verdure grigliate e patate dolci
-        - Minestrone di legumi e verdure + pane integrale + formaggio
-        - Frittata di verdure + insalata + pane di segale
-        Timing: cenare almeno 2-3 ore prima di andare a dormire per ottimizzare la digestione.
-        Digiuno notturno: un intervallo di 12 ore tra cena e colazione è associato a benefici metabolici.""",
+        Piatto ideale: 50% verdure, 25% proteine magre, 25% carboidrati integrali.
+        Pranzo tipico: pasta integrale con legumi, riso con verdure e proteina, insalata di quinoa.
+        Cena: preferire pasti leggeri. Cenare almeno 2-3 ore prima di dormire.
+        Digiuno notturno: intervallo di 12 ore tra cena e colazione benefico per il metabolismo.""",
         "categoria": "pasti",
     },
     {
         "id": "pasti_003",
         "testo": """SPUNTINI E GESTIONE DELLA FAME
-        Gli spuntini sono utili per mantenere stabile la glicemia e prevenire abbuffate ai pasti principali.
-        Quando: a metà mattina (2-3 ore dopo colazione) e a metà pomeriggio (2-3 ore dopo pranzo).
-        Non serve fare spuntini se i pasti principali sono sazianti e non si avverte fame.
-        Spuntini sani ed equilibrati:
-        - Frutta fresca (1 porzione, 150-200g) + 10-15 mandorle o noci
-        - Yogurt greco naturale (150g) + frutti di bosco
-        - Hummus di ceci (2-3 cucchiai) + verdure crude (carote, sedano, cetriolo)
-        - Pane integrale (1 fetta) + avocado o burro di arachidi naturale
-        - Ricotta (100g) + miele + noci
-        - Edamame (100g) — ricchi di proteine e fibre
-        Spuntini da evitare: merendine industriali, snack confezionati, biscotti, succhi zuccherati,
-        barrette al cioccolato commerciali, crackers raffinati.
-        Dimensioni: uno spuntino non dovrebbe superare 150-200 kcal.
-        Pre-workout: banana + burro di mandorle, oppure pane integrale con miele, 30-60 min prima.
-        Post-workout: proteine + carboidrati entro 30-60 min. Es: yogurt greco + frutta, oppure
-        shake proteico + banana.""",
+        Spuntini sani: frutta + frutta secca, yogurt greco + frutti di bosco,
+        hummus + verdure crude, pane integrale + avocado.
+        Dimensioni: non superare 150-200 kcal per spuntino.
+        Pre-workout: banana + burro di mandorle, 30-60 min prima.
+        Post-workout: proteine + carboidrati entro 30-60 min. Es: yogurt greco + frutta.""",
         "categoria": "pasti",
     },
-
-    # ── NUTRIZIONE SPORTIVA ──────────────────────────────────────────────────
-
     {
         "id": "sport_001",
         "testo": """NUTRIZIONE SPORTIVA — PRINCIPI GENERALI
-        L'alimentazione dello sportivo deve supportare l'allenamento, favorire il recupero e
-        prevenire gli infortuni.
-        Fabbisogno calorico aumentato rispetto a sedentari: +300-1000 kcal/giorno a seconda
-        dell'intensità e durata dell'attività.
-        Carboidrati: carburante principale per attività aerobica e anaerobica ad alta intensità.
-        Fabbisogno: 5-7g/kg/giorno per sport di endurance, 3-5g/kg per sport di forza.
-        Proteine: necessarie per sintesi e riparazione muscolare.
-        Fabbisogno: 1.4-1.7g/kg/giorno per sport di forza, 1.2-1.6g/kg per endurance.
-        Distribuire le proteine in 4-6 pasti/spuntini durante il giorno per massimizzare la
-        sintesi proteica muscolare (MPS). Dose ottimale per pasto: 20-40g di proteine.
-        Grassi: 20-35% delle calorie totali. Non eliminare i grassi — fondamentali per gli ormoni
-        e le vitamine liposolubili.
-        Idratazione: fondamentale. Pesarsi prima e dopo l'allenamento — ogni kg perso corrisponde
-        a circa 1L di sudore. Reintegrare 1.5 volte il peso perso in liquidi.
-        Elettroliti: per sessioni oltre 60-90 minuti o in condizioni di caldo, reintegrare sodio,
-        potassio e magnesio con bevande isotoniche o alimenti ricchi (banana, acqua di cocco).""",
+        Carboidrati: 5-7g/kg/giorno per sport di endurance, 3-5g/kg per sport di forza.
+        Proteine: 1.4-1.7g/kg/giorno per sport di forza, 1.2-1.6g/kg per endurance.
+        Dose ottimale per pasto: 20-40g di proteine.
+        Idratazione: reintegrare 1.5 volte il peso perso in sudore durante l'allenamento.
+        Elettroliti: per sessioni oltre 60-90 minuti reintegrare sodio, potassio e magnesio.""",
         "categoria": "sport",
     },
     {
         "id": "sport_002",
         "testo": """NUTRIZIONE SPORTIVA — TIMING DEI NUTRIENTI
-        Il timing dei nutrienti ottimizza le prestazioni e il recupero.
-        PRE-ALLENAMENTO (2-3 ore prima): pasto completo con carboidrati complessi + proteine moderate
-        + grassi bassi. Es: pasta integrale con pollo e verdure, riso con legumi, pane integrale con uova.
-        PRE-ALLENAMENTO (30-60 min prima): spuntino leggero a prevalenza di carboidrati semplici.
-        Es: banana, pane bianco con miele, datteri, gel energetici per atleti.
-        DURANTE L'ALLENAMENTO (oltre 60-90 min): 30-60g di carboidrati per ora. Gel, bevande isotoniche,
-        banana, datteri, barrette energetiche.
-        POST-ALLENAMENTO — finestra anabolica: entro 30-60 minuti dopo l'esercizio.
-        Obiettivo: ripristinare le riserve di glicogeno e avviare la sintesi proteica muscolare.
-        Ratio ottimale: 3-4g carboidrati : 1g proteine. Es: yogurt greco + frutta + cereali,
-        latte + banana, shake proteico + frutta, pollo + riso, ricotta + pane integrale + marmellata.
-        CENA post-allenamento serale: pasto completo con proteine abbondanti (30-40g) + carboidrati
-        moderati + verdure abbondanti.
-        PRIMA DI DORMIRE: caseina o yogurt greco (proteine a lento rilascio) può migliorare il
-        recupero e la sintesi proteica notturna.""",
+        Pre-allenamento (2-3 ore prima): carboidrati complessi + proteine moderate + grassi bassi.
+        Pre-allenamento (30-60 min prima): spuntino leggero a prevalenza carboidrati semplici.
+        Durante allenamento (oltre 60 min): 30-60g di carboidrati per ora.
+        Post-allenamento entro 30-60 min: ratio ottimale 3-4g carboidrati : 1g proteine.
+        Prima di dormire: yogurt greco o caseina per migliorare il recupero notturno.""",
         "categoria": "sport",
     },
+
+    
 ]
 
 
 # ---------------------------------------------------------------------------
 # Helper
 # ---------------------------------------------------------------------------
-"""
-    Scopo:
-        Costruisce il testo descrittivo del paziente da indicizzare nel database vettoriale.
 
-    Input:
-        dati (dict): informazioni anagrafiche e cliniche.
-
-    Return:
-        str: testo normalizzato del paziente.
-"""
 def _build_testo_paziente(dati: dict) -> str:
+    """Costruisce il testo indicizzabile dal dizionario paziente."""
     righe = [f"PAZIENTE: {dati['nome']}"]
     if dati.get("eta"):       righe.append(f"Età: {dati['eta']} anni.")
     if dati.get("peso"):      righe.append(f"Peso: {dati['peso']} kg.")
@@ -504,16 +301,6 @@ def _build_testo_paziente(dati: dict) -> str:
 # ---------------------------------------------------------------------------
 
 class SistemaRAG:
-    """
-    Scopo:
-        Inizializza ChromaDB, modello di embedding e collezioni RAG.
-
-    Input:
-        Parametri di configurazione del sistema.
-
-    Return:
-        Nessuno.
-    """
 
     def __init__(
         self,
@@ -545,22 +332,8 @@ class SistemaRAG:
     # Chunking
     # ------------------------------------------------------------------
 
-    def genera_tabella(self, domanda: str, paziente_id: str = None) -> dict:
-        import sys
-        print(f"[DEBUG] chroma_path: {self.col_pazienti._client._settings.persist_directory}", file=sys.stderr, flush=True)
-        print(f"[DEBUG] pazienti count: {self.col_pazienti.count()}", file=sys.stderr, flush=True)
-        print(f"[DEBUG] conoscenza count: {self.col_conoscenza.count()}", file=sys.stderr, flush=True)
-        print(f"[DEBUG] paziente_id cercato: {paziente_id}", file=sys.stderr, flush=True)
-        
-        contesto = self.retrieval(domanda, solo_paziente_id=paziente_id)
-        print(f"[DEBUG] contesto trovato: {len(contesto)} risultati", file=sys.stderr, flush=True)
-        
-        risultato = self._genera_tabella(domanda, contesto)
-        return risultato
-
-
-
     def _chunking(self, testo: str, chunk_size: int = 60, overlap: int = 15) -> list[str]:
+        """Divide il testo in chunk sovrapposti."""
         parole = testo.split()
         chunks, i = [], 0
         while i < len(parole):
@@ -568,17 +341,9 @@ class SistemaRAG:
             chunks.append(chunk)
             i += chunk_size - overlap
         return chunks
-    """
-    Scopo:
-        Trasforma documenti in chunk e li salva nella collection.
 
-    Input:
-        collection, documenti (list[dict]).
-
-    Return:
-        int: numero di chunk indicizzati.
-    """
     def _indicizza_in(self, collection, documenti: list[dict]) -> int:
+        """Indicizza una lista di documenti in una collezione ChromaDB."""
         ids, testi, metadati = [], [], []
         for doc in documenti:
             chunks = self._chunking(doc["testo"])
@@ -597,76 +362,40 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Seed
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Carica le linee guida nutrizionali nel database vettoriale.
 
-    Return:
-        int: numero di chunk creati.
-    """
     def seed_conoscenza(self) -> int:
+        """Indicizza le linee guida nella collezione conoscenza."""
         return self._indicizza_in(self.col_conoscenza, LINEE_GUIDA)
 
     # ------------------------------------------------------------------
     # CRUD pazienti
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Indicizza un nuovo paziente.
 
-    Input:
-        dati (dict): dati del paziente.
-
-    Return:
-        dict: esito operazione.
-    """
     def aggiungi_paziente(self, dati: dict) -> dict:
+        """Aggiunge o aggiorna un paziente nel vector DB."""
         if not dati.get("id") or not dati.get("nome"):
             return {"ok": False, "errore": "Campi 'id' e 'nome' obbligatori."}
         testo = _build_testo_paziente(dati)
         doc   = {"id": dati["id"], "testo": testo, "categoria": "paziente"}
         n     = self._indicizza_in(self.col_pazienti, [doc])
         return {"ok": True, "id": dati["id"], "chunks": n}
-    """
-    Scopo:
-        Elimina tutti i chunk associati ad un paziente.
-
-    Input:
-        paziente_id (str).
-
-    Return:
-        dict: esito operazione.
-    """
-        # Un paziente può essere distribuito su più chunk.
 
     def rimuovi_paziente(self, paziente_id: str) -> dict:
+        """Rimuove tutti i chunk di un paziente dal vector DB."""
         risultati = self.col_pazienti.get(where={"doc_id": paziente_id}, include=[])
         ids_da_rimuovere = risultati["ids"]
         if not ids_da_rimuovere:
             return {"ok": False, "errore": f"Paziente '{paziente_id}' non trovato."}
         self.col_pazienti.delete(ids=ids_da_rimuovere)
         return {"ok": True, "rimossi": len(ids_da_rimuovere)}
-    """
-    Scopo:
-        Aggiorna un paziente sostituendo completamente i dati indicizzati.
 
-    Input:
-        dati (dict).
-
-    Return:
-        dict: esito operazione.
-    """
     def aggiorna_paziente(self, dati: dict) -> dict:
+        """Aggiorna un paziente rimuovendo e reindicizzando."""
         self.rimuovi_paziente(dati["id"])
         return self.aggiungi_paziente(dati)
-    """
-    Scopo:
-        Restituisce l'elenco dei pazienti presenti nel sistema.
 
-    Return:
-        list[dict]: lista con id e anteprima.
-    """
     def lista_pazienti(self) -> list[dict]:
+        """Ritorna la lista dei pazienti nel DB."""
         tutti = self.col_pazienti.get(include=["documents", "metadatas"])
         visti = {}
         for doc_id, testo, meta in zip(tutti["ids"], tutti["documents"], tutti["metadatas"]):
@@ -678,18 +407,9 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Retrieval
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Esegue ricerca semantica su una collection.
 
-    Input:
-        collection, query (str).
-
-    Return:
-        list[dict]: risultati filtrati per similarità.
-    """
-    # Converte la distanza restituita da Chroma in similarità.
     def _retrieval_da(self, collection, query: str) -> list[dict]:
+        """Retrieval su una singola collezione con filtro soglia similarità."""
         try:
             n = min(self.n_risultati, collection.count())
             if n == 0:
@@ -718,17 +438,9 @@ class SistemaRAG:
                     "doc_id":     meta.get("doc_id", "N/A"),
                 })
         return filtrati
-    """
-    Scopo:
-        Recupera informazioni da knowledge base e dati paziente.
 
-    Input:
-        query (str), solo_paziente_id (str|None).
-
-    Return:
-        list[dict]: risultati ordinati per similarità.
-    """
     def retrieval(self, query: str, solo_paziente_id: str = None) -> list[dict]:
+        """Retrieval combinato su entrambe le collezioni."""
         risultati = self._retrieval_da(self.col_conoscenza, query)
         if solo_paziente_id:
             tutti_paz = self._retrieval_da(self.col_pazienti, query)
@@ -741,18 +453,9 @@ class SistemaRAG:
     # ------------------------------------------------------------------
     # Generazione — risposta testuale libera
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Genera una risposta RAG basata esclusivamente sul contesto recuperato.
 
-    Input:
-        query (str), contesto (list[dict]).
-
-    Return:
-        dict: risposta, fonti e metadati.
-    """
-    # Inserisce nel prompt solo informazioni recuperate dal retrieval.
     def _genera_risposta(self, query: str, contesto: list[dict]) -> dict:
+        """Genera una risposta testuale basata sul contesto."""
         if not contesto:
             return {
                 "risposta":    "Non ho trovato informazioni rilevanti per rispondere.",
@@ -806,18 +509,9 @@ RISPOSTA:"""
     # ------------------------------------------------------------------
     # Generazione — tabella nutrizionale settimanale
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Genera un piano alimentare settimanale in formato JSON.
 
-    Input:
-        query (str), contesto (list[dict]).
-
-    Return:
-        dict: piano alimentare strutturato.
-    """
-    # Lo schema JSON guida il modello e riduce errori di parsing.
     def _genera_tabella(self, query: str, contesto: list[dict]) -> dict:
+        """Genera un piano alimentare settimanale in formato JSON."""
         if not contesto:
             return {
                 "risposta":    {},
@@ -897,20 +591,11 @@ RISPONDI ESCLUSIVAMENTE IN FORMATO JSON seguendo esattamente questa struttura:
         }
 
     # ------------------------------------------------------------------
-    # Generazione — analisi andamento su tutte le visite
+    # Generazione — analisi andamento
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Analizza l'evoluzione del paziente tra le visite.
 
-    Input:
-        paziente (dict), visite (list[dict]).
-
-    Return:
-        dict: analisi e indicatori sintetici.
-    """
-    # Calcola il trend confrontando prima e ultima visita.
     def analisi_andamento(self, paziente: dict, visite: list[dict]) -> dict:
+        """Analizza l'andamento del paziente su tutte le visite."""
         if len(visite) < 2:
             return {"ok": False, "errore": "Servono almeno 2 visite per l'analisi."}
 
@@ -975,31 +660,15 @@ Rispondi in italiano, in modo professionale ma comprensibile."""
     # ------------------------------------------------------------------
     # Pipeline completa
     # ------------------------------------------------------------------
-    """
-    Scopo:
-        Pipeline completa retrieval + generazione risposta.
 
-    Input:
-        domanda (str), paziente_id (str|None).
-
-    Return:
-        dict: risultato finale.
-    """
     def query(self, domanda: str, paziente_id: str = None) -> dict:
+        """Pipeline completa retrieval + generazione risposta testuale."""
         contesto  = self.retrieval(domanda, solo_paziente_id=paziente_id)
         risultato = self._genera_risposta(domanda, contesto)
         return risultato
-    """
-    Scopo:
-        Pipeline completa retrieval + generazione piano alimentare.
 
-    Input:
-        domanda (str), paziente_id (str|None).
-
-    Return:
-        dict: piano nutrizionale generato.
-    """
     def genera_tabella(self, domanda: str, paziente_id: str = None) -> dict:
+        """Pipeline completa retrieval + generazione piano alimentare."""
         contesto  = self.retrieval(domanda, solo_paziente_id=paziente_id)
         risultato = self._genera_tabella(domanda, contesto)
         return risultato
@@ -1008,16 +677,7 @@ Rispondi in italiano, in modo professionale ma comprensibile."""
 # ---------------------------------------------------------------------------
 # Entry point CLI
 # ---------------------------------------------------------------------------
-    """
-    Scopo:
-        Entry point CLI utilizzato da terminale o processi esterni.
 
-    Input:
-        Comando e payload JSON.
-
-    Return:
-        Output JSON su stdout.
-    """
 def main():
     import sys
 

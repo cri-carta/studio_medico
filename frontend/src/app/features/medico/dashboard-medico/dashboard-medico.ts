@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MedicoService } from '../medico.service';
 import { Router } from '@angular/router';
@@ -54,7 +54,8 @@ export class DashboardMedicoComponent implements OnInit {
 
   constructor(
     private medicoService: MedicoService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -80,18 +81,17 @@ export class DashboardMedicoComponent implements OnInit {
     this.bmi = 0.0;
     this.bf = 0.0;
 
-    // Controlla se esiste un piano salvato
     this.medicoService.getPianoSalvato(id).subscribe({
-    next: (res) => { 
+      next: (res) => {
         console.log('[PIANO] trovato:', res);
-        this.pianoSalvatoDisponibile = true; 
-    },
-    error: (err) => { 
+        this.pianoSalvatoDisponibile = true;
+      },
+      error: (err) => {
         console.log('[PIANO] non trovato:', err.status);
-        this.pianoSalvatoDisponibile = false; 
-    }
-});
-}
+        this.pianoSalvatoDisponibile = false;
+      }
+    });
+  }
 
   private calcolaEta(dataNascitaInput: Date | string | undefined | null): number {
     if (!dataNascitaInput) return 0;
@@ -137,19 +137,19 @@ export class DashboardMedicoComponent implements OnInit {
     this.pianoAlimentareGenerato = null;
 
     this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
-        next: (res: RispostaTabellaAI) => {
-            console.log('[TABELLA] Piano generato e salvato nel DB');
-            this.caricamentoPiano = false;
-            this.pianoSalvatoDisponibile = true;
-            alert('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo.');
-        },
-        error: (err) => {
-            console.error('[TABELLA] Errore:', err);
-            alert('Errore durante la generazione del piano.');
-            this.caricamentoPiano = false;
-        }
+      next: (res: RispostaTabellaAI) => {
+        console.log('[TABELLA] Piano generato e salvato nel DB');
+        this.caricamentoPiano = false;
+        this.pianoSalvatoDisponibile = true;
+        alert('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo.');
+      },
+      error: (err) => {
+        console.error('[TABELLA] Errore:', err);
+        alert('Errore durante la generazione del piano.');
+        this.caricamentoPiano = false;
+      }
     });
-}
+  }
 
   onAnalisiAndamento(): void {
     if (!this.pazienteSelezionatoId) return;
@@ -157,12 +157,12 @@ export class DashboardMedicoComponent implements OnInit {
     this.testoAnalisiOllama = null;
 
     this.medicoService.getAnalisiAndamento(this.pazienteSelezionatoId).subscribe({
-       next: (res: RispostaAnalisiAI) => {
-          console.log('[ANALISI] Risposta ricevuta:', res);
-          this.testoAnalisiOllama = res;
-          console.log('[ANALISI] testoAnalisiOllama impostato:', this.testoAnalisiOllama);
-          this.caricamentoAnalisi = false;
-        },
+      next: (res: RispostaAnalisiAI) => {
+        console.log('[ANALISI] Risposta ricevuta:', res);
+        this.testoAnalisiOllama = res;
+        this.caricamentoAnalisi = false;
+        this.cdr.detectChanges();
+      },
       error: (err) => {
         console.error('[ANALISI] Errore:', err);
         alert("Errore durante l'elaborazione dell'analisi clinica.");
@@ -172,15 +172,16 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   onVisualizzaPiano(): void {
-      if (!this.pazienteSelezionatoId) return;
-      this.medicoService.getPianoSalvato(this.pazienteSelezionatoId).subscribe({
-          next: (res) => {
-              this.pianoAlimentareGenerato = res.piano;
-          },
-          error: (err) => {
-              alert('Nessun piano salvato per questo paziente.');
-          }
-      });
+    if (!this.pazienteSelezionatoId) return;
+    this.medicoService.getPianoSalvato(this.pazienteSelezionatoId).subscribe({
+      next: (res) => {
+        this.pianoAlimentareGenerato = res.piano;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        alert('Nessun piano salvato per questo paziente. Genera prima la tabella.');
+      }
+    });
   }
 
   onSalvaVisita(event: Event): void {
@@ -238,33 +239,10 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   getPasti(datiGiorno: any): {tipo: string, alimenti: any[]}[] {
-  if (!datiGiorno) return [];
-
-  const risultato: {tipo: string, alimenti: any[]}[] = [];
-
-  // Caso 1: pasti è un oggetto { Colazione: [], Pranzo: [], ... }
-  if (datiGiorno.pasti && !Array.isArray(datiGiorno.pasti)) {
-    for (const [tipo, alimenti] of Object.entries(datiGiorno.pasti)) {
-      risultato.push({ tipo, alimenti: alimenti as any[] });
-    }
-    return risultato;
+    if (!datiGiorno?.pasti) return [];
+    return Object.entries(datiGiorno.pasti)
+      .map(([tipo, alimenti]) => ({ tipo, alimenti: alimenti as any[] }));
   }
-
-  // Caso 2: pasti è un array [ {alimento, grammatura}, ... ]
-  if (Array.isArray(datiGiorno.pasti) && datiGiorno.pasti.length > 0) {
-    risultato.push({ tipo: 'Pasti', alimenti: datiGiorno.pasti });
-  }
-
-  // Caso 3: chiavi separate (colazione, pranzo, merenda, cena)
-  const chiavi = ['colazione', 'pranzo', 'merenda', 'cena', 'Colazione', 'Pranzo', 'Merenda', 'Cena'];
-  for (const chiave of chiavi) {
-    if (datiGiorno[chiave] && Array.isArray(datiGiorno[chiave])) {
-      risultato.push({ tipo: chiave, alimenti: datiGiorno[chiave] });
-    }
-  }
-
-  return risultato;
-}
 
   logout() {
     console.log("Esecuzione Logout...");
