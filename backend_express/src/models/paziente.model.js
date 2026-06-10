@@ -8,15 +8,16 @@ async function getAllPatients() {
 }
 
 // recupera tutti i pazienti per il medico selezionato
-async function getPatientsByDoctor(medico_id) {
+async function getPatientsByDoctor(id) {
 
     const [rows] = await db.query(
 
-        `SELECT *
-         FROM pazienti
-         WHERE medico_id = ?`,
+        `SELECT p.id, p.nome, p.cognome, p.data_nascita, p.altezza, p.obiettivo, p.anamnesi
+         FROM pazienti AS p JOIN medici AS m
+         ON m.id = p.medico_id
+         WHERE m.utente_id = ?`,
 
-        [medico_id]
+        [id]
 
     );
 

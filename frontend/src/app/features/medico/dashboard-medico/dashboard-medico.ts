@@ -69,8 +69,19 @@ export class DashboardMedicoComponent implements OnInit {
       this.medicoService.getPazientiPerMedico(medicoId).subscribe({
         next: (datiDalDb: Paziente[]) => {
           console.log('[DASHBOARD MEDICO] Pazienti caricati dal DB:', datiDalDb);
-          this.pazienti = datiDalDb;
-          this.pazientiFiltrati = datiDalDb; // Popoliamo subito anche la lista filtrata per la sidebar
+
+          // --- MINIMA MODIFICA: Convertiamo la stringa data del DB in un oggetto Date vero ---
+          const pazientiFormattati = datiDalDb.map((p): Paziente => ({
+            ...p,
+            data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
+          }));
+
+          
+          this.pazienti = pazientiFormattati;
+          this.pazientiFiltrati = pazientiFormattati; // Popoliamo subito anche la lista filtrata per la sidebar
+          this.cdr.detectChanges(); // aggiungi questa riga
+
+
         },
         error: (err) => {
           console.error('[DASHBOARD MEDICO] Errore caricamento pazienti:', err);
