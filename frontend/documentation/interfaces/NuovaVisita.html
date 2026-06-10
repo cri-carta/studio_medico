@@ -425,7 +425,7 @@ export class MedicoService {
   constructor(private http: HttpClient) {}
 
   getPazientiPerMedico(medicoId: number): Observable&lt;Paziente[]&gt; {
-    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/medici/${medicoId}/pazienti&#x60;);
+    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/pazienti/medico/${medicoId}&#x60;);
   }
 
   getProfiloPaziente(utenteId: number): Observable&lt;Paziente&gt; {
@@ -481,6 +481,16 @@ export class MedicoService {
 
   getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
     return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
+  }
+
+  deletePaziente(
+    id: number
+  ): Observable&lt;any&gt; {
+
+    return this.http.delete(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;
+    );
   }
 }</code></pre>
     </div>

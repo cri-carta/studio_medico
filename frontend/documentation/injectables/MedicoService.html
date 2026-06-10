@@ -170,6 +170,9 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                <a href="#deletePaziente" >deletePaziente</a>
+                            </li>
+                            <li>
                                 <a href="#generaTabellaPiano" >generaTabellaPiano</a>
                             </li>
                             <li>
@@ -259,6 +262,73 @@
     <h3 id="methods">
         Methods
     </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deletePaziente"></a>
+                    <span class="name">
+                        <span ><b>deletePaziente</b></span>
+                        <a href="#deletePaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>deletePaziente(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="115"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:115</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <table class="table table-sm table-bordered">
         <tbody>
             <tr>
@@ -896,7 +966,7 @@ export class MedicoService {
   constructor(private http: HttpClient) {}
 
   getPazientiPerMedico(medicoId: number): Observable&lt;Paziente[]&gt; {
-    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/medici/${medicoId}/pazienti&#x60;);
+    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/pazienti/medico/${medicoId}&#x60;);
   }
 
   getProfiloPaziente(utenteId: number): Observable&lt;Paziente&gt; {
@@ -952,6 +1022,16 @@ export class MedicoService {
 
   getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
     return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
+  }
+
+  deletePaziente(
+    id: number
+  ): Observable&lt;any&gt; {
+
+    return this.http.delete(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;
+    );
   }
 }</code></pre>
     </div>

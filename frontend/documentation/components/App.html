@@ -261,7 +261,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/app.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/app.ts:18</a></div>
                         </td>
                     </tr>
 
@@ -277,13 +277,20 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, signal } from &#x27;@angular/core&#x27;;
 import { RouterOutlet } from &#x27;@angular/router&#x27;;
 
+/*
+* Componente principale dell&#x27;applicazione.
+*/
 @Component({
   selector: &#x27;app-root&#x27;,
+
+  /* Permette l&#x27;utilizzo del RouterOutlet nel template. */
   imports: [RouterOutlet],
   templateUrl: &#x27;./app.html&#x27;,
   styleUrl: &#x27;./app.css&#x27;,
 })
 export class App {
+
+  /* Signal inizializzato con il valore &#x27;frontend&#x27;. */
   protected readonly title &#x3D; signal(&#x27;frontend&#x27;);
 }
 </code></pre>

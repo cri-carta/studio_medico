@@ -183,8 +183,14 @@
                     <td class="col-md-4">
                         <i>Default value : </i><code>{
   providers: [
+
+    /* Registra i listener globali per la gestione degli errori. */
     provideBrowserGlobalErrorListeners(),
+
+    /* Configura il sistema di routing utilizzando le rotte definite nell&#x27;applicazione. */
     provideRouter(routes),
+
+    /* Abilita l&#x27;utilizzo di HttpClient per le richieste HTTP. */
     provideHttpClient()
   ]
 }</code>
@@ -479,24 +485,33 @@ automaticamente alla pagina di login.</li>
                 <tr>
                     <td class="col-md-4">
                         <i>Default value : </i><code>[
+
+  /* Carica le rotte relative alla funzionalità di login. */
   {
     path: &#x27;auth/login&#x27;,
     loadChildren: () &#x3D;&gt; &quot;import(&#x27;./features/auth/login/login.routes&#x27;).then(m &#x3D;&gt; m.loginRoutes)&quot;
   },
   {
+  
+    /* Carica le rotte dell&#x27;area medico. */
     path: &#x27;medico&#x27;,
     loadChildren: () &#x3D;&gt; &quot;import(&#x27;./features/medico/medico.routes&#x27;).then(m &#x3D;&gt; m.medicoRoutes)&quot;,
     // canActivate: [authGuard, roleGuard], // Proteggi l&#x27;intero blocco
     data: { expectedRole: &#x27;medico&#x27; }     // Dichiara che tutto ciò che sta dentro &#x27;medico&#x27; richiede questo ruolo
   },
   {
+  
+    /* Carica le rotte dell&#x27;area paziente e applica i guard. */
     path: &#x27;paziente&#x27;,
     loadChildren: () &#x3D;&gt; &quot;import(&#x27;./features/paziente/paziente.routes&#x27;).then(m &#x3D;&gt; m.pazienteRoutes)&quot;,
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: &#x27;paziente&#x27; }
   },
 
+  /* Reindirizza il percorso vuoto alla pagina di login. */
   { path: &#x27;&#x27;, redirectTo: &#x27;auth/login&#x27;, pathMatch: &#x27;full&#x27; },
+  
+  /* Gestisce percorsi non definiti. */
   { path: &#x27;**&#x27;, redirectTo: &#x27;auth/login&#x27; }
 ]</code>
                     </td>
