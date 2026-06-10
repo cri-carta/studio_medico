@@ -71,32 +71,32 @@ export class MedicoService {
 
   generaTabellaPiano(pazienteId: number): Observable<RispostaTabellaAI> {
     return new Observable(observer => {
-        const token = localStorage.getItem('token');
-        const eventSource = new EventSource(
-            `${this.API_URL}/rag/tabella/${pazienteId}?token=${token}`
-        );
+      const token = localStorage.getItem('token');
+      const eventSource = new EventSource(
+        `${this.API_URL}/rag/tabella/${pazienteId}?token=${token}`
+      );
 
-        eventSource.addEventListener('completo', (e: any) => {
-            const data = JSON.parse(e.data);
-            observer.next(data);
-            observer.complete();
-            eventSource.close();
-        });
+      eventSource.addEventListener('completo', (e: any) => {
+        const data = JSON.parse(e.data);
+        observer.next(data);
+        observer.complete();
+        eventSource.close();
+      });
 
-        eventSource.addEventListener('errore', (e: any) => {
-            const data = JSON.parse(e.data);
-            observer.error(data);
-            eventSource.close();
-        });
+      eventSource.addEventListener('errore', (e: any) => {
+        const data = JSON.parse(e.data);
+        observer.error(data);
+        eventSource.close();
+      });
 
-        eventSource.onerror = (err) => {
-            observer.error(err);
-            eventSource.close();
-        };
+      eventSource.onerror = (err) => {
+        observer.error(err);
+        eventSource.close();
+      };
 
-        return () => eventSource.close();
+      return () => eventSource.close();
     });
-}
+  }
 
   getAnalisiAndamento(pazienteId: number): Observable<RispostaAnalisiAI> {
     return this.http.get<RispostaAnalisiAI>(
@@ -106,5 +106,9 @@ export class MedicoService {
 
   salvaVisita(visita: NuovaVisita): Observable<any> {
     return this.http.post<any>(`${this.API_URL}/visite`, visita);
+  }
+
+  getPianoSalvato(pazienteId: number): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/rag/piano/${pazienteId}`);
   }
 }

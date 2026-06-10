@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <-- Aggiungi ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { Paziente } from '../../../core/models/database.model';
 import { MedicoService, PianoVoce, Visita } from '../../medico/medico.service';
@@ -39,7 +39,8 @@ export class DashboardPazienteComponent implements OnInit {
   constructor(
     private medicoService: MedicoService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,8 +51,9 @@ export class DashboardPazienteComponent implements OnInit {
       this.medicoService.getProfiloPaziente(idNumerico).subscribe({
         next: (dati: Paziente) => {
           this.paziente = dati; // I dati corrispondono alle colonne della tabella 'pazienti'
+
+          // Chiamiamo la funzione connessa per scaricare il resto
           this.caricaDatiConnessi(dati.id);
-          this.isLoading = false;
         },
         error: (err) => {
           console.error("Errore recupero profilo", err);
@@ -61,12 +63,15 @@ export class DashboardPazienteComponent implements OnInit {
     } else {
       // Se non c'è traccia dell'ID, rimandalo al login per sicurezza
       this.router.navigate(['/auth/login']);
+      this.isLoading = false;
     }
   }
 // NUOVA FUNZIONE: Recupera la dieta e lo storico visite dal database
 caricaDatiConnessi(pazienteId: number): void {
+  console.log("1. Entrato in caricaDatiConnessi per Paziente ID:", pazienteId);
   this.medicoService.getPianoCompletoPaziente(pazienteId).subscribe({
     next: (vociPiano: PianoVoce[]) => {
+      console.log("2. Il server ha risposto per il Piano Alimentare:", vociPiano);
       this.inizializzaMappaVuota();
 
       vociPiano.forEach((voce: PianoVoce) => {
@@ -81,22 +86,33 @@ caricaDatiConnessi(pazienteId: number): void {
         }
       });
 
-      // Spegniamo il caricamento solo quando i dati della tabella sono pronti
-      this.isLoading = false;
+      // Recupera l'elenco delle visite passate SOLO DOPO o in parallelo 
+      // per la sezione progressi ma spegniamo l'isLoading qui quando la struttura 
+      // è renderizzata
+      console.log("3. Sto per chiamare lo Storico Visite...");
+      this.medicoService.getStoricoVisite(pazienteId).subscribe({
+        next: (visite: Visita[]) => {
+          console.log("4. Il server ha risposto per le Visite:", visite);
+          this.storicoVisite = visite;
+          this.calcolaProgressi(visite);
+
+          // ACCENSIONE VERDE: Tutti i dati (Profilo + Piano + Visite) sono nel componente.
+          // Ora possiamo sbloccare la pagina in totale sicurezza!
+          console.log("5. DISATTIVO CARICAMENTO ORA!");
+          this.isLoading = false;
+          // Forza Angular a renderizzare istantaneamente l'anagrafica saltando i blocchi pendenti
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          console.error("Errore recupero storico visite", err);
+          this.isLoading = false;
+        }
+      });
     },
     error: (err: any) => {
       console.error("Errore recupero piano alimentare", err);
       this.isLoading = false;
     }
-  });
-
-  // Recupera anche l'elenco delle visite passate per la sezione progressi
-  this.medicoService.getStoricoVisite(pazienteId).subscribe({
-    next: (visite: Visita[]) => {
-      this.storicoVisite = visite;
-      this.calcolaProgressi(visite);
-    },
-    error: (err: any) => console.error("Errore recupero storico visite", err)
   });
 }
 

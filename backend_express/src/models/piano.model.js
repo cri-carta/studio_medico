@@ -90,6 +90,42 @@ async function getFullPlanByPazienteId(pazienteId) {
     return rows;
 }
 
+async function savePianoJSON(paziente_id, medico_id, piano_json) {
+    // Controlla se esiste già un piano per questo paziente
+    const [existing] = await db.query(
+        'SELECT id FROM piani_alimentari WHERE paziente_id = ? ORDER BY created_at DESC LIMIT 1',
+        [paziente_id]
+    );
+
+    if (existing.length > 0) {
+        // Aggiorna il piano esistente
+        const [result] = await db.query(
+            'UPDATE piani_alimentari SET piano_json = ?, generato_at = NOW() WHERE id = ?',
+            [JSON.stringify(piano_json), existing[0].id]
+        );
+        return { id: existing[0].id, aggiornato: true };
+    } else {
+        // Crea un nuovo piano
+        const [result] = await db.query(
+            'INSERT INTO piani_alimentari (paziente_id, medico_id, piano_json, generato_at) VALUES (?, ?, ?, NOW())',
+            [paziente_id, medico_id, JSON.stringify(piano_json)]
+        );
+        return { id: result.insertId, aggiornato: false };
+    }
+}
+
+async function getPianoJSONByPaziente(paziente_id) {
+    const [rows] = await db.query(
+        'SELECT piano_json, generato_at FROM piani_alimentari WHERE paziente_id = ? AND piano_json IS NOT NULL ORDER BY generato_at DESC LIMIT 1',
+        [paziente_id]
+    );
+    if (!rows[0]) return null;
+    return {
+        piano: JSON.parse(rows[0].piano_json),
+        generato_at: rows[0].generato_at
+    };
+}
+
 
 module.exports = {
     getPlanById,
@@ -98,5 +134,7 @@ module.exports = {
     updatePlan,
     deletePlan,
     getAllPlans,
-    getFullPlanByPazienteId
+    getFullPlanByPazienteId,
+    savePianoJSON,
+    getPianoJSONByPaziente
 };
