@@ -7,6 +7,24 @@ async function getAllPatients() {
     return rows;
 }
 
+// recupera tutti i pazienti per il medico selezionato
+async function getPatientsByDoctor(medico_id) {
+
+    const [rows] = await db.query(
+
+        `SELECT *
+         FROM pazienti
+         WHERE medico_id = ?`,
+
+        [medico_id]
+
+    );
+
+    return rows;
+
+}
+
+
 // Recupera un singolo paziente tramite il suo ID. Restituisce l'oggetto paziente o undefined se non trovato.
 async function getPatientById(id) {
     const [rows] = await db.query(
@@ -81,6 +99,7 @@ async function deletePatient(id) {
 
 module.exports = {
     getAllPatients,
+    getPatientsByDoctor,
     getPatientById,
     getPatientByUtenteId,
     createPatient,

@@ -54,7 +54,7 @@ export class MedicoService {
   constructor(private http: HttpClient) {}
 
   getPazientiPerMedico(medicoId: number): Observable<Paziente[]> {
-    return this.http.get<Paziente[]>(`${this.API_URL}/medici/${medicoId}/pazienti`);
+    return this.http.get<Paziente[]>(`${this.API_URL}/pazienti/medico/${medicoId}`);
   }
 
   getProfiloPaziente(utenteId: number): Observable<Paziente> {

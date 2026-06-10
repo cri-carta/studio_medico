@@ -85,6 +85,29 @@ async function getPatients(req, res) {
     }
 }
 
+
+async function getPatientsByDoctor(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        const patients =
+            await PazienteModel.getPatientsByDoctor(id);
+
+        res.json(patients);
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+
+}
+
+
 async function getPatientByUtenteId(req, res) {
     try {
         const { utenteId } = req.params;
@@ -205,6 +228,7 @@ async function deletePatient(req, res) {
 // Esporta tutte le funzioni del controller per essere usate nelle rotte
 module.exports = {
     getPatients,
+    getPatientsByDoctor,
     getPatientByUtenteId,
     createPatient,
     updatePatient,
