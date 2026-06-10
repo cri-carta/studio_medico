@@ -63,27 +63,29 @@ export class DashboardMedicoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const medicoId = this.authService.userId();
-
-    if (medicoId !== null) {
-      this.medicoService.getPazientiPerMedico(medicoId).subscribe({
-        next: (datiDalDb: Paziente[]) => {
-          const pazientiFormattati = datiDalDb.map((p): Paziente => ({
-            ...p,
-            data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
-          }));
-          this.pazienti = pazientiFormattati;
-          this.pazientiFiltrati = pazientiFormattati;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('[DASHBOARD MEDICO] Errore caricamento pazienti:', err);
-          this.errorMsg = 'Impossibile caricare la lista pazienti dal database.';
-        }
-      });
-    } else {
-      this.router.navigate(['/auth/login']);
-    }
+    this.medicoService.getMedicoDelLogin().subscribe({
+      next: (medico) => {
+        this.medicoService.getPazientiPerMedico(medico.id).subscribe({
+          next: (datiDalDb: Paziente[]) => {
+            const pazientiFormattati = datiDalDb.map((p): Paziente => ({
+              ...p,
+              data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
+            }));
+            this.pazienti = pazientiFormattati;
+            this.pazientiFiltrati = pazientiFormattati;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('[DASHBOARD MEDICO] Errore caricamento pazienti:', err);
+            this.errorMsg = 'Impossibile caricare la lista pazienti dal database.';
+          }
+        });
+      },
+      error: (err) => {
+        console.error('[DASHBOARD MEDICO] Errore recupero medico:', err);
+        this.router.navigate(['/auth/login']);
+      }
+    });
   }
 
   onSearch(event: Event): void {
@@ -272,7 +274,6 @@ export class DashboardMedicoComponent implements OnInit {
       return;
     }
 
-    // Step 1: crea utente paziente
     this.medicoService.registraUtentePaziente(
       this.nuovoPaziente.email,
       this.nuovoPaziente.password
@@ -280,11 +281,8 @@ export class DashboardMedicoComponent implements OnInit {
       next: (resUtente) => {
         const utente_id = resUtente.id;
 
-        // Step 2: recupera medico_id reale dal token
         this.medicoService.getMedicoDelLogin().subscribe({
           next: (medico) => {
-
-            // Step 3: crea paziente
             this.medicoService.creaPaziente({
               utente_id,
               medico_id: medico.id,
@@ -300,11 +298,9 @@ export class DashboardMedicoComponent implements OnInit {
             }).subscribe({
               next: () => {
                 this.modalitaAggiungi = false;
-
-                // Step 4: ricarica lista pazienti usando utente_id del medico
                 this.medicoService.getMedicoDelLogin().subscribe({
                   next: (med) => {
-                    this.medicoService.getPazientiPerMedico(med.utente_id).subscribe({
+                    this.medicoService.getPazientiPerMedico(med.id).subscribe({
                       next: (dati) => {
                         this.pazienti = dati.map(p => ({
                           ...p,
