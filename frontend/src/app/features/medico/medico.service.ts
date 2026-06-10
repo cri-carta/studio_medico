@@ -69,6 +69,18 @@ export class MedicoService {
     return this.http.get<Visita[]>(`${this.API_URL}/visite/paziente/${pazienteId}`);
   }
 
+  registraUtentePaziente(email: string, password: string): Observable<any> {
+  return this.http.post<any>(`${this.API_URL}/auth/register`, {
+    email,
+    password,
+    ruolo: 'paziente'
+  });
+}
+
+creaPaziente(dati: any): Observable<any> {
+  return this.http.post<any>(`${this.API_URL}/pazienti`, dati);
+}
+
   generaTabellaPiano(pazienteId: number): Observable<RispostaTabellaAI> {
     return new Observable(observer => {
       const token = localStorage.getItem('token');
@@ -96,6 +108,10 @@ export class MedicoService {
 
       return () => eventSource.close();
     });
+  }
+
+  getMedicoDelLogin(): Observable<any> {
+      return this.http.get<any>(`${this.API_URL}/medici/me`);
   }
 
   getAnalisiAndamento(pazienteId: number): Observable<RispostaAnalisiAI> {

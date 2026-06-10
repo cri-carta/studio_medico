@@ -210,16 +210,26 @@ async function updatePatient(req, res) {
 // ------------------------------------------------------------
 async function deletePatient(req, res) {
     try {
-
-        // Elimina il paziente dal database tramite l'ID passato nell'URL
+        console.log('[DELETE PAZIENTE] Eliminazione id:', req.params.id);
+        
+        // Prima recupera il paziente per ottenere l'utente_id
+        const paziente = await PazienteModel.getPatientById(req.params.id);
+        if (!paziente) {
+            return res.status(404).json({ error: 'Paziente non trovato' });
+        }
+        
+        // Elimina il paziente (le visite vengono eliminate in cascade)
         await PazienteModel.deletePatient(req.params.id);
-
-        // Risponde con successo confermando l'eliminazione
+        
+        // Elimina anche l'utente collegato
+        const db = require('../config/database');
+        await db.query('DELETE FROM utenti WHERE id = ?', [paziente.utente_id]);
+        
+        console.log('[DELETE PAZIENTE] Eliminato con successo + utente:', paziente.utente_id);
         res.json({ message: 'Paziente eliminato' });
 
     } catch (error) {
-
-        // Errore interno del server: restituisce il messaggio di errore
+        console.error('[DELETE PAZIENTE ERROR]', error);
         res.status(500).json({ error: error.message });
     }
 }

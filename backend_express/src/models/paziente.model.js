@@ -62,9 +62,9 @@ async function createPatient(utente_id, medico_id, nome, cognome, data_nascita, 
 
         // Prima visita automatica
         await conn.query(
-            `INSERT INTO visite (paziente_id, data_visita, peso, bmi, bf)
-             VALUES (?, CURDATE(), ?, ?, ?)`,
-            [paziente_id, peso, bmi, bf]
+            `INSERT INTO visite (paziente_id, medico_id, data_visita, peso, bmi, bf)
+            VALUES (?, ?, CURDATE(), ?, ?, ?)`,
+            [paziente_id, medico_id, peso, bmi, bf]
         );
 
         await conn.commit();
