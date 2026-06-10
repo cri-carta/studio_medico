@@ -71,8 +71,16 @@ async function createPatient(utente_id, medico_id, nome, cognome, data_nascita, 
         return { insertId: paziente_id };
 
     } catch (err) {
+
+        console.error(
+              '[DELETE PAZIENTE ERROR]',
+              err
+        );
+
         await conn.rollback();
+
         throw err;
+
     } finally {
         conn.release();
     }
@@ -104,5 +112,6 @@ module.exports = {
     getPatientById,
     getPatientByUtenteId,
     createPatient,
-    updatePatient
+    updatePatient,
+    deletePatient
 };
