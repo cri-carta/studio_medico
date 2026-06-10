@@ -7,6 +7,7 @@ import { MedicoService } from '../medico.service';
 import { Router } from '@angular/router';
 import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from '../../../core/models/outputAI.model';
 
+
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
@@ -52,6 +53,11 @@ export class DashboardMedicoComponent implements OnInit {
   bf: number = 0.0;
   errorMsg: string = '';
   successMsg: string = '';
+
+
+  dataNascitaEdit: string = '';
+
+  modalitaModifica: boolean = false;
 
   constructor(
     private medicoService: MedicoService,
@@ -253,8 +259,12 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
-  modificaPaziente(): void { console.log('Azione: Modifica', this.pazienteSelezionatoId); }
+  
+  modificaPaziente(): void { if (!this.pazienteSelezionato) return; this.modalitaModifica = true; if (this.pazienteSelezionato.data_nascita) { this.dataNascitaEdit = new Date(this.pazienteSelezionato.data_nascita) .toISOString() .split('T')[0]; } }  
+ 
+  chiudiModifica(): void { this.modalitaModifica = false; }
 
+  salvaModifichePaziente(): void { if (!this.pazienteSelezionato) return; this.pazienteSelezionato.data_nascita = this.dataNascitaEdit; this.medicoService.updatePaziente( this.pazienteSelezionato.id, this.pazienteSelezionato ).subscribe({ next: () => { this.modalitaModifica = false; this.cdr.detectChanges(); setTimeout(() => { alert('Paziente aggiornato'); }, 100); }, error: (err: any) => { console.error(err); alert('Errore aggiornamento'); } }); }  
 
   eliminaPaziente(): void {
 
