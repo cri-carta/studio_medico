@@ -255,14 +255,55 @@ export class DashboardMedicoComponent implements OnInit {
   aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
   modificaPaziente(): void { console.log('Azione: Modifica', this.pazienteSelezionatoId); }
 
+
   eliminaPaziente(): void {
-    if (this.pazienteSelezionatoId) {
-      this.pazienti = this.pazienti.filter(p => p.id !== this.pazienteSelezionatoId);
-      this.pazientiFiltrati = this.pazienti;
-      this.pazienteSelezionatoId = null;
-      this.pazienteSelezionato = null;
-    }
+
+  if (!this.pazienteSelezionatoId) return;
+
+  const conferma = confirm(
+    'Vuoi davvero eliminare questo paziente?'
+  );
+
+  if (!conferma) return;
+
+
+  this.medicoService
+    .deletePaziente(this.pazienteSelezionatoId)
+    .subscribe({
+
+      next: () => {
+
+        this.pazienti =
+          this.pazienti.filter(
+
+            p => p.id !== this.pazienteSelezionatoId
+
+          );
+
+        this.pazientiFiltrati =
+          this.pazienti;
+
+        this.pazienteSelezionatoId = null;
+
+        this.pazienteSelezionato = null;
+
+        alert('Paziente eliminato');
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+        alert('Errore eliminazione paziente');
+
+      }
+
+    });
+
   }
+
+
 
   getGiorni(): {giorno: string, dati: any}[] {
     if (!this.pianoAlimentareGenerato?.piano_settimanale) return [];
