@@ -16,7 +16,9 @@ function callPython(comando, payload) {
         console.log('[PYTHON] Comando:', comando);
         console.log('[PYTHON] Payload:', JSON.stringify(payload).substring(0, 300));
 
-        const proc = spawn(PYTHON, [RAG_SCRIPT, comando, JSON.stringify(payload)]);
+        const proc = spawn(PYTHON, [RAG_SCRIPT, comando, JSON.stringify(payload)], {
+            env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
+        });
 
         let stdout = '';
         let stderr = '';
