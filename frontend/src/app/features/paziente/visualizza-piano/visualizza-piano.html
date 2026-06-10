@@ -2,38 +2,48 @@
   <h3>Il tuo Piano Nutrizionale</h3>
   <p class="rag-hint">Elaborato in base ai dati del tuo medico di riferimento</p>
 
-  <div class="tabella-scroll">
-    <table class="piano-table">
-      <thead>
-        <tr>
-          <th>Giorno</th>
-          <th>Dettaglio Pasti Settimanali</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (giorno of giorniChiave; track giorno) {
-          <tr>
-            <td class="giorno-cell"><strong>{{ labelGiorni[giorno] | uppercase }}</strong></td>
-            <td>
-              <div class="pasti-giorno-grid">
-                @for (pasto of pastiChiave; track pasto) {
-                  <div class="pasto-blocco">
-                    <span class="pasto-titolo-label">{{ labelPasti[pasto] }}:</span>
+  <ng-container *ngIf="isEmptyPiano(); else pianoDisponibile">
+    <div class="table-placeholder">
+      <p>Non è ancora presente un piano alimentare per questo paziente.</p>
+    </div>
+  </ng-container>
 
-                    @for (voce of piano[giorno]?.[pasto]; track voce.alimento) {
-                      <span class="alimento-item">
-                        • {{ voce.alimento }} <strong>({{ voce.grammi }}g)</strong>
-                      </span>
-                    } @empty {
-                      <span class="alimento-vuoto">Non previsto</span>
-                    }
-                  </div>
-                }
-              </div>
-            </td>
+  <ng-template #pianoDisponibile>
+    <div class="tabella-scroll">
+      <table class="piano-table">
+        <thead>
+          <tr>
+            <th>Giorno</th>
+            <th>Dettaglio Pasti Settimanali</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let giorno of giorniChiave">
+            <tr>
+              <td class="giorno-cell"><strong>{{ labelGiorni[giorno] | uppercase }}</strong></td>
+              <td>
+                <div class="pasti-giorno-grid">
+                  <ng-container *ngFor="let pasto of pastiChiave">
+                    <div class="pasto-blocco">
+                      <span class="pasto-titolo-label">{{ labelPasti[pasto] }}:</span>
+
+                      <ng-container *ngIf="piano[giorno]?.[pasto]?.length > 0; else nessunPasto">
+                        <span class="alimento-item" *ngFor="let voce of piano[giorno]?.[pasto]">
+                          • {{ voce.alimento }} <strong>({{ voce.grammi }}g)</strong>
+                        </span>
+                      </ng-container>
+
+                      <ng-template #nessunPasto>
+                        <span class="alimento-vuoto">Non previsto</span>
+                      </ng-template>
+                    </div>
+                  </ng-container>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
 </div>

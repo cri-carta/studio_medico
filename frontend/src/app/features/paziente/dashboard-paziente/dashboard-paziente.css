@@ -58,6 +58,30 @@
   color: white;
 }
 
+.progress-summary {
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  padding: 1rem;
+  border-radius: 10px;
+  background: #f8fbff;
+  border: 1px solid #dfe9f5;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #5f6c7b;
+  margin-bottom: 0.25rem;
+}
+
 .btn-logout {
   background: #ffeded;
   color: #d32f2f;

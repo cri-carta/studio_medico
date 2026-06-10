@@ -17,6 +17,7 @@ const { spawn } = require('child_process');
 
 // path: utilizzato per costruire i percorsi ai file Python in modo sicuro
 const path = require('path');
+const os = require('os');
 
 
 // ------------------------------------------------------------
@@ -24,8 +25,10 @@ const path = require('path');
 // PYTHON:     percorso all'eseguibile Python nel venv del backend AI
 // RAG_SCRIPT: percorso allo script Python che gestisce il sistema RAG
 // ------------------------------------------------------------
-const PYTHON     = path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe');
 const RAG_SCRIPT = path.join(__dirname, '../..', 'backend_AI', 'rag_system.py');
+const PYTHON = os.platform() === 'win32'
+  ? path.join(__dirname, '../..', 'backend_AI', 'venv', 'Scripts', 'python.exe')
+  : path.join(__dirname, '../..', 'backend_AI', 'venv', 'bin', 'python');
 
 
 // ------------------------------------------------------------
@@ -82,6 +85,20 @@ async function getPatients(req, res) {
     }
 }
 
+async function getPatientByUtenteId(req, res) {
+    try {
+        const { utenteId } = req.params;
+        const paziente = await PazienteModel.getPatientByUtenteId(utenteId);
+
+        if (!paziente) {
+            return res.status(404).json({ error: 'Paziente non trovato per questo utente' });
+        }
+
+        res.json(paziente);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 // ------------------------------------------------------------
 // CREATE PATIENT
@@ -188,6 +205,7 @@ async function deletePatient(req, res) {
 // Esporta tutte le funzioni del controller per essere usate nelle rotte
 module.exports = {
     getPatients,
+    getPatientByUtenteId,
     createPatient,
     updatePatient,
     deletePatient

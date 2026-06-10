@@ -9,7 +9,7 @@
 // ============================================================
 
 // Modello visita: contiene le query al database per le visite
-const VisitaModel = require('../models/visita.model');
+const visitaModel = require('../models/visita.model');
 
 
 // ------------------------------------------------------------

@@ -36,6 +36,9 @@
           title="Elimina paziente selezionato">
           🗑️ Elimina
         </button>
+        <button class="btn-logout" (click)="logout()">
+          <span>🚪</span> Logout
+        </button>
       </div>
     </div>
   </aside>
@@ -43,7 +46,6 @@
   <main class="contenuto-destra">
     @if (pazienteSelezionatoId && pazienteSelezionato) {
     <div class="scheda-paziente-container">
-
       <header class="scheda-header">
         <div class="paziente-titolo">
           <h1>{{ pazienteSelezionato.cognome }} {{ pazienteSelezionato.nome }}</h1>
@@ -60,10 +62,7 @@
           </button>
           <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">
             @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
-          </button>
-          <button class="btn-logout" (click)="logout()">
-            <span>🚪</span> Logout
-          </button>
+          </button>          
         </div>
       </header>
 

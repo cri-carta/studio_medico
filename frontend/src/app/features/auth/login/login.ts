@@ -49,11 +49,15 @@ export class LoginComponent {
     this.caricamento = true;
     this.errorMsg = '';
 
-    this.http.post<any>('http://localhost:3000/auth/login', {
+    const payload = {
       email: this.email,
       password: this.password
-    }).subscribe({
+    };
+    console.log('[LOGIN] invio payload', payload);
+
+    this.http.post<any>('http://localhost:3000/auth/login', payload).subscribe({
       next: (res) => {
+        console.log('[LOGIN] risposta server', res);
         this.authService.login(res.token);
         this.caricamento = false;
 
@@ -67,6 +71,9 @@ export class LoginComponent {
         this.caricamento = false;
         this.errorMsg = 'Credenziali non valide. Riprova.';
         console.error('[LOGIN] Errore:', err);
+        if (err.error) {
+          console.error('[LOGIN] Errore body:', err.error);
+        }
       }
     });
   }

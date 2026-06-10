@@ -150,7 +150,7 @@
 /* Griglia dei 3 pulsanti di azione */
 .action-buttons-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.4rem;
 }
 

@@ -8,7 +8,7 @@ export const pazienteRoutes: Routes = [
     component: DashboardPazienteComponent
   },
   {
-    path: 'paziente/piano',
+    path: 'piano',
     component: VisualizzaPianoComponent
   }
 ];

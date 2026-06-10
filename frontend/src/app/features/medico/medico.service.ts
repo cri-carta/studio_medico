@@ -23,6 +23,28 @@ export interface Paziente {
   anamnesi?: string;
 }
 
+export interface PianoVoce {
+  giorno: string;
+  tipo_pasto: string;
+  alimento: string;
+  grammi: number;
+  kcal?: number;
+  proteine?: number;
+  carboidrati?: number;
+  grassi?: number;
+}
+
+export interface Visita {
+  id: number;
+  paziente_id: number;
+  medico_id: number;
+  data_visita: string;
+  peso: number;
+  bmi: number;
+  bf: number;
+  note_visita?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,6 +59,14 @@ export class MedicoService {
 
   getProfiloPaziente(utenteId: number): Observable<Paziente> {
     return this.http.get<Paziente>(`${this.API_URL}/pazienti/utente/${utenteId}`);
+  }
+
+  getPianoCompletoPaziente(pazienteId: number): Observable<PianoVoce[]> {
+    return this.http.get<PianoVoce[]>(`${this.API_URL}/piani/paziente/${pazienteId}/full`);
+  }
+
+  getStoricoVisite(pazienteId: number): Observable<Visita[]> {
+    return this.http.get<Visita[]>(`${this.API_URL}/visite/paziente/${pazienteId}`);
   }
 
   generaTabellaPiano(pazienteId: number): Observable<RispostaTabellaAI> {

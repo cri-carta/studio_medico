@@ -98,13 +98,14 @@ async function login(req, res) {
         const user =
             await UserModel.findUserByEmail(email);
 
+        // Log di debug per capire il fallimento del login
+        console.log(`[AUTH LOGIN] login tentativo email=${email} userFound=${!!user}`);
+
         // Se l'utente non esiste, restituisce errore 401 (non autorizzato)
         if (!user) {
-
             return res.status(401).json({
                 error: 'Credenziali non valide'
             });
-
         }
 
         // Confronta la password inserita con quella criptata nel database
@@ -116,13 +117,12 @@ async function login(req, res) {
 
         // Se la password è errata, restituisce errore 401 (non autorizzato)
         if (!validPassword) {
-
+            console.log(`[AUTH LOGIN] password errata per email=${email}`);
             return res.status(401).json({
                 error: 'Credenziali non valide'
             });
-
         }
-
+        const secretKey = process.env.JWT_SECRET || 'chiave_segreta_molto_lunga_e_sicura';
         // Genera il token JWT contenente id, email e ruolo dell'utente
         // Il token scade dopo 24 ore
         const token = jwt.sign(
@@ -131,7 +131,7 @@ async function login(req, res) {
                 email: user.email,
                 role:  user.ruolo    // ← era 'ruolo', ora 'role'
             },
-            process.env.JWT_SECRET,  // Chiave segreta letta dalle variabili d'ambiente
+            secretKey,  // Chiave segreta letta dalle variabili d'ambiente
             { expiresIn: '24h' }
         );
 
