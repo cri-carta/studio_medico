@@ -421,3 +421,155 @@ input[readonly] {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Finestra modifica paziente */
+.modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,0.45);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 999;
+
+  backdrop-filter: blur(4px);
+
+}
+
+.modal-edit {
+
+  width: 500px;
+
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+
+  animation: fadeIn .25s ease;
+
+}
+
+.modal-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 20px;
+
+}
+
+.modal-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+}
+
+.modal-body input,
+.modal-body textarea {
+
+  border: 1px solid #ddd;
+
+  border-radius: 12px;
+
+  padding: 12px;
+
+  font-size: 15px;
+
+}
+
+.modal-body textarea {
+
+  min-height: 100px;
+
+  resize: vertical;
+
+}
+
+.modal-footer {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 20px;
+
+}
+
+.btn-save {
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+}
+
+.btn-cancel {
+
+  background: #e5e7eb;
+
+  border: none;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+}
+
+.btn-close {
+
+  border: none;
+
+  background: transparent;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+}
+
+@keyframes fadeIn {
+
+  from {
+
+    opacity: 0;
+    transform: scale(.95);
+
+  }
+
+  to {
+
+    opacity: 1;
+    transform: scale(1);
+
+  }
+
+}

@@ -43,6 +43,88 @@
     </div>
   </aside>
 
+  
+  <div
+    *ngIf="modalitaModifica && pazienteSelezionato"
+   class="modal-overlay"
+  >
+
+   <div class="modal-edit">
+
+
+
+     <div class="modal-header">
+
+        <h2>✏️ Modifica Paziente</h2>
+
+       <button
+          class="btn-close"
+          (click)="chiudiModifica()"
+        >
+          ✖
+       </button>
+
+      </div>
+
+      <div class="modal-body">
+
+       <input
+         [(ngModel)]="pazienteSelezionato.nome"
+         placeholder="Nome"
+       />
+
+       <input
+          [(ngModel)]="pazienteSelezionato.cognome"
+          placeholder="Cognome"
+       />
+
+       <input
+          type="date"
+          [(ngModel)]="dataNascitaEdit"       />
+
+       <input
+         type="number"
+         [(ngModel)]="pazienteSelezionato.altezza"
+         placeholder="Altezza"
+       />
+
+       <input
+         [(ngModel)]="pazienteSelezionato.obiettivo"
+         placeholder="Obiettivo"
+       />
+
+       <textarea
+         [(ngModel)]="pazienteSelezionato.anamnesi"
+         placeholder="Anamnesi"
+       ></textarea>
+
+      </div>
+
+     <div class="modal-footer">
+
+        <button
+         class="btn-cancel"
+         (click)="chiudiModifica()"
+       >
+         Annulla
+       </button>
+
+       <button
+         class="btn-save"
+         (click)="salvaModifichePaziente()"
+       >
+         💾 Salva Modifiche
+       </button>
+
+     </div>
+
+   </div>
+
+  </div>
+
+  
+
+
   <main class="contenuto-destra">
     @if (pazienteSelezionatoId && pazienteSelezionato) {
     <div class="scheda-paziente-container">

@@ -121,4 +121,21 @@ export class MedicoService {
       `${this.API_URL}/pazienti/${id}`
     );
   }
+
+  
+  updatePaziente(
+    id: number,
+   dati: any
+  ): Observable<any> {
+
+    return this.http.put(
+
+      `${this.API_URL}/pazienti/${id}`,
+      dati
+
+    );
+
+  }
+
+
 }
