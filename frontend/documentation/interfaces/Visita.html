@@ -565,32 +565,32 @@ export class MedicoService {
 
   generaTabellaPiano(pazienteId: number): Observable&lt;RispostaTabellaAI&gt; {
     return new Observable(observer &#x3D;&gt; {
-        const token &#x3D; localStorage.getItem(&#x27;token&#x27;);
-        const eventSource &#x3D; new EventSource(
-            &#x60;${this.API_URL}/rag/tabella/${pazienteId}?token&#x3D;${token}&#x60;
-        );
+      const token &#x3D; localStorage.getItem(&#x27;token&#x27;);
+      const eventSource &#x3D; new EventSource(
+        &#x60;${this.API_URL}/rag/tabella/${pazienteId}?token&#x3D;${token}&#x60;
+      );
 
-        eventSource.addEventListener(&#x27;completo&#x27;, (e: any) &#x3D;&gt; {
-            const data &#x3D; JSON.parse(e.data);
-            observer.next(data);
-            observer.complete();
-            eventSource.close();
-        });
+      eventSource.addEventListener(&#x27;completo&#x27;, (e: any) &#x3D;&gt; {
+        const data &#x3D; JSON.parse(e.data);
+        observer.next(data);
+        observer.complete();
+        eventSource.close();
+      });
 
-        eventSource.addEventListener(&#x27;errore&#x27;, (e: any) &#x3D;&gt; {
-            const data &#x3D; JSON.parse(e.data);
-            observer.error(data);
-            eventSource.close();
-        });
+      eventSource.addEventListener(&#x27;errore&#x27;, (e: any) &#x3D;&gt; {
+        const data &#x3D; JSON.parse(e.data);
+        observer.error(data);
+        eventSource.close();
+      });
 
-        eventSource.onerror &#x3D; (err) &#x3D;&gt; {
-            observer.error(err);
-            eventSource.close();
-        };
+      eventSource.onerror &#x3D; (err) &#x3D;&gt; {
+        observer.error(err);
+        eventSource.close();
+      };
 
-        return () &#x3D;&gt; eventSource.close();
+      return () &#x3D;&gt; eventSource.close();
     });
-}
+  }
 
   getAnalisiAndamento(pazienteId: number): Observable&lt;RispostaAnalisiAI&gt; {
     return this.http.get&lt;RispostaAnalisiAI&gt;(
@@ -600,6 +600,10 @@ export class MedicoService {
 
   salvaVisita(visita: NuovaVisita): Observable&lt;any&gt; {
     return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/visite&#x60;, visita);
+  }
+
+  getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
   }
 }</code></pre>
     </div>

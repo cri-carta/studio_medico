@@ -295,7 +295,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(medicoService: <a href="../injectables/MedicoService.html" target="_self">MedicoService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>, authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>)</code>
+<code>constructor(medicoService: <a href="../injectables/MedicoService.html" target="_self">MedicoService</a>, router: <a href="https://angular.io/api/router/Router" target="_blank">Router</a>, authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>, cdr: <a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank">ChangeDetectorRef</a>)</code>
                     </td>
                 </tr>
                         <tr>
@@ -353,6 +353,18 @@
                                                     </td>
                                                     
                                                 </tr>
+                                                <tr>
+                                                        <td>cdr</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank" >ChangeDetectorRef</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
                                         </tbody>
                                     </table>
                             </div>
@@ -393,8 +405,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="103"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:103</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="119"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:119</a></div>
                         </td>
                     </tr>
 
@@ -460,8 +472,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="67"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:67</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="70"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:70</a></div>
                         </td>
                     </tr>
 
@@ -529,8 +541,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="131"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:131</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="147"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:147</a></div>
                         </td>
                     </tr>
 
@@ -566,8 +578,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="145"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:145</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="161"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:161</a></div>
                         </td>
                     </tr>
 
@@ -603,8 +615,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="45"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:45</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="46"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:46</a></div>
                         </td>
                     </tr>
 
@@ -640,8 +652,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="141"
-                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:141</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="157"
+                                    class="link-to-prism">src/app/features/paziente/dashboard-paziente/dashboard-paziente.ts:157</a></div>
                         </td>
                     </tr>
 
@@ -959,7 +971,7 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit } from &#x27;@angular/core&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, ChangeDetectorRef } from &#x27;@angular/core&#x27;; // &lt;-- Aggiungi ChangeDetectorRef
 import { CommonModule } from &#x27;@angular/common&#x27;;
 import { Paziente } from &#x27;../../../core/models/database.model&#x27;;
 import { MedicoService, PianoVoce, Visita } from &#x27;../../medico/medico.service&#x27;;
@@ -1000,7 +1012,8 @@ export class DashboardPazienteComponent implements OnInit {
   constructor(
     private medicoService: MedicoService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -1011,8 +1024,9 @@ export class DashboardPazienteComponent implements OnInit {
       this.medicoService.getProfiloPaziente(idNumerico).subscribe({
         next: (dati: Paziente) &#x3D;&gt; {
           this.paziente &#x3D; dati; // I dati corrispondono alle colonne della tabella &#x27;pazienti&#x27;
+
+          // Chiamiamo la funzione connessa per scaricare il resto
           this.caricaDatiConnessi(dati.id);
-          this.isLoading &#x3D; false;
         },
         error: (err) &#x3D;&gt; {
           console.error(&quot;Errore recupero profilo&quot;, err);
@@ -1022,12 +1036,15 @@ export class DashboardPazienteComponent implements OnInit {
     } else {
       // Se non c&#x27;è traccia dell&#x27;ID, rimandalo al login per sicurezza
       this.router.navigate([&#x27;/auth/login&#x27;]);
+      this.isLoading &#x3D; false;
     }
   }
 // NUOVA FUNZIONE: Recupera la dieta e lo storico visite dal database
 caricaDatiConnessi(pazienteId: number): void {
+  console.log(&quot;1. Entrato in caricaDatiConnessi per Paziente ID:&quot;, pazienteId);
   this.medicoService.getPianoCompletoPaziente(pazienteId).subscribe({
     next: (vociPiano: PianoVoce[]) &#x3D;&gt; {
+      console.log(&quot;2. Il server ha risposto per il Piano Alimentare:&quot;, vociPiano);
       this.inizializzaMappaVuota();
 
       vociPiano.forEach((voce: PianoVoce) &#x3D;&gt; {
@@ -1042,22 +1059,33 @@ caricaDatiConnessi(pazienteId: number): void {
         }
       });
 
-      // Spegniamo il caricamento solo quando i dati della tabella sono pronti
-      this.isLoading &#x3D; false;
+      // Recupera l&#x27;elenco delle visite passate SOLO DOPO o in parallelo 
+      // per la sezione progressi ma spegniamo l&#x27;isLoading qui quando la struttura 
+      // è renderizzata
+      console.log(&quot;3. Sto per chiamare lo Storico Visite...&quot;);
+      this.medicoService.getStoricoVisite(pazienteId).subscribe({
+        next: (visite: Visita[]) &#x3D;&gt; {
+          console.log(&quot;4. Il server ha risposto per le Visite:&quot;, visite);
+          this.storicoVisite &#x3D; visite;
+          this.calcolaProgressi(visite);
+
+          // ACCENSIONE VERDE: Tutti i dati (Profilo + Piano + Visite) sono nel componente.
+          // Ora possiamo sbloccare la pagina in totale sicurezza!
+          console.log(&quot;5. DISATTIVO CARICAMENTO ORA!&quot;);
+          this.isLoading &#x3D; false;
+          // Forza Angular a renderizzare istantaneamente l&#x27;anagrafica saltando i blocchi pendenti
+          this.cdr.detectChanges();
+        },
+        error: (err: any) &#x3D;&gt; {
+          console.error(&quot;Errore recupero storico visite&quot;, err);
+          this.isLoading &#x3D; false;
+        }
+      });
     },
     error: (err: any) &#x3D;&gt; {
       console.error(&quot;Errore recupero piano alimentare&quot;, err);
       this.isLoading &#x3D; false;
     }
-  });
-
-  // Recupera anche l&#x27;elenco delle visite passate per la sezione progressi
-  this.medicoService.getStoricoVisite(pazienteId).subscribe({
-    next: (visite: Visita[]) &#x3D;&gt; {
-      this.storicoVisite &#x3D; visite;
-      this.calcolaProgressi(visite);
-    },
-    error: (err: any) &#x3D;&gt; console.error(&quot;Errore recupero storico visite&quot;, err)
   });
 }
 
