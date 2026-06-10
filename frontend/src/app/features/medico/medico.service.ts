@@ -111,4 +111,14 @@ export class MedicoService {
   getPianoSalvato(pazienteId: number): Observable<any> {
     return this.http.get<any>(`${this.API_URL}/rag/piano/${pazienteId}`);
   }
+
+  deletePaziente(
+    id: number
+  ): Observable<any> {
+
+    return this.http.delete(
+
+      `${this.API_URL}/pazienti/${id}`
+    );
+  }
 }
