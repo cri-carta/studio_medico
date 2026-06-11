@@ -7,7 +7,6 @@ import { MedicoService } from '../medico.service';
 import { Router } from '@angular/router';
 import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from '../../../core/models/outputAI.model';
 
-
 @Component({
   selector: 'app-dashboard-medico',
   standalone: true,
@@ -17,21 +16,6 @@ import { RispostaAnalisiAI, RispostaTabellaAI, PianoSettimanaleAI } from '../../
 })
 export class DashboardMedicoComponent implements OnInit {
   private authService = inject(AuthService);
-
-  // pazienti: Paziente[] = [
-  //   { id: 1, medico_id: 4, nome: 'Mario', cognome: 'Rossi', data_nascita: new Date('1985-04-12'), altezza: 178, obiettivo: 'Dimagrimento' },
-  //   { id: 2, medico_id: 4, nome: 'Giulia', cognome: 'Bianchi', data_nascita: new Date('1992-11-23'), altezza: 165, obiettivo: 'Ipertrofia' },
-  //   { id: 3, medico_id: 4, nome: 'Luca', cognome: 'Verdi', data_nascita: new Date('1978-07-05'), altezza: 180, obiettivo: 'Mantenimento' },
-  //   { id: 4, medico_id: 4, nome: 'Chiara', cognome: 'Ferrari', data_nascita: new Date('1990-03-18'), altezza: 162, obiettivo: 'Dimagrimento' },
-  //   { id: 5, medico_id: 4, nome: 'Alessandro', cognome: 'Ricci', data_nascita: new Date('1983-09-07'), altezza: 183, obiettivo: 'Ipertrofia' },
-  //   { id: 6, medico_id: 4, nome: 'Francesca', cognome: 'Esposito', data_nascita: new Date('1995-01-30'), altezza: 168, obiettivo: 'Mantenimento' },
-  //   { id: 7, medico_id: 4, nome: 'Davide', cognome: 'Colombo', data_nascita: new Date('1980-06-14'), altezza: 176, obiettivo: 'Dimagrimento' },
-  //   { id: 8, medico_id: 4, nome: 'Sara', cognome: 'Marino', data_nascita: new Date('1998-12-02'), altezza: 170, obiettivo: 'Ipertrofia' },
-  //   { id: 9, medico_id: 4, nome: 'Matteo', cognome: 'Greco', data_nascita: new Date('1975-08-21'), altezza: 174, obiettivo: 'Mantenimento' },
-  //   { id: 10, medico_id: 4, nome: 'Valentina', cognome: 'Bruno', data_nascita: new Date('1993-05-09'), altezza: 160, obiettivo: 'Dimagrimento' },
-  //   { id: 11, medico_id: 4, nome: 'Stefano', cognome: 'Conti', data_nascita: new Date('1987-02-25'), altezza: 181, obiettivo: 'Ipertrofia' },
-  //   { id: 12, medico_id: 4, nome: 'Elena', cognome: 'Mancini', data_nascita: new Date('1996-10-11'), altezza: 166, obiettivo: 'Mantenimento' },
-  // ];
 
   pazienti: Paziente[] = [];
   pazientiFiltrati: Paziente[] = [];
@@ -54,10 +38,23 @@ export class DashboardMedicoComponent implements OnInit {
   errorMsg: string = '';
   successMsg: string = '';
 
-
   dataNascitaEdit: string = '';
-
   modalitaModifica: boolean = false;
+  modalitaAggiungi: boolean = false;
+
+  nuovoPaziente = {
+    email: '',
+    password: '',
+    nome: '',
+    cognome: '',
+    data_nascita: '',
+    altezza: null as number | null,
+    obiettivo: '',
+    anamnesi: '',
+    peso: null as number | null,
+    bmi: 0,
+    bf: 0
+  };
 
   constructor(
     private medicoService: MedicoService,
@@ -66,38 +63,29 @@ export class DashboardMedicoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.pazientiFiltrati = this.pazienti;
-    // Recuperiamo l'ID del medico connesso tramite l'AuthService
-    const medicoId = this.authService.userId();
-
-    if (medicoId !== null) {
-      // Chiamata HTTP al database
-      this.medicoService.getPazientiPerMedico(medicoId).subscribe({
-        next: (datiDalDb: Paziente[]) => {
-          console.log('[DASHBOARD MEDICO] Pazienti caricati dal DB:', datiDalDb);
-
-          // --- MINIMA MODIFICA: Convertiamo la stringa data del DB in un oggetto Date vero ---
-          const pazientiFormattati = datiDalDb.map((p): Paziente => ({
-            ...p,
-            data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
-          }));
-
-          
-          this.pazienti = pazientiFormattati;
-          this.pazientiFiltrati = pazientiFormattati; // Popoliamo subito anche la lista filtrata per la sidebar
-          this.cdr.detectChanges(); // aggiungi questa riga
-
-
-        },
-        error: (err) => {
-          console.error('[DASHBOARD MEDICO] Errore caricamento pazienti:', err);
-          this.errorMsg = 'Impossibile caricare la lista pazienti dal database.';
-        }
-      });
-    } else {
-      // Se non c'è sessione attiva, rimanda al login di sicurezza
-      this.router.navigate(['/auth/login']);
-    }
+    this.medicoService.getMedicoDelLogin().subscribe({
+      next: (medico) => {
+        this.medicoService.getPazientiPerMedico(medico.id).subscribe({
+          next: (datiDalDb: Paziente[]) => {
+            const pazientiFormattati = datiDalDb.map((p): Paziente => ({
+              ...p,
+              data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
+            }));
+            this.pazienti = pazientiFormattati;
+            this.pazientiFiltrati = pazientiFormattati;
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('[DASHBOARD MEDICO] Errore caricamento pazienti:', err);
+            this.errorMsg = 'Impossibile caricare la lista pazienti dal database.';
+          }
+        });
+      },
+      error: (err) => {
+        console.error('[DASHBOARD MEDICO] Errore recupero medico:', err);
+        this.router.navigate(['/auth/login']);
+      }
+    });
   }
 
   onSearch(event: Event): void {
@@ -121,11 +109,9 @@ export class DashboardMedicoComponent implements OnInit {
 
     this.medicoService.getPianoSalvato(id).subscribe({
       next: (res) => {
-        console.log('[PIANO] trovato:', res);
         this.pianoSalvatoDisponibile = true;
       },
       error: (err) => {
-        console.log('[PIANO] non trovato:', err.status);
         this.pianoSalvatoDisponibile = false;
       }
     });
@@ -137,9 +123,7 @@ export class DashboardMedicoComponent implements OnInit {
     const oggi = new Date();
     let eta = oggi.getFullYear() - nascita.getFullYear();
     const mese = oggi.getMonth() - nascita.getMonth();
-    if (mese < 0 || (mese === 0 && oggi.getDate() < nascita.getDate())) {
-      eta--;
-    }
+    if (mese < 0 || (mese === 0 && oggi.getDate() < nascita.getDate())) eta--;
     return eta;
   }
 
@@ -161,8 +145,7 @@ export class DashboardMedicoComponent implements OnInit {
     this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
 
     const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
-    const sessoFattore = 1;
-    const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * sessoFattore) - 5.4;
+    const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
     this.bf = bfCalcolata > 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
 
     this.nuovaVisita.bmi = this.bmi;
@@ -176,7 +159,6 @@ export class DashboardMedicoComponent implements OnInit {
 
     this.medicoService.generaTabellaPiano(this.pazienteSelezionatoId).subscribe({
       next: (res: RispostaTabellaAI) => {
-        console.log('[TABELLA] Piano generato e salvato nel DB');
         this.caricamentoPiano = false;
         this.pianoSalvatoDisponibile = true;
         alert('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo.');
@@ -196,7 +178,6 @@ export class DashboardMedicoComponent implements OnInit {
 
     this.medicoService.getAnalisiAndamento(this.pazienteSelezionatoId).subscribe({
       next: (res: RispostaAnalisiAI) => {
-        console.log('[ANALISI] Risposta ricevuta:', res);
         this.testoAnalisiOllama = res;
         this.caricamentoAnalisi = false;
         this.cdr.detectChanges();
@@ -228,6 +209,7 @@ export class DashboardMedicoComponent implements OnInit {
     if (!this.pazienteSelezionatoId || !this.peso || this.peso <= 0) {
       this.errorMsg = 'Inserisci un peso valido prima di salvare.';
       this.successMsg = '';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -249,71 +231,163 @@ export class DashboardMedicoComponent implements OnInit {
         this.peso = null;
         this.bmi = 0.0;
         this.bf = 0.0;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMsg = "Errore durante il salvataggio della visita sul server.";
         this.successMsg = '';
         console.error(err);
+        this.cdr.detectChanges();
       }
     });
   }
 
-  aggiungiPaziente(): void { console.log('Azione: Nuovo Paziente'); }
-  
-  modificaPaziente(): void { if (!this.pazienteSelezionato) return; this.modalitaModifica = true; if (this.pazienteSelezionato.data_nascita) { this.dataNascitaEdit = new Date(this.pazienteSelezionato.data_nascita) .toISOString() .split('T')[0]; } }  
- 
-  chiudiModifica(): void { this.modalitaModifica = false; }
+  aggiungiPaziente(): void {
+    this.modalitaAggiungi = true;
+    this.nuovoPaziente = {
+      email: '', password: '', nome: '', cognome: '',
+      data_nascita: '', altezza: null, obiettivo: '',
+      anamnesi: '', peso: null, bmi: 0, bf: 0
+    };
+  }
 
-  salvaModifichePaziente(): void { if (!this.pazienteSelezionato) return; this.pazienteSelezionato.data_nascita = this.dataNascitaEdit; this.medicoService.updatePaziente( this.pazienteSelezionato.id, this.pazienteSelezionato ).subscribe({ next: () => { this.modalitaModifica = false; this.cdr.detectChanges(); setTimeout(() => { alert('Paziente aggiornato'); }, 100); }, error: (err: any) => { console.error(err); alert('Errore aggiornamento'); } }); }  
+  chiudiAggiungi(): void {
+    this.modalitaAggiungi = false;
+  }
+
+  calcolaBmiBfNuovoPaziente(): void {
+    if (!this.nuovoPaziente.peso || !this.nuovoPaziente.altezza) return;
+    const altezzaM = this.nuovoPaziente.altezza / 100;
+    this.nuovoPaziente.bmi = parseFloat((this.nuovoPaziente.peso / (altezzaM * altezzaM)).toFixed(1));
+    const oggi = new Date();
+    const nascita = new Date(this.nuovoPaziente.data_nascita);
+    const eta = oggi.getFullYear() - nascita.getFullYear();
+    const bf = (1.20 * this.nuovoPaziente.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
+    this.nuovoPaziente.bf = bf > 0 ? parseFloat(bf.toFixed(1)) : 0;
+  }
+
+  salvaNuovoPaziente(): void {
+    if (!this.nuovoPaziente.email || !this.nuovoPaziente.password ||
+        !this.nuovoPaziente.nome || !this.nuovoPaziente.cognome ||
+        !this.nuovoPaziente.peso) {
+      alert('Compila tutti i campi obbligatori (email, password, nome, cognome, peso).');
+      return;
+    }
+
+    this.medicoService.registraUtentePaziente(
+      this.nuovoPaziente.email,
+      this.nuovoPaziente.password
+    ).subscribe({
+      next: (resUtente) => {
+        const utente_id = resUtente.id;
+
+        this.medicoService.getMedicoDelLogin().subscribe({
+          next: (medico) => {
+            this.medicoService.creaPaziente({
+              utente_id,
+              medico_id: medico.id,
+              nome: this.nuovoPaziente.nome,
+              cognome: this.nuovoPaziente.cognome,
+              data_nascita: this.nuovoPaziente.data_nascita,
+              altezza: this.nuovoPaziente.altezza,
+              obiettivo: this.nuovoPaziente.obiettivo,
+              anamnesi: this.nuovoPaziente.anamnesi,
+              peso: this.nuovoPaziente.peso,
+              bmi: this.nuovoPaziente.bmi,
+              bf: this.nuovoPaziente.bf
+            }).subscribe({
+              next: () => {
+                this.modalitaAggiungi = false;
+                this.medicoService.getMedicoDelLogin().subscribe({
+                  next: (med) => {
+                    this.medicoService.getPazientiPerMedico(med.id).subscribe({
+                      next: (dati) => {
+                        this.pazienti = dati.map(p => ({
+                          ...p,
+                          data_nascita: p.data_nascita ? new Date(p.data_nascita) : undefined
+                        }));
+                        this.pazientiFiltrati = this.pazienti;
+                        this.cdr.detectChanges();
+                        alert('Paziente aggiunto con successo!');
+                      },
+                      error: (err) => {
+                        console.error(err);
+                        alert('Paziente creato ma errore nel ricaricamento lista.');
+                      }
+                    });
+                  }
+                });
+              },
+              error: (err) => {
+                console.error(err);
+                alert('Errore creazione paziente: ' + err.error?.error);
+              }
+            });
+          },
+          error: (err) => {
+            console.error(err);
+            alert('Errore recupero medico: ' + err.error?.error);
+          }
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Errore creazione utente: ' + err.error?.error);
+      }
+    });
+  }
+
+  modificaPaziente(): void {
+    if (!this.pazienteSelezionato) return;
+    this.modalitaModifica = true;
+    if (this.pazienteSelezionato.data_nascita) {
+      this.dataNascitaEdit = new Date(this.pazienteSelezionato.data_nascita).toISOString().split('T')[0];
+    }
+  }
+
+  chiudiModifica(): void {
+    this.modalitaModifica = false;
+  }
+
+  salvaModifichePaziente(): void {
+    if (!this.pazienteSelezionato) return;
+    this.pazienteSelezionato.data_nascita = this.dataNascitaEdit;
+    this.medicoService.updatePaziente(
+      this.pazienteSelezionato.id,
+      this.pazienteSelezionato
+    ).subscribe({
+      next: () => {
+        this.modalitaModifica = false;
+        this.cdr.detectChanges();
+        setTimeout(() => { alert('Paziente aggiornato'); }, 100);
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert('Errore aggiornamento');
+      }
+    });
+  }
 
   eliminaPaziente(): void {
+    if (!this.pazienteSelezionatoId) return;
 
-  if (!this.pazienteSelezionatoId) return;
+    const conferma = confirm('Vuoi davvero eliminare questo paziente?');
+    if (!conferma) return;
 
-  const conferma = confirm(
-    'Vuoi davvero eliminare questo paziente?'
-  );
-
-  if (!conferma) return;
-
-
-  this.medicoService
-    .deletePaziente(this.pazienteSelezionatoId)
-    .subscribe({
-
+    this.medicoService.deletePaziente(this.pazienteSelezionatoId).subscribe({
       next: () => {
-
-        this.pazienti =
-          this.pazienti.filter(
-
-            p => p.id !== this.pazienteSelezionatoId
-
-          );
-
-        this.pazientiFiltrati =
-          this.pazienti;
-
+        this.pazienti = this.pazienti.filter(p => p.id !== this.pazienteSelezionatoId);
+        this.pazientiFiltrati = this.pazienti;
         this.pazienteSelezionatoId = null;
-
         this.pazienteSelezionato = null;
-
         alert('Paziente eliminato');
-
       },
-
       error: (err) => {
-
         console.error(err);
-
         alert('Errore eliminazione paziente');
-
       }
-
     });
-
   }
-
-
 
   getGiorni(): {giorno: string, dati: any}[] {
     if (!this.pianoAlimentareGenerato?.piano_settimanale) return [];
@@ -328,7 +402,6 @@ export class DashboardMedicoComponent implements OnInit {
   }
 
   logout() {
-    console.log("Esecuzione Logout...");
     localStorage.clear();
     this.router.navigate(['/auth/login']);
   }
