@@ -144,6 +144,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Modello dati di una visita medica.</p>
+
+            </p>
 
 
         <section data-compodoc="block-index">
@@ -498,6 +505,7 @@ import { HttpClient } from &#x27;@angular/common/http&#x27;;
 import { Observable } from &#x27;rxjs&#x27;;
 import { RispostaTabellaAI, RispostaAnalisiAI } from &#x27;../../core/models/outputAI.model&#x27;;
 
+/** Dati per la registrazione di una nuova visita antropometrica. */
 export interface NuovaVisita {
   paziente_id: number;
   data_visita: string;
@@ -506,6 +514,7 @@ export interface NuovaVisita {
   bf: number;
 }
 
+/** Modello dati di un paziente. */
 export interface Paziente {
   id: number;
   medico_id: number;
@@ -517,6 +526,7 @@ export interface Paziente {
   anamnesi?: string;
 }
 
+/** Singola voce del piano alimentare. */
 export interface PianoVoce {
   giorno: string;
   tipo_pasto: string;
@@ -528,6 +538,7 @@ export interface PianoVoce {
   grassi?: number;
 }
 
+/** Modello dati di una visita medica. */
 export interface Visita {
   id: number;
   paziente_id: number;
@@ -538,7 +549,14 @@ export interface Visita {
   bf: number;
   note_visita?: string;
 }
-
+/**
+ * @description
+ * Il servizio &#x60;MedicoService&#x60; centralizza tutte le chiamate API verso il backend.
+ * * Gestisce:
+ * - Operazioni CRUD su pazienti e visite.
+ * - Recupero dei piani alimentari (legacy e AI-generated).
+ * - Stream di dati per le risposte AI tramite Server-Sent Events (SSE).
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;
 })
@@ -546,23 +564,57 @@ export class MedicoService {
   private readonly API_URL &#x3D; &#x27;http://localhost:3000&#x27;;
 
   constructor(private http: HttpClient) {}
-
+/** * Recupera la lista di tutti i pazienti associati a un medico.
+   * @param medicoId ID del medico loggato.
+   */
   getPazientiPerMedico(medicoId: number): Observable&lt;Paziente[]&gt; {
-    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/medici/${medicoId}/pazienti&#x60;);
-  }
+    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/pazienti/medico/${medicoId}&#x60;);
+  }/**
+   * Recupera il profilo completo di un paziente.
+   * @param utenteId ID univoco dell&#x27;utente (account).
+   */
 
   getProfiloPaziente(utenteId: number): Observable&lt;Paziente&gt; {
     return this.http.get&lt;Paziente&gt;(&#x60;${this.API_URL}/pazienti/utente/${utenteId}&#x60;);
   }
-
+/**
+   * Recupera il piano alimentare in formato strutturato (legacy).
+   * @param pazienteId ID del paziente.
+   */
   getPianoCompletoPaziente(pazienteId: number): Observable&lt;PianoVoce[]&gt; {
     return this.http.get&lt;PianoVoce[]&gt;(&#x60;${this.API_URL}/piani/paziente/${pazienteId}/full&#x60;);
   }
-
+/**
+   * Recupera lo storico delle visite mediche del paziente.
+   * @param pazienteId ID del paziente.
+   */
   getStoricoVisite(pazienteId: number): Observable&lt;Visita[]&gt; {
     return this.http.get&lt;Visita[]&gt;(&#x60;${this.API_URL}/visite/paziente/${pazienteId}&#x60;);
   }
-
+  /**
+   * Registra un nuovo utente con ruolo &quot;paziente&quot;.
+   * @param email Indirizzo email dell&#x27;utente.
+   * @param password Password scelta dall&#x27;utente.
+   */
+  registraUtentePaziente(email: string, password: string): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/auth/register&#x60;, {
+    email,
+    password,
+    ruolo: &#x27;paziente&#x27;
+  });
+}
+  /**
+   * Crea un nuovo paziente associato al medico.
+   * @param dati Dati anagrafici e clinici del paziente da creare.
+   */
+creaPaziente(dati: any): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/pazienti&#x60;, dati);
+}
+/**
+   * Genera la tabella del piano alimentare tramite SSE (Server-Sent Events).
+   * @param pazienteId ID del paziente per cui generare il piano.
+   * @returns Un Observable che emette i dati ricevuti dallo stream.
+   */
   generaTabellaPiano(pazienteId: number): Observable&lt;RispostaTabellaAI&gt; {
     return new Observable(observer &#x3D;&gt; {
       const token &#x3D; localStorage.getItem(&#x27;token&#x27;);
@@ -591,20 +643,70 @@ export class MedicoService {
       return () &#x3D;&gt; eventSource.close();
     });
   }
-
+  /**
+   * Recupera i dati del medico attualmente autenticato.
+   */
+  getMedicoDelLogin(): Observable&lt;any&gt; {
+      return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/medici/me&#x60;);
+  }
+/**
+   * Recupera l&#x27;analisi dei progressi generata dall&#x27;AI.
+   * @param pazienteId ID del paziente.
+   * @remarks Utilizza un timeout esteso (10 min) a causa del tempo di elaborazione dell&#x27;AI.
+   */
   getAnalisiAndamento(pazienteId: number): Observable&lt;RispostaAnalisiAI&gt; {
     return this.http.get&lt;RispostaAnalisiAI&gt;(
       &#x60;${this.API_URL}/rag/analisi/${pazienteId}&#x60;
     ).pipe(timeout(600000));
   }
-
+/**
+   * Salva una nuova visita antropometrica per un paziente.
+   * @param visita Oggetto contenente i dati della nuova visita.
+   */
   salvaVisita(visita: NuovaVisita): Observable&lt;any&gt; {
     return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/visite&#x60;, visita);
   }
-
+  /**
+   * Recupera il piano alimentare AI già salvato per un paziente.
+   * @param pazienteId ID del paziente.
+   */
   getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
     return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
   }
+  /**
+   * Elimina un paziente dal sistema.
+   * @param id ID del paziente da eliminare.
+   */
+  deletePaziente(
+    id: number
+  ): Observable&lt;any&gt; {
+
+    return this.http.delete(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;
+    );
+  }
+
+  /**
+   * Aggiorna i dati di un paziente esistente.
+   * @param id ID del paziente da aggiornare.
+   * @param dati Oggetto contenente i campi da modificare.
+   */
+  updatePaziente(
+    id: number,
+   dati: any
+  ): Observable&lt;any&gt; {
+
+    return this.http.put(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;,
+      dati
+
+    );
+
+  }
+
+
 }</code></pre>
     </div>
 </div>

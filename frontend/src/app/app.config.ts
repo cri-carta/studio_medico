@@ -4,10 +4,21 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { jwtInterceptor } from './core/auth/jwt.interceptor';
 import { routes } from './app.routes';
 
+/* Configurazione globale dell'applicazione Angular. */
 export const appConfig: ApplicationConfig = {
   providers: [
+
+    /* Registra i listener globali per la gestione degli errori. */
     provideBrowserGlobalErrorListeners(),
+
+    /* Configura il sistema di routing utilizzando le rotte definite nell'applicazione. */
     provideRouter(routes),
+<<<<<<< HEAD
+
+    /* Abilita l'utilizzo di HttpClient per le richieste HTTP. */
+    provideHttpClient()
+=======
     provideHttpClient(withInterceptors([jwtInterceptor]))
+>>>>>>> 4a7268a97a927c703edfc3a4500ea449ea29c1e5
   ]
 };

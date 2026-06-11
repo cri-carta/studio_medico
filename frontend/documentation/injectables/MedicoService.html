@@ -137,6 +137,21 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Il servizio <code>MedicoService</code> centralizza tutte le chiamate API verso il backend.</p>
+<ul>
+<li>Gestisce:</li>
+</ul>
+<ul>
+<li>Operazioni CRUD su pazienti e visite.</li>
+<li>Recupero dei piani alimentari (legacy e AI-generated).</li>
+<li>Stream di dati per le risposte AI tramite Server-Sent Events (SSE).</li>
+</ul>
+
+            </p>
 
 
 
@@ -170,10 +185,19 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                <a href="#creaPaziente" >creaPaziente</a>
+                            </li>
+                            <li>
+                                <a href="#deletePaziente" >deletePaziente</a>
+                            </li>
+                            <li>
                                 <a href="#generaTabellaPiano" >generaTabellaPiano</a>
                             </li>
                             <li>
                                 <a href="#getAnalisiAndamento" >getAnalisiAndamento</a>
+                            </li>
+                            <li>
+                                <a href="#getMedicoDelLogin" >getMedicoDelLogin</a>
                             </li>
                             <li>
                                 <a href="#getPazientiPerMedico" >getPazientiPerMedico</a>
@@ -191,7 +215,13 @@
                                 <a href="#getStoricoVisite" >getStoricoVisite</a>
                             </li>
                             <li>
+                                <a href="#registraUtentePaziente" >registraUtentePaziente</a>
+                            </li>
+                            <li>
                                 <a href="#salvaVisita" >salvaVisita</a>
+                            </li>
+                            <li>
+                                <a href="#updatePaziente" >updatePaziente</a>
                             </li>
                         </ul>
                     </td>
@@ -216,7 +246,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/features/medico/medico.service.ts:52</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/app/features/medico/medico.service.ts:63</a></div>
                             </td>
                         </tr>
 
@@ -263,6 +293,154 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="creaPaziente"></a>
+                    <span class="name">
+                        <span ><b>creaPaziente</b></span>
+                        <a href="#creaPaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>creaPaziente(dati: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="109"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:109</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Crea un nuovo paziente associato al medico.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>dati</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Dati anagrafici e clinici del paziente da creare.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deletePaziente"></a>
+                    <span class="name">
+                        <span ><b>deletePaziente</b></span>
+                        <a href="#deletePaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>deletePaziente(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="179"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:179</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Elimina un paziente dal sistema.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>ID del paziente da eliminare.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="generaTabellaPiano"></a>
                     <span class="name">
                         <span ><b>generaTabellaPiano</b></span>
@@ -279,14 +457,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="72"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:72</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="117"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:117</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Genera la tabella del piano alimentare tramite SSE (Server-Sent Events).</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -297,6 +477,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -311,6 +492,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del paziente per cui generare il piano.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -320,7 +505,8 @@
 
                         </div>
                             <div class="io-description">
-                                
+                                <p>Un Observable che emette i dati ricevuti dallo stream.</p>
+
                             </div>
                 </td>
             </tr>
@@ -346,14 +532,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="101"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:101</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="156"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:156</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Recupera l&#39;analisi dei progressi generata dall&#39;AI.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -364,6 +552,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -378,6 +567,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del paziente.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -389,6 +582,45 @@
                             <div class="io-description">
                                 
                             </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getMedicoDelLogin"></a>
+                    <span class="name">
+                        <span ><b>getMedicoDelLogin</b></span>
+                        <a href="#getMedicoDelLogin"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getMedicoDelLogin()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="148"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:148</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Recupera i dati del medico attualmente autenticato.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                        </div>
                 </td>
             </tr>
         </tbody>
@@ -413,14 +645,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="56"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:56</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="69"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:69</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Recupera la lista di tutti i pazienti associati a un medico.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -431,6 +665,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -445,6 +680,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del medico loggato.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -480,14 +719,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="64"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:64</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="83"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:83</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Recupera il piano alimentare in formato strutturato (legacy).</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -498,6 +739,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -512,6 +754,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del paziente.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -547,14 +793,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="111"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:111</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="172"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:172</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Recupera il piano alimentare AI già salvato per un paziente.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -565,6 +813,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -579,6 +828,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del paziente.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -614,8 +867,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="60"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:60</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="76"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:76</a></div>
                         </td>
                     </tr>
 
@@ -681,14 +934,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="68"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:68</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="90"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:90</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Recupera lo storico delle visite mediche del paziente.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -699,6 +954,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -713,12 +969,106 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>ID del paziente.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         <div class="io-description">
                             <b>Returns : </b>    <code>Observable&lt;Visita[]&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="registraUtentePaziente"></a>
+                    <span class="name">
+                        <span ><b>registraUtentePaziente</b></span>
+                        <a href="#registraUtentePaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>registraUtentePaziente(email: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, password: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="98"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:98</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Registra un nuovo utente con ruolo &quot;paziente&quot;.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>email</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Indirizzo email dell&#39;utente.</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>password</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Password scelta dall&#39;utente.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
 
                         </div>
                             <div class="io-description">
@@ -748,14 +1098,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="107"
-                                    class="link-to-prism">src/app/features/medico/medico.service.ts:107</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="165"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:165</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Salva una nuova visita antropometrica per un paziente.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -766,6 +1118,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -780,6 +1133,100 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>Oggetto contenente i dati della nuova visita.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updatePaziente"></a>
+                    <span class="name">
+                        <span ><b>updatePaziente</b></span>
+                        <a href="#updatePaziente"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>updatePaziente(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, dati: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="194"
+                                    class="link-to-prism">src/app/features/medico/medico.service.ts:194</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Aggiorna i dati di un paziente esistente.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>ID del paziente da aggiornare.</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>dati</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Oggetto contenente i campi da modificare.</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -827,7 +1274,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/features/medico/medico.service.ts:52</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="63" class="link-to-prism">src/app/features/medico/medico.service.ts:63</a></div>
                         </td>
                     </tr>
 
@@ -846,6 +1293,7 @@ import { HttpClient } from &#x27;@angular/common/http&#x27;;
 import { Observable } from &#x27;rxjs&#x27;;
 import { RispostaTabellaAI, RispostaAnalisiAI } from &#x27;../../core/models/outputAI.model&#x27;;
 
+/** Dati per la registrazione di una nuova visita antropometrica. */
 export interface NuovaVisita {
   paziente_id: number;
   data_visita: string;
@@ -854,6 +1302,7 @@ export interface NuovaVisita {
   bf: number;
 }
 
+/** Modello dati di un paziente. */
 export interface Paziente {
   id: number;
   medico_id: number;
@@ -865,6 +1314,7 @@ export interface Paziente {
   anamnesi?: string;
 }
 
+/** Singola voce del piano alimentare. */
 export interface PianoVoce {
   giorno: string;
   tipo_pasto: string;
@@ -876,6 +1326,7 @@ export interface PianoVoce {
   grassi?: number;
 }
 
+/** Modello dati di una visita medica. */
 export interface Visita {
   id: number;
   paziente_id: number;
@@ -886,7 +1337,14 @@ export interface Visita {
   bf: number;
   note_visita?: string;
 }
-
+/**
+ * @description
+ * Il servizio &#x60;MedicoService&#x60; centralizza tutte le chiamate API verso il backend.
+ * * Gestisce:
+ * - Operazioni CRUD su pazienti e visite.
+ * - Recupero dei piani alimentari (legacy e AI-generated).
+ * - Stream di dati per le risposte AI tramite Server-Sent Events (SSE).
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;
 })
@@ -894,23 +1352,57 @@ export class MedicoService {
   private readonly API_URL &#x3D; &#x27;http://localhost:3000&#x27;;
 
   constructor(private http: HttpClient) {}
-
+/** * Recupera la lista di tutti i pazienti associati a un medico.
+   * @param medicoId ID del medico loggato.
+   */
   getPazientiPerMedico(medicoId: number): Observable&lt;Paziente[]&gt; {
-    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/medici/${medicoId}/pazienti&#x60;);
-  }
+    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/pazienti/medico/${medicoId}&#x60;);
+  }/**
+   * Recupera il profilo completo di un paziente.
+   * @param utenteId ID univoco dell&#x27;utente (account).
+   */
 
   getProfiloPaziente(utenteId: number): Observable&lt;Paziente&gt; {
     return this.http.get&lt;Paziente&gt;(&#x60;${this.API_URL}/pazienti/utente/${utenteId}&#x60;);
   }
-
+/**
+   * Recupera il piano alimentare in formato strutturato (legacy).
+   * @param pazienteId ID del paziente.
+   */
   getPianoCompletoPaziente(pazienteId: number): Observable&lt;PianoVoce[]&gt; {
     return this.http.get&lt;PianoVoce[]&gt;(&#x60;${this.API_URL}/piani/paziente/${pazienteId}/full&#x60;);
   }
-
+/**
+   * Recupera lo storico delle visite mediche del paziente.
+   * @param pazienteId ID del paziente.
+   */
   getStoricoVisite(pazienteId: number): Observable&lt;Visita[]&gt; {
     return this.http.get&lt;Visita[]&gt;(&#x60;${this.API_URL}/visite/paziente/${pazienteId}&#x60;);
   }
-
+  /**
+   * Registra un nuovo utente con ruolo &quot;paziente&quot;.
+   * @param email Indirizzo email dell&#x27;utente.
+   * @param password Password scelta dall&#x27;utente.
+   */
+  registraUtentePaziente(email: string, password: string): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/auth/register&#x60;, {
+    email,
+    password,
+    ruolo: &#x27;paziente&#x27;
+  });
+}
+  /**
+   * Crea un nuovo paziente associato al medico.
+   * @param dati Dati anagrafici e clinici del paziente da creare.
+   */
+creaPaziente(dati: any): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/pazienti&#x60;, dati);
+}
+/**
+   * Genera la tabella del piano alimentare tramite SSE (Server-Sent Events).
+   * @param pazienteId ID del paziente per cui generare il piano.
+   * @returns Un Observable che emette i dati ricevuti dallo stream.
+   */
   generaTabellaPiano(pazienteId: number): Observable&lt;RispostaTabellaAI&gt; {
     return new Observable(observer &#x3D;&gt; {
       const token &#x3D; localStorage.getItem(&#x27;token&#x27;);
@@ -939,20 +1431,70 @@ export class MedicoService {
       return () &#x3D;&gt; eventSource.close();
     });
   }
-
+  /**
+   * Recupera i dati del medico attualmente autenticato.
+   */
+  getMedicoDelLogin(): Observable&lt;any&gt; {
+      return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/medici/me&#x60;);
+  }
+/**
+   * Recupera l&#x27;analisi dei progressi generata dall&#x27;AI.
+   * @param pazienteId ID del paziente.
+   * @remarks Utilizza un timeout esteso (10 min) a causa del tempo di elaborazione dell&#x27;AI.
+   */
   getAnalisiAndamento(pazienteId: number): Observable&lt;RispostaAnalisiAI&gt; {
     return this.http.get&lt;RispostaAnalisiAI&gt;(
       &#x60;${this.API_URL}/rag/analisi/${pazienteId}&#x60;
     ).pipe(timeout(600000));
   }
-
+/**
+   * Salva una nuova visita antropometrica per un paziente.
+   * @param visita Oggetto contenente i dati della nuova visita.
+   */
   salvaVisita(visita: NuovaVisita): Observable&lt;any&gt; {
     return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/visite&#x60;, visita);
   }
-
+  /**
+   * Recupera il piano alimentare AI già salvato per un paziente.
+   * @param pazienteId ID del paziente.
+   */
   getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
     return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
   }
+  /**
+   * Elimina un paziente dal sistema.
+   * @param id ID del paziente da eliminare.
+   */
+  deletePaziente(
+    id: number
+  ): Observable&lt;any&gt; {
+
+    return this.http.delete(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;
+    );
+  }
+
+  /**
+   * Aggiorna i dati di un paziente esistente.
+   * @param id ID del paziente da aggiornare.
+   * @param dati Oggetto contenente i campi da modificare.
+   */
+  updatePaziente(
+    id: number,
+   dati: any
+  ): Observable&lt;any&gt; {
+
+    return this.http.put(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;,
+      dati
+
+    );
+
+  }
+
+
 }</code></pre>
     </div>
 

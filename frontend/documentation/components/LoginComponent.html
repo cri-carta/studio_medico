@@ -142,6 +142,20 @@
 </p>
 
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Componente per la gestione del login utente.</p>
+<p>Permette all&#39;utente di:</p>
+<ul>
+<li>Selezionare il proprio ruolo (medico o paziente).</li>
+<li>Inserire le credenziali di accesso.</li>
+<li>Effettuare l&#39;autenticazione tramite chiamata API e venire reindirizzato
+alla dashboard corrispondente al ruolo scelto.</li>
+</ul>
+
+    </p>
 
 
 
@@ -277,7 +291,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/features/auth/login/login.ts:23</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/features/auth/login/login.ts:47</a></div>
                             </td>
                         </tr>
 
@@ -368,14 +382,23 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/app/features/auth/login/login.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="85"
+                                    class="link-to-prism">src/app/features/auth/login/login.ts:85</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Gestisce l&#39;invio delle credenziali al server.</p>
+<ul>
+<li>Verifica che email e password siano state inserite.</li>
+<li>Esegue una richiesta POST verso l&#39;endpoint <code>/auth/login</code>.</li>
+<li>In caso di successo, salva il token tramite <code>AuthService</code> e reindirizza
+l&#39;utente verso <code>/medico</code> o <code>/paziente</code> in base al ruolo selezionato.</li>
+<li>In caso di errore, mostra un messaggio generico all&#39;utente.</li>
+</ul>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -405,14 +428,16 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="31"
-                                    class="link-to-prism">src/app/features/auth/login/login.ts:31</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="59"
+                                    class="link-to-prism">src/app/features/auth/login/login.ts:59</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Salva il ruolo selezionato e aggiorna lo stato della schermata.</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -423,6 +448,7 @@
                                             <td>Name</td>
                                                 <td>Type</td>
                                             <td>Optional</td>
+                                                <td>Description</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -437,6 +463,10 @@
                                             </td>
 
 
+                                            <td>
+                                                    <p>Ruolo scelto dall&#39;utente (&#39;medico&#39; o &#39;paziente&#39;).</p>
+
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -472,14 +502,17 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="36"
-                                    class="link-to-prism">src/app/features/auth/login/login.ts:36</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="68"
+                                    class="link-to-prism">src/app/features/auth/login/login.ts:68</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>Ripristina i valori iniziali del form, riportando l&#39;utente
+alla schermata di selezione del ruolo.</p>
+</div>
 
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
@@ -519,10 +552,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/app/features/auth/login/login.ts:23</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">src/app/features/auth/login/login.ts:47</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Indica se la richiesta di login è in corso.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -550,10 +589,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/app/features/auth/login/login.ts:20</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">src/app/features/auth/login/login.ts:38</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Email inserita nel form di login.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -581,10 +626,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/app/features/auth/login/login.ts:22</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/app/features/auth/login/login.ts:44</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Messaggio di errore mostrato all&#39;utente.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -612,10 +663,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="21" class="link-to-prism">src/app/features/auth/login/login.ts:21</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="41" class="link-to-prism">src/app/features/auth/login/login.ts:41</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Password inserita nel form di login.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -643,10 +700,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/features/auth/login/login.ts:18</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">src/app/features/auth/login/login.ts:35</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Memorizza il ruolo selezionato dall&#39;utente.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -674,10 +737,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="17" class="link-to-prism">src/app/features/auth/login/login.ts:17</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">src/app/features/auth/login/login.ts:32</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Indica la schermata attualmente visualizzata.</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -694,21 +763,45 @@ import { FormsModule } from &#x27;@angular/forms&#x27;;
 import { HttpClient } from &#x27;@angular/common/http&#x27;;
 import { AuthService } from &#x27;../../../core/auth/auth.service&#x27;;
 
+/**
+ * @description
+ * Componente per la gestione del login utente.
+ *
+ * Permette all&#x27;utente di:
+ * - Selezionare il proprio ruolo (medico o paziente).
+ * - Inserire le credenziali di accesso.
+ * - Effettuare l&#x27;autenticazione tramite chiamata API e venire reindirizzato
+ *   alla dashboard corrispondente al ruolo scelto.
+ */
 @Component({
   selector: &#x27;app-login&#x27;,
+
+  /** Rende il componente utilizzabile senza NgModule. */
   standalone: true,
+
+  /** Moduli utilizzati all&#x27;interno del template. */
   imports: [CommonModule, FormsModule],
   templateUrl: &#x27;./login.html&#x27;,
   styleUrls: [&#x27;./login.css&#x27;]
 })
 export class LoginComponent {
 
+  /** Indica la schermata attualmente visualizzata. */
   step: &#x27;scelta&#x27; | &#x27;credenziali&#x27; &#x3D; &#x27;scelta&#x27;;
+
+  /** Memorizza il ruolo selezionato dall&#x27;utente. */
   ruoloSelezionato: &#x27;medico&#x27; | &#x27;paziente&#x27; | null &#x3D; null;
 
+  /** Email inserita nel form di login. */
   email &#x3D; &#x27;&#x27;;
+
+  /** Password inserita nel form di login. */
   password &#x3D; &#x27;&#x27;;
+
+  /** Messaggio di errore mostrato all&#x27;utente. */
   errorMsg &#x3D; &#x27;&#x27;;
+
+  /** Indica se la richiesta di login è in corso. */
   caricamento &#x3D; false;
 
   constructor(
@@ -717,11 +810,19 @@ export class LoginComponent {
     private http: HttpClient
   ) {}
 
+  /**
+   * Salva il ruolo selezionato e aggiorna lo stato della schermata.
+   * @param ruolo Ruolo scelto dall&#x27;utente (&#x27;medico&#x27; o &#x27;paziente&#x27;).
+   */
   selezionaRuolo(ruolo: &#x27;medico&#x27; | &#x27;paziente&#x27;) {
     this.ruoloSelezionato &#x3D; ruolo;
     this.step &#x3D; &#x27;credenziali&#x27;;
   }
 
+  /**
+   * Ripristina i valori iniziali del form, riportando l&#x27;utente
+   * alla schermata di selezione del ruolo.
+   */
   tornaIndietro() {
     this.step &#x3D; &#x27;scelta&#x27;;
     this.email &#x3D; &#x27;&#x27;;
@@ -729,7 +830,19 @@ export class LoginComponent {
     this.errorMsg &#x3D; &#x27;&#x27;;
   }
 
+  /**
+   * Gestisce l&#x27;invio delle credenziali al server.
+   *
+   * @remarks
+   * - Verifica che email e password siano state inserite.
+   * - Esegue una richiesta POST verso l&#x27;endpoint &#x60;/auth/login&#x60;.
+   * - In caso di successo, salva il token tramite &#x60;AuthService&#x60; e reindirizza
+   *   l&#x27;utente verso &#x60;/medico&#x60; o &#x60;/paziente&#x60; in base al ruolo selezionato.
+   * - In caso di errore, mostra un messaggio generico all&#x27;utente.
+   */
   accedi() {
+
+    /* Verifica che email e password siano state inserite. */
     if (!this.email || !this.password) {
       this.errorMsg &#x3D; &#x27;Inserisci email e password.&#x27;;
       return;
@@ -738,35 +851,47 @@ export class LoginComponent {
     this.caricamento &#x3D; true;
     this.errorMsg &#x3D; &#x27;&#x27;;
 
+    /* Oggetto contenente le credenziali da inviare. */
     const payload &#x3D; {
       email: this.email,
       password: this.password
     };
     console.log(&#x27;[LOGIN] invio payload&#x27;, payload);
 
+    /* Esegue la richiesta POST verso l&#x27;endpoint di login. */
     this.http.post&lt;any&gt;(&#x27;http://localhost:3000/auth/login&#x27;, payload).subscribe({
+
+      /* Gestisce la risposta ricevuta in caso di successo. */
       next: (res) &#x3D;&gt; {
         console.log(&#x27;[LOGIN] risposta server&#x27;, res);
+
+        /* Salva il token ricevuto. */
         this.authService.login(res.token);
         this.caricamento &#x3D; false;
 
+        /* Reindirizza l&#x27;utente in base al ruolo selezionato. */
         if (this.ruoloSelezionato &#x3D;&#x3D;&#x3D; &#x27;medico&#x27;) {
           this.router.navigate([&#x27;/medico&#x27;]);
         } else {
           this.router.navigate([&#x27;/paziente&#x27;]);
         }
       },
+
+      /* Gestisce eventuali errori restituiti dalla richiesta. */
       error: (err) &#x3D;&gt; {
         this.caricamento &#x3D; false;
         this.errorMsg &#x3D; &#x27;Credenziali non valide. Riprova.&#x27;;
         console.error(&#x27;[LOGIN] Errore:&#x27;, err);
+
+        /* Mostra il contenuto dell&#x27;errore se disponibile. */
         if (err.error) {
           console.error(&#x27;[LOGIN] Errore body:&#x27;, err.error);
         }
       }
     });
   }
-}</code></pre>
+}
+</code></pre>
     </div>
 
     <div class="tab-pane fade " id="templateData">
