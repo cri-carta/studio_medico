@@ -29,9 +29,6 @@ export class DashboardMedicoComponent implements OnInit {
   testoAnalisiOllama: RispostaAnalisiAI | null = null;
   pianoAlimentareGenerato: PianoSettimanaleAI | null = null;
 
-  giorniDellaSettimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
-  tipiPasto = ['Colazione', 'Pranzo', 'Merenda', 'Cena'] as const;
-
   peso: number | null = null;
   bmi: number = 0.0;
   bf: number = 0.0;
@@ -169,7 +166,6 @@ export class DashboardMedicoComponent implements OnInit {
         this.mostraToast('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo. 🍏', 'info');
       },
       error: (err) => {
-        console.error('[TABELLA] Errore:', err);
         this.mostraToast('Errore durante la generazione del piano.', 'error');
         this.caricamentoPiano = false;
       }
@@ -188,7 +184,6 @@ export class DashboardMedicoComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('[ANALISI] Errore:', err);
         this.mostraToast("Errore durante l'elaborazione dell'analisi clinica.", 'error');
         this.caricamentoAnalisi = false;
       }
@@ -239,7 +234,6 @@ export class DashboardMedicoComponent implements OnInit {
       error: (err) => {
         this.errorMsg = "Errore durante il salvataggio della visita sul server.";
         this.successMsg = '';
-        console.error(err);
         this.cdr.detectChanges();
       }
     });
@@ -323,7 +317,6 @@ export class DashboardMedicoComponent implements OnInit {
                         this.mostraToast('Paziente aggiunto con successo! ✅');
                       },
                       error: (err) => {
-                        console.error(err);
                         this.mostraToast('Paziente creato ma errore nel ricaricamento lista.', 'error');
                       }
                     });
@@ -331,19 +324,16 @@ export class DashboardMedicoComponent implements OnInit {
                 });
               },
               error: (err) => {
-                console.error(err);
                 this.mostraToast('Errore creazione paziente: ' + err.error?.error, 'error');
               }
             });
           },
           error: (err) => {
-            console.error(err);
             this.mostraToast('Errore recupero medico: ' + err.error?.error, 'error');
           }
         });
       },
       error: (err) => {
-        console.error(err);
         this.mostraToast('Errore creazione utente: ' + err.error?.error, 'error');
       }
     });
@@ -374,7 +364,6 @@ export class DashboardMedicoComponent implements OnInit {
         this.mostraToast('Paziente aggiornato con successo! ✅');
       },
       error: (err: any) => {
-        console.error(err);
         this.mostraToast('Errore aggiornamento paziente.', 'error');
       }
     });
@@ -395,7 +384,6 @@ export class DashboardMedicoComponent implements OnInit {
         this.mostraToast('Paziente eliminato 🗑️', 'error');
       },
       error: (err) => {
-        console.error(err);
         this.mostraToast('Errore eliminazione paziente.', 'error');
       }
     });

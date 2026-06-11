@@ -48,8 +48,7 @@ export class DashboardPazienteComponent implements OnInit {
           this.cdr.detectChanges();
           this.caricaDatiConnessi(dati.id);
         },
-        error: (err) => {
-          console.error("Errore recupero profilo", err);
+        error: () => {
           this.isLoading = false;
         }
       });
@@ -60,18 +59,14 @@ export class DashboardPazienteComponent implements OnInit {
   }
 
   caricaDatiConnessi(pazienteId: number): void {
-    // Carica piano RAG JSON dal DB
     this.medicoService.getPianoSalvato(pazienteId).subscribe({
       next: (res) => {
         this.pianoAlimentareRAG = res.piano;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.log('Nessun piano RAG salvato per questo paziente');
-      }
+      error: () => {}
     });
 
-    // Carica piano vecchio struttura (colleghi)
     this.medicoService.getPianoCompletoPaziente(pazienteId).subscribe({
       next: (vociPiano: PianoVoce[]) => {
         this.inizializzaMappaVuota();
@@ -85,13 +80,11 @@ export class DashboardPazienteComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err: any) => {
-        console.error("Errore recupero piano alimentare", err);
+      error: () => {
         this.isLoading = false;
       }
     });
 
-    // Carica storico visite — INDIPENDENTE dal piano
     this.medicoService.getStoricoVisite(pazienteId).subscribe({
       next: (visite: Visita[]) => {
         this.storicoVisite = visite;
@@ -99,8 +92,7 @@ export class DashboardPazienteComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err: any) => {
-        console.error("Errore recupero storico visite", err);
+      error: () => {
         this.isLoading = false;
       }
     });

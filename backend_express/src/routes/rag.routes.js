@@ -1,7 +1,6 @@
 const express   = require('express');
 const router    = express.Router();
 const { spawn } = require('child_process');
-const path      = require('path');
 const jwt       = require('jsonwebtoken');
 const { getVisiteByPaziente }                  = require('../models/visita.model');
 const { getPatientById }                       = require('../models/paziente.model');
@@ -13,9 +12,6 @@ const RAG_SCRIPT = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\rag_sys
 
 function callPython(comando, payload) {
     return new Promise((resolve, reject) => {
-        console.log('[PYTHON] Comando:', comando);
-        console.log('[PYTHON] Payload:', JSON.stringify(payload).substring(0, 300));
-
         const proc = spawn(PYTHON, [RAG_SCRIPT, comando, JSON.stringify(payload)], {
             env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
         });
@@ -23,17 +19,10 @@ function callPython(comando, payload) {
         let stdout = '';
         let stderr = '';
 
-        proc.stdout.on('data', (data) => {
-            stdout += data.toString();
-            console.log('[PYTHON stdout]', data.toString().substring(0, 200));
-        });
-        proc.stderr.on('data', (data) => {
-            stderr += data.toString();
-            console.log('[PYTHON stderr]', data.toString().substring(0, 200));
-        });
+        proc.stdout.on('data', (data) => { stdout += data.toString(); });
+        proc.stderr.on('data', (data) => { stderr += data.toString(); });
 
         proc.on('close', (code) => {
-            console.log('[PYTHON] Exit code:', code);
             if (code !== 0) {
                 return reject(new Error(`Python error: ${stderr}`));
             }
@@ -72,7 +61,6 @@ router.get('/tabella/:paziente_id', async (req, res) => {
 
     try {
         const { paziente_id } = req.params;
-        console.log('[RAG SSE] paziente_id:', paziente_id);
 
         const paziente = await getPatientById(paziente_id);
         if (!paziente) {
@@ -82,7 +70,6 @@ router.get('/tabella/:paziente_id', async (req, res) => {
         }
 
         const ragId = `paz_${String(paziente_id).padStart(3, '0')}`;
-        console.log('[RAG SSE] ID formattato:', ragId);
         sendEvent('stato', { message: 'Elaborazione in corso...' });
 
         const risultato = await callPython('tabella', {
@@ -90,35 +77,23 @@ router.get('/tabella/:paziente_id', async (req, res) => {
             paziente_id: ragId,
         });
 
-        console.log('[RAG SSE] ha_contesto:', risultato.ha_contesto);
-        console.log('[RAG SSE] risposta keys:', risultato.risposta ? Object.keys(risultato.risposta) : 'null');
-
-        // Salva il piano JSON nel DB
         if (risultato.ha_contesto && risultato.risposta && Object.keys(risultato.risposta).length > 0) {
             try {
                 const medico = await getMedicoByUtenteId(decoded.id);
                 const medico_id = medico ? medico.id : null;
-
-                if (!medico_id) {
-                    console.error('[RAG SSE] Medico non trovato per utente_id:', decoded.id);
-                } else {
-                    console.log('[RAG SSE] Salvataggio - paziente_id:', paziente_id, '| medico_id:', medico_id);
-                    const saved = await savePianoJSON(paziente_id, medico_id, risultato.risposta);
-                    console.log('[RAG SSE] Piano salvato nel DB:', JSON.stringify(saved));
+                if (medico_id) {
+                    await savePianoJSON(paziente_id, medico_id, risultato.risposta);
                 }
             } catch (saveErr) {
-                console.error('[RAG SSE] ERRORE salvataggio:', saveErr.message);
-                console.error('[RAG SSE] Stack:', saveErr.stack);
+                console.error('[RAG] Errore salvataggio piano:', saveErr.message);
             }
-        } else {
-            console.warn('[RAG SSE] Salvataggio saltato - ha_contesto:', risultato.ha_contesto);
         }
 
         sendEvent('completo', risultato);
         res.end();
 
     } catch (err) {
-        console.error('[RAG SSE] Errore:', err.message);
+        console.error('[RAG] Errore tabella:', err.message);
         sendEvent('errore', { message: err.message });
         res.end();
     }
@@ -129,11 +104,9 @@ router.get('/piano/:paziente_id', async (req, res) => {
     try {
         const { paziente_id } = req.params;
         const piano = await getPianoJSONByPaziente(paziente_id);
-
         if (!piano) {
             return res.status(404).json({ error: 'Nessun piano trovato per questo paziente.' });
         }
-
         res.json(piano);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -144,7 +117,6 @@ router.get('/piano/:paziente_id', async (req, res) => {
 router.get('/analisi/:paziente_id', async (req, res) => {
     try {
         const { paziente_id } = req.params;
-        console.log('[RAG] analisi per paziente_id:', paziente_id);
 
         const paziente = await getPatientById(paziente_id);
         if (!paziente) {
@@ -152,8 +124,6 @@ router.get('/analisi/:paziente_id', async (req, res) => {
         }
 
         const visite = await getVisiteByPaziente(paziente_id);
-        console.log('[RAG] visite trovate:', visite.length);
-
         if (visite.length < 2) {
             return res.status(400).json({ error: 'Servono almeno 2 visite per l\'analisi.' });
         }
@@ -178,7 +148,6 @@ router.get('/analisi/:paziente_id', async (req, res) => {
             visite: visteFormattate,
         });
 
-        console.log('[RAG] analisi ha_migliorato:', risultato.ha_migliorato);
         res.json(risultato);
 
     } catch (err) {

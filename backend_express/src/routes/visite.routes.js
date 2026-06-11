@@ -9,7 +9,6 @@ const {
     deleteVisita
 } = require('../models/visita.model');
 
-// GET tutte le visite
 router.get('/', async (req, res) => {
     try {
         const visite = await getAllVisits();
@@ -19,7 +18,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET visite di un paziente
 router.get('/paziente/:paziente_id', async (req, res) => {
     try {
         const visite = await getVisiteByPaziente(req.params.paziente_id);
@@ -29,7 +27,6 @@ router.get('/paziente/:paziente_id', async (req, res) => {
     }
 });
 
-// GET prima e ultima visita (per analisi andamento)
 router.get('/paziente/:paziente_id/andamento', async (req, res) => {
     try {
         const visite = await getPrimaUltimaVisita(req.params.paziente_id);
@@ -42,13 +39,10 @@ router.get('/paziente/:paziente_id/andamento', async (req, res) => {
     }
 });
 
-// POST nuova visita
-// POST nuova visita
 router.post('/', async (req, res) => {
     try {
         const { paziente_id, data_visita, peso, bmi, bf, note_visita } = req.body;
 
-        // Prende medico_id dal token JWT
         const jwt = require('jsonwebtoken');
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
@@ -65,18 +59,13 @@ router.post('/', async (req, res) => {
         res.status(201).json({ ok: true, id: result.insertId });
 
     } catch (err) {
-        console.error('[VISITE POST] Errore:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// PUT aggiorna visita
 router.put('/:id', async (req, res) => {
     try {
-        // Estrai anche note_visita dal body
         const { data_visita, peso, bmi, bf, note_visita } = req.body;
-        
-        // Passalo alla funzione del modello
         await updateVisita(req.params.id, data_visita, peso, bmi, bf, note_visita);
         res.json({ ok: true });
     } catch (err) {
@@ -84,7 +73,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETE visita
 router.delete('/:id', async (req, res) => {
     try {
         await deleteVisita(req.params.id);
