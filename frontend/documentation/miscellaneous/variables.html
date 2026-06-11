@@ -189,9 +189,13 @@
 
     /* Configura il sistema di routing utilizzando le rotte definite nell&#x27;applicazione. */
     provideRouter(routes),
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 
     /* Abilita l&#x27;utilizzo di HttpClient per le richieste HTTP. */
     provideHttpClient()
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+    provideHttpClient(withInterceptors([jwtInterceptor]))
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 4a7268a97a927c703edfc3a4500ea449ea29c1e5
   ]
 }</code>
                     </td>
@@ -354,11 +358,11 @@ automaticamente alla pagina di login.</li>
                     <td class="col-md-4">
                         <i>Default value : </i><code>[
   {
-    path: &#x27;&#x27;, 
+    path: &#x27;&#x27;,
     component: DashboardMedicoComponent // Questa è la tua homepage con la lista pazienti!
   },
   {
-    path: &#x27;paziente/:id&#x27;, 
+    path: &#x27;paziente/:id&#x27;,
     component: SchedaPazienteComponent
   },
   {

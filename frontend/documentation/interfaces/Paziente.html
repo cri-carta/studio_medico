@@ -140,7 +140,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/app/core/models/database.model.ts</code>
+            <code>src/app/features/medico/medico.service.ts</code>
         </p>
 
 
@@ -148,7 +148,7 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                <p>Informazioni anagrafiche e cliniche di un paziente.</p>
+                <p>Modello dati di un paziente.</p>
 
             </p>
 
@@ -264,12 +264,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Altezza espressa in centimetri.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -308,12 +302,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Anamnesi clinica e informazioni mediche rilevanti.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -347,12 +335,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Cognome del paziente.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -391,12 +373,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Data di nascita.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -430,12 +406,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Identificativo univoco del paziente.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -469,12 +439,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>ID del medico responsabile del paziente.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -508,12 +472,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Nome del paziente.</p>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered">
@@ -552,18 +510,6 @@
 
 
 
-                            <tr>
-                                <td class="col-md-4">
-                                    <div class="io-description"><p>Obiettivo nutrizionale o fisico del paziente.</p>
-<p>Esempi:</p>
-<ul>
-<li>Dimagrimento</li>
-<li>Massa muscolare</li>
-<li>Mantenimento peso</li>
-</ul>
-</div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
             </section>
@@ -571,239 +517,214 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">export interface Utente {
-  /**
-   * Identificativo univoco dell&#x27;utente.
-   * Generato automaticamente dal database.
-   */
-  id?: number;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { timeout } from &#x27;rxjs/operators&#x27;;
+import { Injectable } from &#x27;@angular/core&#x27;;
+import { HttpClient } from &#x27;@angular/common/http&#x27;;
+import { Observable } from &#x27;rxjs&#x27;;
+import { RispostaTabellaAI, RispostaAnalisiAI } from &#x27;../../core/models/outputAI.model&#x27;;
 
-  /**
-   * Indirizzo email utilizzato per il login.
-   */
-  email: string;
-
-  /**
-   * Ruolo dell&#x27;utente all&#x27;interno della piattaforma.
-   *
-   * - &#x60;medico&#x60;: può gestire pazienti e piani alimentari.
-   * - &#x60;paziente&#x60;: può consultare i propri dati e piani.
-   */
-  ruolo: &#x27;medico&#x27; | &#x27;paziente&#x27;;
+/** Dati per la registrazione di una nuova visita antropometrica. */
+export interface NuovaVisita {
+  paziente_id: number;
+  data_visita: string;
+  peso: number;
+  bmi: number;
+  bf: number;
 }
 
-/**
- * Informazioni anagrafiche e cliniche di un paziente.
- */
+/** Modello dati di un paziente. */
 export interface Paziente {
-  /**
-   * Identificativo univoco del paziente.
-   */
   id: number;
-
-  /**
-   * ID del medico responsabile del paziente.
-   */
   medico_id: number;
-
-  /**
-   * Nome del paziente.
-   */
   nome: string;
-
-  /**
-   * Cognome del paziente.
-   */
   cognome: string;
-
-  /**
-   * Data di nascita.
-   */
   data_nascita?: Date | string;
-
-  /**
-   * Altezza espressa in centimetri.
-   */
   altezza?: number;
-
-  /**
-   * Obiettivo nutrizionale o fisico del paziente.
-   *
-   * Esempi:
-   * - Dimagrimento
-   * - Massa muscolare
-   * - Mantenimento peso
-   */
   obiettivo?: string;
-
-  /**
-   * Anamnesi clinica e informazioni mediche rilevanti.
-   */
   anamnesi?: string;
 }
 
-/**
- * Rilevazione effettuata durante una visita di controllo.
- */
-export interface Visita {
-  /**
-   * Identificativo univoco della visita.
-   */
-  id: number;
-
-  /**
-   * Paziente a cui appartiene la visita.
-   */
-  paziente_id: number;
-
-  /**
-   * Data della visita.
-   */
-  data_visita: Date;
-
-  /**
-   * Peso rilevato in chilogrammi.
-   */
-  peso: number;
-}
-
-/**
- * Singolo alimento presente in un pasto.
- *
- * Contiene sia la quantità consumata che i valori
- * nutrizionali associati.
- */
-export interface VocePasto {
-  /**
-   * Identificativo della voce.
-   */
-  id: number;
-
-  /**
-   * ID del pasto di appartenenza.
-   */
-  pasto_id: number;
-
-  /**
-   * Nome dell&#x27;alimento.
-   */
+/** Singola voce del piano alimentare. */
+export interface PianoVoce {
+  giorno: string;
+  tipo_pasto: string;
   alimento: string;
-
-  /**
-   * Quantità espressa in grammi.
-   */
   grammi: number;
-
-  /**
-   * Apporto calorico totale della porzione.
-   */
   kcal?: number;
-
-  /**
-   * Quantità di proteine in grammi.
-   */
   proteine?: number;
-
-  /**
-   * Quantità di carboidrati in grammi.
-   */
   carboidrati?: number;
-
-  /**
-   * Quantità di grassi in grammi.
-   */
   grassi?: number;
 }
 
-/**
- * Pasto previsto in una giornata del piano alimentare.
- */
-export interface Pasto {
-  /**
-   * Identificativo del pasto.
-   */
+/** Modello dati di una visita medica. */
+export interface Visita {
   id: number;
-
-  /**
-   * Giorno del piano a cui appartiene il pasto.
-   */
-  giorno_id: number;
-
-  /**
-   * Tipologia del pasto.
-   */
-  tipo_pasto:
-    | &#x27;colazione&#x27;
-    | &#x27;pranzo&#x27;
-    | &#x27;cena&#x27;
-    | &#x27;spuntino&#x27;;
-
-  /**
-   * Elenco degli alimenti che compongono il pasto.
-   */
-  voci_pasto: VocePasto[];
-}
-
-/**
- * Piano alimentare assegnato a un paziente.
- */
-export interface PianoAlimentare {
-  /**
-   * Identificativo univoco del piano.
-   */
-  id: number;
-
-  /**
-   * Paziente destinatario del piano.
-   */
   paziente_id: number;
-
-  /**
-   * Medico che ha creato il piano.
-   */
   medico_id: number;
-
-  /**
-   * Data e ora di creazione del piano.
-   */
-  created_at: Date;
-
-  /**
-   * Giorni che compongono il piano alimentare.
-   */
-  giorni: GiornoPiano[];
+  data_visita: string;
+  peso: number;
+  bmi: number;
+  bf: number;
+  note_visita?: string;
 }
-
 /**
- * Rappresenta una giornata del piano alimentare.
+ * @description
+ * Il servizio &#x60;MedicoService&#x60; centralizza tutte le chiamate API verso il backend.
+ * * Gestisce:
+ * - Operazioni CRUD su pazienti e visite.
+ * - Recupero dei piani alimentari (legacy e AI-generated).
+ * - Stream di dati per le risposte AI tramite Server-Sent Events (SSE).
  */
-export interface GiornoPiano {
-  /**
-   * Identificativo del giorno.
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class MedicoService {
+  private readonly API_URL &#x3D; &#x27;http://localhost:3000&#x27;;
+
+  constructor(private http: HttpClient) {}
+/** * Recupera la lista di tutti i pazienti associati a un medico.
+   * @param medicoId ID del medico loggato.
    */
-  id: number;
+  getPazientiPerMedico(medicoId: number): Observable&lt;Paziente[]&gt; {
+    return this.http.get&lt;Paziente[]&gt;(&#x60;${this.API_URL}/pazienti/medico/${medicoId}&#x60;);
+  }/**
+   * Recupera il profilo completo di un paziente.
+   * @param utenteId ID univoco dell&#x27;utente (account).
+   */
+
+  getProfiloPaziente(utenteId: number): Observable&lt;Paziente&gt; {
+    return this.http.get&lt;Paziente&gt;(&#x60;${this.API_URL}/pazienti/utente/${utenteId}&#x60;);
+  }
+/**
+   * Recupera il piano alimentare in formato strutturato (legacy).
+   * @param pazienteId ID del paziente.
+   */
+  getPianoCompletoPaziente(pazienteId: number): Observable&lt;PianoVoce[]&gt; {
+    return this.http.get&lt;PianoVoce[]&gt;(&#x60;${this.API_URL}/piani/paziente/${pazienteId}/full&#x60;);
+  }
+/**
+   * Recupera lo storico delle visite mediche del paziente.
+   * @param pazienteId ID del paziente.
+   */
+  getStoricoVisite(pazienteId: number): Observable&lt;Visita[]&gt; {
+    return this.http.get&lt;Visita[]&gt;(&#x60;${this.API_URL}/visite/paziente/${pazienteId}&#x60;);
+  }
+  /**
+   * Registra un nuovo utente con ruolo &quot;paziente&quot;.
+   * @param email Indirizzo email dell&#x27;utente.
+   * @param password Password scelta dall&#x27;utente.
+   */
+  registraUtentePaziente(email: string, password: string): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/auth/register&#x60;, {
+    email,
+    password,
+    ruolo: &#x27;paziente&#x27;
+  });
+}
+  /**
+   * Crea un nuovo paziente associato al medico.
+   * @param dati Dati anagrafici e clinici del paziente da creare.
+   */
+creaPaziente(dati: any): Observable&lt;any&gt; {
+  return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/pazienti&#x60;, dati);
+}
+/**
+   * Genera la tabella del piano alimentare tramite SSE (Server-Sent Events).
+   * @param pazienteId ID del paziente per cui generare il piano.
+   * @returns Un Observable che emette i dati ricevuti dallo stream.
+   */
+  generaTabellaPiano(pazienteId: number): Observable&lt;RispostaTabellaAI&gt; {
+    return new Observable(observer &#x3D;&gt; {
+      const token &#x3D; localStorage.getItem(&#x27;token&#x27;);
+      const eventSource &#x3D; new EventSource(
+        &#x60;${this.API_URL}/rag/tabella/${pazienteId}?token&#x3D;${token}&#x60;
+      );
+
+      eventSource.addEventListener(&#x27;completo&#x27;, (e: any) &#x3D;&gt; {
+        const data &#x3D; JSON.parse(e.data);
+        observer.next(data);
+        observer.complete();
+        eventSource.close();
+      });
+
+      eventSource.addEventListener(&#x27;errore&#x27;, (e: any) &#x3D;&gt; {
+        const data &#x3D; JSON.parse(e.data);
+        observer.error(data);
+        eventSource.close();
+      });
+
+      eventSource.onerror &#x3D; (err) &#x3D;&gt; {
+        observer.error(err);
+        eventSource.close();
+      };
+
+      return () &#x3D;&gt; eventSource.close();
+    });
+  }
+  /**
+   * Recupera i dati del medico attualmente autenticato.
+   */
+  getMedicoDelLogin(): Observable&lt;any&gt; {
+      return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/medici/me&#x60;);
+  }
+/**
+   * Recupera l&#x27;analisi dei progressi generata dall&#x27;AI.
+   * @param pazienteId ID del paziente.
+   * @remarks Utilizza un timeout esteso (10 min) a causa del tempo di elaborazione dell&#x27;AI.
+   */
+  getAnalisiAndamento(pazienteId: number): Observable&lt;RispostaAnalisiAI&gt; {
+    return this.http.get&lt;RispostaAnalisiAI&gt;(
+      &#x60;${this.API_URL}/rag/analisi/${pazienteId}&#x60;
+    ).pipe(timeout(600000));
+  }
+/**
+   * Salva una nuova visita antropometrica per un paziente.
+   * @param visita Oggetto contenente i dati della nuova visita.
+   */
+  salvaVisita(visita: NuovaVisita): Observable&lt;any&gt; {
+    return this.http.post&lt;any&gt;(&#x60;${this.API_URL}/visite&#x60;, visita);
+  }
+  /**
+   * Recupera il piano alimentare AI già salvato per un paziente.
+   * @param pazienteId ID del paziente.
+   */
+  getPianoSalvato(pazienteId: number): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(&#x60;${this.API_URL}/rag/piano/${pazienteId}&#x60;);
+  }
+  /**
+   * Elimina un paziente dal sistema.
+   * @param id ID del paziente da eliminare.
+   */
+  deletePaziente(
+    id: number
+  ): Observable&lt;any&gt; {
+
+    return this.http.delete(
+
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;
+    );
+  }
 
   /**
-   * Piano alimentare di appartenenza.
+   * Aggiorna i dati di un paziente esistente.
+   * @param id ID del paziente da aggiornare.
+   * @param dati Oggetto contenente i campi da modificare.
    */
-  piano_id: number;
+  updatePaziente(
+    id: number,
+   dati: any
+  ): Observable&lt;any&gt; {
 
-  /**
-   * Giorno della settimana.
-   */
-  giorno:
-    | &#x27;lunedi&#x27;
-    | &#x27;martedi&#x27;
-    | &#x27;mercoledi&#x27;
-    | &#x27;giovedi&#x27;
-    | &#x27;venerdi&#x27;
-    | &#x27;sabato&#x27;
-    | &#x27;domenica&#x27;;
+    return this.http.put(
 
-  /**
-   * Elenco dei pasti previsti per la giornata.
-   */
-  pasti: Pasto[];
+      &#x60;${this.API_URL}/pazienti/${id}&#x60;,
+      dati
+
+    );
+
+  }
+
+
 }</code></pre>
     </div>
 </div>

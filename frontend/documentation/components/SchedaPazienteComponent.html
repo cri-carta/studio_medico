@@ -138,6 +138,22 @@
 </p>
 
 
+    <p class="comment">
+        <h3>Description</h3>
+    </p>
+    <p class="comment">
+        <p>Il componente <code>SchedaPazienteComponent</code> è responsabile della visualizzazione
+della scheda informativa completa del paziente.</p>
+<ul>
+<li>In futuro, questo componente gestirà:</li>
+</ul>
+<ul>
+<li>Dati anagrafici e di contatto.</li>
+<li>Note cliniche o patologie pregresse.</li>
+<li>Stato dell&#39;abbonamento o validità del piano.</li>
+</ul>
+
+    </p>
 
 
 
@@ -206,6 +222,15 @@
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
 
+/**
+ * @description
+ * Il componente &#x60;SchedaPazienteComponent&#x60; è responsabile della visualizzazione
+ * della scheda informativa completa del paziente.
+ * * In futuro, questo componente gestirà:
+ * - Dati anagrafici e di contatto.
+ * - Note cliniche o patologie pregresse.
+ * - Stato dell&#x27;abbonamento o validità del piano.
+ */
 @Component({
   standalone: true,
   selector: &#x27;app-scheda-paziente&#x27;,
@@ -214,9 +239,11 @@
   styleUrl: &#x27;./scheda-paziente.css&#x27;,
 })
 export class SchedaPazienteComponent {
-
-}
-</code></pre>
+  /**
+   * Esempio: Input che verrà utilizzato per ricevere i dati del paziente dal componente padre
+   * @Input() paziente: Paziente | null &#x3D; null;
+   */
+}</code></pre>
     </div>
 
     <div class="tab-pane fade " id="templateData">

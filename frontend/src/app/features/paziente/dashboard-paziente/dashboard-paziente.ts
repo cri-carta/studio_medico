@@ -45,6 +45,7 @@ export class DashboardPazienteComponent implements OnInit {
       this.medicoService.getProfiloPaziente(idNumerico).subscribe({
         next: (dati: Paziente) => {
           this.paziente = dati;
+          this.cdr.detectChanges();
           this.caricaDatiConnessi(dati.id);
         },
         error: (err) => {
@@ -81,22 +82,25 @@ export class DashboardPazienteComponent implements OnInit {
             this.pianoStrutturato[g][p].push(voce);
           }
         });
-
-        this.medicoService.getStoricoVisite(pazienteId).subscribe({
-          next: (visite: Visita[]) => {
-            this.storicoVisite = visite;
-            this.calcolaProgressi(visite);
-            this.isLoading = false;
-            this.cdr.detectChanges();
-          },
-          error: (err: any) => {
-            console.error("Errore recupero storico visite", err);
-            this.isLoading = false;
-          }
-        });
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         console.error("Errore recupero piano alimentare", err);
+        this.isLoading = false;
+      }
+    });
+
+    // Carica storico visite — INDIPENDENTE dal piano
+    this.medicoService.getStoricoVisite(pazienteId).subscribe({
+      next: (visite: Visita[]) => {
+        this.storicoVisite = visite;
+        this.calcolaProgressi(visite);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error("Errore recupero storico visite", err);
         this.isLoading = false;
       }
     });

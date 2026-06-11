@@ -35,12 +35,19 @@ export class DashboardMedicoComponent implements OnInit {
   peso: number | null = null;
   bmi: number = 0.0;
   bf: number = 0.0;
+  dataVisita: string = new Date().toISOString().split('T')[0];
+  oggi: string = new Date().toISOString().split('T')[0];
   errorMsg: string = '';
   successMsg: string = '';
 
   dataNascitaEdit: string = '';
   modalitaModifica: boolean = false;
   modalitaAggiungi: boolean = false;
+  usernameNuovoPaziente: string = '';
+
+  toastMsg: string = '';
+  toastTipo: 'success' | 'error' | 'info' = 'success';
+  toastVisible: boolean = false;
 
   nuovoPaziente = {
     email: '',
@@ -61,6 +68,17 @@ export class DashboardMedicoComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
+
+  mostraToast(msg: string, tipo: 'success' | 'error' | 'info' = 'success'): void {
+    this.toastMsg = msg;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
+  }
 
   ngOnInit(): void {
     this.medicoService.getMedicoDelLogin().subscribe({
@@ -106,14 +124,11 @@ export class DashboardMedicoComponent implements OnInit {
     this.peso = null;
     this.bmi = 0.0;
     this.bf = 0.0;
+    this.dataVisita = new Date().toISOString().split('T')[0];
 
     this.medicoService.getPianoSalvato(id).subscribe({
-      next: (res) => {
-        this.pianoSalvatoDisponibile = true;
-      },
-      error: (err) => {
-        this.pianoSalvatoDisponibile = false;
-      }
+      next: (res) => { this.pianoSalvatoDisponibile = true; },
+      error: (err) => { this.pianoSalvatoDisponibile = false; }
     });
   }
 
@@ -130,26 +145,16 @@ export class DashboardMedicoComponent implements OnInit {
   calcolaParametriAutomatici(): void {
     const inputPeso = document.getElementById('peso') as HTMLInputElement;
     if (!inputPeso) return;
-
     const pesoDigitato = parseFloat(inputPeso.value);
-
     if (!pesoDigitato || pesoDigitato <= 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
       this.peso = null;
       this.bmi = 0.0;
-      this.bf = 0.0;
       return;
     }
-
     this.peso = pesoDigitato;
     const altezzaInMetri = this.pazienteSelezionato.altezza / 100;
     this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
-
-    const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
-    const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
-    this.bf = bfCalcolata > 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
-
     this.nuovaVisita.bmi = this.bmi;
-    this.nuovaVisita.bf = this.bf;
   }
 
   onGeneraTabella(): void {
@@ -161,11 +166,11 @@ export class DashboardMedicoComponent implements OnInit {
       next: (res: RispostaTabellaAI) => {
         this.caricamentoPiano = false;
         this.pianoSalvatoDisponibile = true;
-        alert('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo.');
+        this.mostraToast('Piano generato e salvato! Clicca "Visualizza Piano" per vederlo. 🍏', 'info');
       },
       error: (err) => {
         console.error('[TABELLA] Errore:', err);
-        alert('Errore durante la generazione del piano.');
+        this.mostraToast('Errore durante la generazione del piano.', 'error');
         this.caricamentoPiano = false;
       }
     });
@@ -184,7 +189,7 @@ export class DashboardMedicoComponent implements OnInit {
       },
       error: (err) => {
         console.error('[ANALISI] Errore:', err);
-        alert("Errore durante l'elaborazione dell'analisi clinica.");
+        this.mostraToast("Errore durante l'elaborazione dell'analisi clinica.", 'error');
         this.caricamentoAnalisi = false;
       }
     });
@@ -198,7 +203,7 @@ export class DashboardMedicoComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        alert('Nessun piano salvato per questo paziente. Genera prima la tabella.');
+        this.mostraToast('Nessun piano salvato per questo paziente. Genera prima la tabella.', 'error');
       }
     });
   }
@@ -213,12 +218,9 @@ export class DashboardMedicoComponent implements OnInit {
       return;
     }
 
-    const oggi = new Date();
-    const dataVisita = oggi.toISOString().split('T')[0];
-
     const payload = {
       paziente_id: this.pazienteSelezionatoId,
-      data_visita: dataVisita,
+      data_visita: this.dataVisita,
       peso: this.peso,
       bmi: this.bmi,
       bf: this.bf
@@ -231,6 +233,7 @@ export class DashboardMedicoComponent implements OnInit {
         this.peso = null;
         this.bmi = 0.0;
         this.bf = 0.0;
+        this.dataVisita = new Date().toISOString().split('T')[0];
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -244,6 +247,7 @@ export class DashboardMedicoComponent implements OnInit {
 
   aggiungiPaziente(): void {
     this.modalitaAggiungi = true;
+    this.usernameNuovoPaziente = '';
     this.nuovoPaziente = {
       email: '', password: '', nome: '', cognome: '',
       data_nascita: '', altezza: null, obiettivo: '',
@@ -255,22 +259,31 @@ export class DashboardMedicoComponent implements OnInit {
     this.modalitaAggiungi = false;
   }
 
+  onUsernameChange(): void {
+    this.nuovoPaziente.email = this.usernameNuovoPaziente + '@email.it';
+  }
+
   calcolaBmiBfNuovoPaziente(): void {
     if (!this.nuovoPaziente.peso || !this.nuovoPaziente.altezza) return;
     const altezzaM = this.nuovoPaziente.altezza / 100;
     this.nuovoPaziente.bmi = parseFloat((this.nuovoPaziente.peso / (altezzaM * altezzaM)).toFixed(1));
-    const oggi = new Date();
-    const nascita = new Date(this.nuovoPaziente.data_nascita);
-    const eta = oggi.getFullYear() - nascita.getFullYear();
-    const bf = (1.20 * this.nuovoPaziente.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
-    this.nuovoPaziente.bf = bf > 0 ? parseFloat(bf.toFixed(1)) : 0;
   }
 
   salvaNuovoPaziente(): void {
     if (!this.nuovoPaziente.email || !this.nuovoPaziente.password ||
         !this.nuovoPaziente.nome || !this.nuovoPaziente.cognome ||
         !this.nuovoPaziente.peso) {
-      alert('Compila tutti i campi obbligatori (email, password, nome, cognome, peso).');
+      this.mostraToast('Compila tutti i campi obbligatori (username, password, nome, cognome, peso).', 'error');
+      return;
+    }
+
+    if (this.nuovoPaziente.altezza && (this.nuovoPaziente.altezza < 90 || this.nuovoPaziente.altezza > 230)) {
+      this.mostraToast('Altezza non valida. Inserisci un valore tra 90 e 230 cm.', 'error');
+      return;
+    }
+
+    if (this.nuovoPaziente.peso && (this.nuovoPaziente.peso < 1 || this.nuovoPaziente.peso > 250)) {
+      this.mostraToast('Peso non valido. Inserisci un valore tra 1 e 250 kg.', 'error');
       return;
     }
 
@@ -280,7 +293,6 @@ export class DashboardMedicoComponent implements OnInit {
     ).subscribe({
       next: (resUtente) => {
         const utente_id = resUtente.id;
-
         this.medicoService.getMedicoDelLogin().subscribe({
           next: (medico) => {
             this.medicoService.creaPaziente({
@@ -308,11 +320,11 @@ export class DashboardMedicoComponent implements OnInit {
                         }));
                         this.pazientiFiltrati = this.pazienti;
                         this.cdr.detectChanges();
-                        alert('Paziente aggiunto con successo!');
+                        this.mostraToast('Paziente aggiunto con successo! ✅');
                       },
                       error: (err) => {
                         console.error(err);
-                        alert('Paziente creato ma errore nel ricaricamento lista.');
+                        this.mostraToast('Paziente creato ma errore nel ricaricamento lista.', 'error');
                       }
                     });
                   }
@@ -320,19 +332,19 @@ export class DashboardMedicoComponent implements OnInit {
               },
               error: (err) => {
                 console.error(err);
-                alert('Errore creazione paziente: ' + err.error?.error);
+                this.mostraToast('Errore creazione paziente: ' + err.error?.error, 'error');
               }
             });
           },
           error: (err) => {
             console.error(err);
-            alert('Errore recupero medico: ' + err.error?.error);
+            this.mostraToast('Errore recupero medico: ' + err.error?.error, 'error');
           }
         });
       },
       error: (err) => {
         console.error(err);
-        alert('Errore creazione utente: ' + err.error?.error);
+        this.mostraToast('Errore creazione utente: ' + err.error?.error, 'error');
       }
     });
   }
@@ -359,11 +371,11 @@ export class DashboardMedicoComponent implements OnInit {
       next: () => {
         this.modalitaModifica = false;
         this.cdr.detectChanges();
-        setTimeout(() => { alert('Paziente aggiornato'); }, 100);
+        this.mostraToast('Paziente aggiornato con successo! ✅');
       },
       error: (err: any) => {
         console.error(err);
-        alert('Errore aggiornamento');
+        this.mostraToast('Errore aggiornamento paziente.', 'error');
       }
     });
   }
@@ -380,11 +392,11 @@ export class DashboardMedicoComponent implements OnInit {
         this.pazientiFiltrati = this.pazienti;
         this.pazienteSelezionatoId = null;
         this.pazienteSelezionato = null;
-        alert('Paziente eliminato');
+        this.mostraToast('Paziente eliminato 🗑️', 'error');
       },
       error: (err) => {
         console.error(err);
-        alert('Errore eliminazione paziente');
+        this.mostraToast('Errore eliminazione paziente.', 'error');
       }
     });
   }
