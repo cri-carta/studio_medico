@@ -105,4 +105,11 @@ Grazie a tutte le persone che hanno contribuito a questo progetto! 🎉
 
 ---
 
+### [Niimhel](https://github.com/Niimhel)
+
+**Area:** Backend AI — Sistema RAG
+
+- Implementazione di `rag_system.py` e del bridge Express–AI (`rag_bridge.js`)
+
+---
 *Questo file rispecchia i contributi reali al progetto.*
