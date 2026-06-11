@@ -55,7 +55,35 @@
         } @else {
 
           @if (vistaAttiva === 'tabella') {
-            <app-visualizza-piano [piano]="pianoStrutturato"></app-visualizza-piano>
+            @if (pianoAlimentareRAG && pianoAlimentareRAG.piano_settimanale) {
+              <h3>Il tuo Piano Nutrizionale</h3>
+              <p>Elaborato in base ai dati del tuo medico di riferimento</p>
+              <div class="tabella-scroll">
+                @for (entry of getGiorni(); track entry.giorno) {
+                <div class="giorno-block">
+                  <h4 class="giorno-titolo">{{ entry.giorno }}</h4>
+                  <div class="pasti-grid">
+                    @for (pasto of getPasti(entry.dati); track $index) {
+                    <div class="pasto-card">
+                      <span class="pasto-tipo">{{ pasto.tipo }}</span>
+                      @for (alimento of pasto.alimenti; track alimento.alimento) {
+                      <span class="alimento-row">• {{ alimento.alimento }} <strong>({{ alimento.grammatura }})</strong></span>
+                      }
+                    </div>
+                    }
+                  </div>
+                  <div class="macro-row">
+                    🔥 {{ entry.dati.totale_giornaliero?.calorie_totali || 0 }} kcal |
+                    🥩 {{ entry.dati.totale_giornaliero?.proteine_g || 0 }}g prot |
+                    🍞 {{ entry.dati.totale_giornaliero?.carboidrati_g || 0 }}g carb |
+                    🥑 {{ entry.dati.totale_giornaliero?.grassi_g || 0 }}g grassi
+                  </div>
+                </div>
+                }
+              </div>
+            } @else {
+              <app-visualizza-piano [piano]="pianoStrutturato"></app-visualizza-piano>
+            }
           } @else {
             <div class="progress-container">
               <h3>Progressi e Storico Visite</h3>

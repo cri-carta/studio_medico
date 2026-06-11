@@ -43,15 +43,29 @@ router.get('/paziente/:paziente_id/andamento', async (req, res) => {
 });
 
 // POST nuova visita
+// POST nuova visita
 router.post('/', async (req, res) => {
     try {
-        // Estrai anche note_visita dal body
-        const { paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita } = req.body;
-        
-        // Passalo alla funzione del modello
-        const result = await createVisita(paziente_id, medico_id, data_visita, peso, bmi, bf, note_visita);
+        const { paziente_id, data_visita, peso, bmi, bf, note_visita } = req.body;
+
+        // Prende medico_id dal token JWT
+        const jwt = require('jsonwebtoken');
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const { getMedicoByUtenteId } = require('../models/medico.model');
+        const medico = await getMedicoByUtenteId(decoded.id);
+
+        if (!medico) {
+            return res.status(403).json({ error: 'Medico non trovato per questo utente.' });
+        }
+
+        const result = await createVisita(paziente_id, medico.id, data_visita, peso, bmi, bf, note_visita);
         res.status(201).json({ ok: true, id: result.insertId });
+
     } catch (err) {
+        console.error('[VISITE POST] Errore:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

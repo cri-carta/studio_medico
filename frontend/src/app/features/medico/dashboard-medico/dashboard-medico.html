@@ -43,87 +43,58 @@
     </div>
   </aside>
 
-  
-  <div
-    *ngIf="modalitaModifica && pazienteSelezionato"
-   class="modal-overlay"
-  >
-
-   <div class="modal-edit">
-
-
-
-     <div class="modal-header">
-
+  <!-- Modal Modifica Paziente -->
+  <div *ngIf="modalitaModifica && pazienteSelezionato" class="modal-overlay">
+    <div class="modal-edit">
+      <div class="modal-header">
         <h2>✏️ Modifica Paziente</h2>
-
-       <button
-          class="btn-close"
-          (click)="chiudiModifica()"
-        >
-          ✖
-       </button>
-
+        <button class="btn-close" (click)="chiudiModifica()">✖</button>
       </div>
-
       <div class="modal-body">
-
-       <input
-         [(ngModel)]="pazienteSelezionato.nome"
-         placeholder="Nome"
-       />
-
-       <input
-          [(ngModel)]="pazienteSelezionato.cognome"
-          placeholder="Cognome"
-       />
-
-       <input
-          type="date"
-          [(ngModel)]="dataNascitaEdit"       />
-
-       <input
-         type="number"
-         [(ngModel)]="pazienteSelezionato.altezza"
-         placeholder="Altezza"
-       />
-
-       <input
-         [(ngModel)]="pazienteSelezionato.obiettivo"
-         placeholder="Obiettivo"
-       />
-
-       <textarea
-         [(ngModel)]="pazienteSelezionato.anamnesi"
-         placeholder="Anamnesi"
-       ></textarea>
-
+        <input [(ngModel)]="pazienteSelezionato.nome" placeholder="Nome" />
+        <input [(ngModel)]="pazienteSelezionato.cognome" placeholder="Cognome" />
+        <input type="date" [(ngModel)]="dataNascitaEdit" />
+        <input type="number" [(ngModel)]="pazienteSelezionato.altezza" placeholder="Altezza" />
+        <input [(ngModel)]="pazienteSelezionato.obiettivo" placeholder="Obiettivo" />
+        <textarea [(ngModel)]="pazienteSelezionato.anamnesi" placeholder="Anamnesi"></textarea>
       </div>
-
-     <div class="modal-footer">
-
-        <button
-         class="btn-cancel"
-         (click)="chiudiModifica()"
-       >
-         Annulla
-       </button>
-
-       <button
-         class="btn-save"
-         (click)="salvaModifichePaziente()"
-       >
-         💾 Salva Modifiche
-       </button>
-
-     </div>
-
-   </div>
-
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="chiudiModifica()">Annulla</button>
+        <button class="btn-save" (click)="salvaModifichePaziente()">💾 Salva Modifiche</button>
+      </div>
+    </div>
   </div>
 
-  
-
+  <!-- Modal Aggiungi Paziente -->
+  <div *ngIf="modalitaAggiungi" class="modal-overlay">
+    <div class="modal-edit">
+      <div class="modal-header">
+        <h2>➕ Nuovo Paziente</h2>
+        <button class="btn-close" (click)="chiudiAggiungi()">✖</button>
+      </div>
+      <div class="modal-body">
+        <input [(ngModel)]="nuovoPaziente.email" placeholder="Email *" type="email" />
+        <input [(ngModel)]="nuovoPaziente.password" placeholder="Password *" type="password" />
+        <input [(ngModel)]="nuovoPaziente.nome" placeholder="Nome *" />
+        <input [(ngModel)]="nuovoPaziente.cognome" placeholder="Cognome *" />
+        <input type="date" [(ngModel)]="nuovoPaziente.data_nascita" placeholder="Data di Nascita" />
+        <input type="number" [(ngModel)]="nuovoPaziente.altezza" placeholder="Altezza (cm)"
+          (input)="calcolaBmiBfNuovoPaziente()" />
+        <input type="number" [(ngModel)]="nuovoPaziente.peso" placeholder="Peso (kg) *"
+          (input)="calcolaBmiBfNuovoPaziente()" />
+        <div style="display: flex; gap: 8px;">
+          <input type="number" [value]="nuovoPaziente.bmi" placeholder="BMI" readonly class="input-readonly" style="flex:1" />
+          <input type="number" [value]="nuovoPaziente.bf" placeholder="Body Fat %" readonly class="input-readonly" style="flex:1" />
+        </div>
+        <input [(ngModel)]="nuovoPaziente.obiettivo" placeholder="Obiettivo" />
+        <textarea [(ngModel)]="nuovoPaziente.anamnesi" placeholder="Anamnesi"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="chiudiAggiungi()">Annulla</button>
+        <button class="btn-save" (click)="salvaNuovoPaziente()">💾 Salva Paziente</button>
+      </div>
+    </div>
+  </div>
 
   <main class="contenuto-destra">
     @if (pazienteSelezionatoId && pazienteSelezionato) {
@@ -138,13 +109,12 @@
           <button class="btn-ia btn-genera" (click)="onGeneraTabella()" [disabled]="caricamentoPiano">
             @if (caricamentoPiano) { ⏳ Generazione... } @else { 🍏 Genera Tabella }
           </button>
-          <button class="btn-ia btn-visualizza" 
-              (click)="onVisualizzaPiano()">
-              📋 Visualizza Piano
+          <button class="btn-ia btn-visualizza" (click)="onVisualizzaPiano()">
+            📋 Visualizza Piano
           </button>
           <button class="btn-ia btn-analisi" (click)="onAnalisiAndamento()" [disabled]="caricamentoAnalisi">
             @if (caricamentoAnalisi) { ⏳ Elaborazione... } @else { 🧠 Analisi Andamento }
-          </button>          
+          </button>
         </div>
       </header>
 
@@ -170,7 +140,10 @@
             <div class="form-row">
               <div class="field-input">
                 <label for="peso">Peso (kg)</label>
-                <input type="number" id="peso" name="peso" step="0.1" required (input)="calcolaParametriAutomatici()" placeholder="0.0">
+                <input type="number" id="peso" name="peso" step="0.1" required
+                  [(ngModel)]="peso"
+                  (input)="calcolaParametriAutomatici()"
+                  placeholder="0.0">
               </div>
               <div class="field-input">
                 <label for="bmi">BMI</label>
@@ -182,6 +155,12 @@
               </div>
             </div>
             <button type="submit" class="btn-submit-visita">💾 Salva Dati Visita</button>
+            @if (successMsg) {
+              <p style="color: green; margin-top: 8px;">✅ {{ successMsg }}</p>
+            }
+            @if (errorMsg) {
+              <p style="color: red; margin-top: 8px;">❌ {{ errorMsg }}</p>
+            }
           </form>
         </section>
       </div>
