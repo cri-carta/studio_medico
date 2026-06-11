@@ -14,7 +14,7 @@
 /* Layout Principale a due colonne */
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 25vw 75vw; /* 1/4 e 3/4 esatti della pagina */
+  grid-template-columns: 25vw 75vw;
   height: 100vh;
   overflow: hidden;
   font-family: 'Segoe UI', Roboto, sans-serif;
@@ -27,37 +27,34 @@
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Spinge la lista in alto e i controlli in basso */
+  justify-content: space-between;
   height: 100vh;
   max-height: 100vh;
   box-sizing: border-box;
 }
 
-/* Sezione superiore della lista con scroll interno */
 .lista-pazienti-scroll {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1rem;
-  /* Opzionale: Rende la barra di scorrimento più sottile e moderna (funziona su Chrome/Safari/Edge) */
   scrollbar-width: thin;
 }
-/* 3. Opzionale: Rendi la scrollbar visivamente coordinata con il tuo stile */
+
 .lista-pazienti-scroll::-webkit-scrollbar {
-  width: 6px; /* Larghezza della barra */
+  width: 6px;
 }
 .lista-pazienti-scroll::-webkit-scrollbar-track {
-  background: transparent; /* Sfondo del binario */
+  background: transparent;
 }
 .lista-pazienti-scroll::-webkit-scrollbar-thumb {
-  background-color: #ced4da; /* Colore della barra di scorrimento */
-  border-radius: 20px;       /* Smussatura degli angoli della barra */
+  background-color: #ced4da;
+  border-radius: 20px;
 }
 
 .lista-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* padding-bottom: 0.5rem; */
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -75,7 +72,6 @@
   font-weight: 600;
 }
 
-/* Singolo elemento della lista */
 .paziente-item {
   display: flex;
   align-items: center;
@@ -111,14 +107,12 @@
   text-transform: uppercase;
 }
 
-/* Sezione Controlli Bloccata in Basso */
 .controlli-basso {
   padding: 1rem;
   background-color: #fafafa;
   border-top: 1px solid var(--border-color);
 }
 
-/* Barra di ricerca */
 .search-box {
   position: relative;
   margin-bottom: 0.75rem;
@@ -147,7 +141,6 @@
   border-color: var(--primary);
 }
 
-/* Griglia dei 3 pulsanti di azione */
 .action-buttons-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -173,8 +166,8 @@
   cursor: not-allowed;
 }
 
-.btn-add { background-color: var(--primary); color: white; }
-.btn-edit { background-color: var(--accent); color: white; }
+.btn-add  { background-color: var(--primary); color: white; }
+.btn-edit { background-color: var(--accent);  color: white; }
 .btn-delete { background-color: var(--danger); color: white; }
 
 .btn-ctrl:not(:disabled):hover {
@@ -235,7 +228,6 @@
   color: var(--text-muted);
   font-weight: 500;
   font-size: 0.9rem;
-  /* padding-right: 10px; */
   box-sizing: border-box;
   text-align: center;
 }
@@ -267,7 +259,6 @@ input[readonly] {
   font-size: 1.8rem;
 }
 
-/* Pulsanti IA Generativi */
 .ia-actions {
   display: flex;
   gap: 0.75rem;
@@ -289,12 +280,22 @@ input[readonly] {
   cursor: not-allowed;
 }
 
-.btn-genera { background-color: #38b000; }
-.btn-genera:hover:not(:disabled) { background-color: #007200; }
-.btn-analisi { background-color: #7209b7; }
-.btn-analisi:hover:not(:disabled) { background-color: #560bad; }
+.btn-genera   { background-color: #38b000; }
+.btn-genera:hover:not(:disabled)   { background-color: #007200; }
 
-/* Griglia Dati / Form */
+.btn-visualizza {
+  background-color: #2a6f97;
+  color: #ffffff;
+  border: 1px solid #d4c9b0;
+}
+.btn-visualizza:hover:not(:disabled) {
+  background-color: #014f86;
+  color: white;
+}
+
+.btn-analisi  { background-color: #7209b7; }
+.btn-analisi:hover:not(:disabled)  { background-color: #560bad; }
+
 .scheda-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -317,7 +318,6 @@ input[readonly] {
   padding-bottom: 0.5rem;
 }
 
-/* Form Effettua Visita Allineato */
 .visita-form {
   display: flex;
   flex-direction: column;
@@ -369,7 +369,6 @@ input[readonly] {
 
 .btn-submit-visita:hover { background-color: var(--primary-dark); }
 
-/* Output IA ed Elaborazioni */
 .output-ia-box {
   border-left: 5px solid;
 }
@@ -393,10 +392,9 @@ input[readonly] {
 .output-content {
   line-height: 1.6;
   font-size: 0.95rem;
-  white-space: pre-line; /* Mantiene la formattazione a capo del testo IA */
+  white-space: pre-line;
 }
 
-/* Tabella dei Piani Alimentari */
 .tabella-scroll { overflow-x: auto; margin-top: 0.5rem; }
 .piano-table {
   width: 100%;
@@ -413,163 +411,258 @@ input[readonly] {
 .giorno-cell { font-weight: 700; color: var(--primary-dark); background: #fdfdfd; }
 .voce-item { margin-bottom: 0.2rem; }
 
-/* Animazione fluida comparsa */
 .animate-fade {
   animation: fadeIn 0.3s ease-in-out;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Finestra modifica paziente */
+/* Modal */
 .modal-overlay {
-
   position: fixed;
-
   inset: 0;
-
   background: rgba(0,0,0,0.45);
-
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
   z-index: 999;
-
   backdrop-filter: blur(4px);
-
 }
 
 .modal-edit {
-
   width: 500px;
-
   background: white;
-
   border-radius: 20px;
-
   padding: 24px;
-
   box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-
-  animation: fadeIn .25s ease;
-
+  animation: modalFadeIn .25s ease;
 }
 
 .modal-header {
-
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   margin-bottom: 20px;
-
 }
 
 .modal-body {
-
   display: flex;
-
   flex-direction: column;
-
   gap: 14px;
-
 }
 
 .modal-body input,
 .modal-body textarea {
-
   border: 1px solid #ddd;
-
   border-radius: 12px;
-
   padding: 12px;
-
   font-size: 15px;
-
 }
 
 .modal-body textarea {
-
   min-height: 100px;
-
   resize: vertical;
-
 }
 
 .modal-footer {
-
   display: flex;
-
   justify-content: flex-end;
-
   gap: 12px;
-
   margin-top: 20px;
-
 }
 
 .btn-save {
-
   background: #2563eb;
-
   color: white;
-
   border: none;
-
   padding: 12px 18px;
-
   border-radius: 12px;
-
   cursor: pointer;
-
 }
 
 .btn-cancel {
-
   background: #e5e7eb;
-
   border: none;
-
   padding: 12px 18px;
-
   border-radius: 12px;
-
   cursor: pointer;
-
 }
 
 .btn-close {
-
   border: none;
-
   background: transparent;
-
   font-size: 18px;
-
   cursor: pointer;
-
 }
 
-@keyframes fadeIn {
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
 
-  from {
+/* Toast notification */
+.toast-container {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 9999;
+  animation: toastFadeIn 0.3s ease;
+  max-width: 360px;
+}
 
-    opacity: 0;
-    transform: scale(.95);
+.toast-success { background: #22c55e; }
+.toast-error   { background: #ef4444; }
+.toast-info    { background: #6366f1; }
 
-  }
+@keyframes toastFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  to {
+/* Piano alimentare giornaliero */
+.giorno-block {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem;
+  background: white;
+}
 
-    opacity: 1;
-    transform: scale(1);
+.giorno-titolo {
+  color: var(--primary-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
 
-  }
+.pasti-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 
+.pasto-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pasto-tipo {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.alimento-row {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.macro-row {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Quadro clinico analisi */
+.quadro-clinico-grid {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.widget-delta {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+
+.widget-delta.migliorato {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.delta-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.delta-valore {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.widget-status-badge {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.widget-status-badge.successo {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.text-markdown {
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.field-anamnesi {
+  margin-top: 0.5rem;
+}
+
+.field-anamnesi label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.field-anamnesi p {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.badge-obiettivo {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }

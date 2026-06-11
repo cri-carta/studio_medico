@@ -248,4 +248,15 @@
     </div>
     }
   </main>
+
+  <!-- Toast notification -->
+  @if (toastVisible) {
+  <div class="toast-container"
+    [class.toast-success]="toastTipo === 'success'"
+    [class.toast-error]="toastTipo === 'error'"
+    [class.toast-info]="toastTipo === 'info'">
+    {{ toastMsg }}
+  </div>
+  }
+
 </div>
