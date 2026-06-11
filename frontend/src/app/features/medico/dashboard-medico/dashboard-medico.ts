@@ -43,6 +43,7 @@ export class DashboardMedicoComponent implements OnInit {
   dataNascitaEdit: string = '';
   modalitaModifica: boolean = false;
   modalitaAggiungi: boolean = false;
+  usernameNuovoPaziente: string = '';
 
   nuovoPaziente = {
     email: '',
@@ -238,6 +239,7 @@ export class DashboardMedicoComponent implements OnInit {
 
   aggiungiPaziente(): void {
     this.modalitaAggiungi = true;
+    this.usernameNuovoPaziente = '';
     this.nuovoPaziente = {
       email: '', password: '', nome: '', cognome: '',
       data_nascita: '', altezza: null, obiettivo: '',
@@ -247,6 +249,10 @@ export class DashboardMedicoComponent implements OnInit {
 
   chiudiAggiungi(): void {
     this.modalitaAggiungi = false;
+  }
+
+  onUsernameChange(): void {
+    this.nuovoPaziente.email = this.usernameNuovoPaziente + '@email.it';
   }
 
   calcolaBmiBfNuovoPaziente(): void {
@@ -259,7 +265,17 @@ export class DashboardMedicoComponent implements OnInit {
     if (!this.nuovoPaziente.email || !this.nuovoPaziente.password ||
         !this.nuovoPaziente.nome || !this.nuovoPaziente.cognome ||
         !this.nuovoPaziente.peso) {
-      alert('Compila tutti i campi obbligatori (email, password, nome, cognome, peso).');
+      alert('Compila tutti i campi obbligatori (username, password, nome, cognome, peso).');
+      return;
+    }
+
+    if (this.nuovoPaziente.altezza && (this.nuovoPaziente.altezza < 90 || this.nuovoPaziente.altezza > 230)) {
+      alert('Altezza non valida. Inserisci un valore tra 90 e 230 cm.');
+      return;
+    }
+
+    if (this.nuovoPaziente.peso && (this.nuovoPaziente.peso < 1 || this.nuovoPaziente.peso > 250)) {
+      alert('Peso non valido. Inserisci un valore tra 1 e 250 kg.');
       return;
     }
 

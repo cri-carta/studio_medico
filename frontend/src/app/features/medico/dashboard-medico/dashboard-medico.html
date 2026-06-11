@@ -54,7 +54,7 @@
         <input [(ngModel)]="pazienteSelezionato.nome" placeholder="Nome" />
         <input [(ngModel)]="pazienteSelezionato.cognome" placeholder="Cognome" />
         <input type="date" [(ngModel)]="dataNascitaEdit" />
-        <input type="number" [(ngModel)]="pazienteSelezionato.altezza" placeholder="Altezza" />
+        <input type="number" [(ngModel)]="pazienteSelezionato.altezza" placeholder="Altezza" min="90" max="230" />
         <input [(ngModel)]="pazienteSelezionato.obiettivo" placeholder="Obiettivo" />
         <textarea [(ngModel)]="pazienteSelezionato.anamnesi" placeholder="Anamnesi"></textarea>
       </div>
@@ -73,14 +73,24 @@
         <button class="btn-close" (click)="chiudiAggiungi()">✖</button>
       </div>
       <div class="modal-body">
-        <input [(ngModel)]="nuovoPaziente.email" placeholder="Email *" type="email" />
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <input [(ngModel)]="usernameNuovoPaziente"
+            (input)="onUsernameChange()"
+            placeholder="Username *"
+            style="flex:1" />
+          <span style="color: #888; font-size: 14px; white-space: nowrap;">@email.it</span>
+        </div>
         <input [(ngModel)]="nuovoPaziente.password" placeholder="Password *" type="password" />
         <input [(ngModel)]="nuovoPaziente.nome" placeholder="Nome *" />
         <input [(ngModel)]="nuovoPaziente.cognome" placeholder="Cognome *" />
-        <input type="date" [(ngModel)]="nuovoPaziente.data_nascita" placeholder="Data di Nascita" />
-        <input type="number" [(ngModel)]="nuovoPaziente.altezza" placeholder="Altezza (cm)"
+        <input type="date" [(ngModel)]="nuovoPaziente.data_nascita" />
+        <input type="number" [(ngModel)]="nuovoPaziente.altezza"
+          placeholder="Altezza (cm)"
+          min="90" max="230"
           (input)="calcolaBmiBfNuovoPaziente()" />
-        <input type="number" [(ngModel)]="nuovoPaziente.peso" placeholder="Peso (kg) *"
+        <input type="number" [(ngModel)]="nuovoPaziente.peso"
+          placeholder="Peso (kg) *"
+          min="1" max="250"
           (input)="calcolaBmiBfNuovoPaziente()" />
         <div style="display: flex; gap: 8px;">
           <input type="number" [value]="nuovoPaziente.bmi" placeholder="BMI" readonly class="input-readonly" style="flex:1" />

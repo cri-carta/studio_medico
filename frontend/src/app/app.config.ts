@@ -15,6 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     /* Abilita l'utilizzo di HttpClient per le richieste HTTP. */
-    provideHttpClient()
+    provideHttpClient(withInterceptors([jwtInterceptor]))
   ]
 };
