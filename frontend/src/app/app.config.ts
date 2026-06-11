@@ -13,12 +13,8 @@ export const appConfig: ApplicationConfig = {
 
     /* Configura il sistema di routing utilizzando le rotte definite nell'applicazione. */
     provideRouter(routes),
-<<<<<<< HEAD
-    provideHttpClient()
-=======
 
     /* Abilita l'utilizzo di HttpClient per le richieste HTTP. */
     provideHttpClient(withInterceptors([jwtInterceptor]))
->>>>>>> f5d78d72c83cc3d8fcda6306231ef4f9e17b051d
   ]
 };
