@@ -35,6 +35,8 @@ export class DashboardMedicoComponent implements OnInit {
   peso: number | null = null;
   bmi: number = 0.0;
   bf: number = 0.0;
+  dataVisita: string = new Date().toISOString().split('T')[0];
+  oggi: string = new Date().toISOString().split('T')[0];
   errorMsg: string = '';
   successMsg: string = '';
 
@@ -106,6 +108,7 @@ export class DashboardMedicoComponent implements OnInit {
     this.peso = null;
     this.bmi = 0.0;
     this.bf = 0.0;
+    this.dataVisita = new Date().toISOString().split('T')[0];
 
     this.medicoService.getPianoSalvato(id).subscribe({
       next: (res) => {
@@ -136,20 +139,13 @@ export class DashboardMedicoComponent implements OnInit {
     if (!pesoDigitato || pesoDigitato <= 0 || !this.pazienteSelezionato || !this.pazienteSelezionato.altezza) {
       this.peso = null;
       this.bmi = 0.0;
-      this.bf = 0.0;
       return;
     }
 
     this.peso = pesoDigitato;
     const altezzaInMetri = this.pazienteSelezionato.altezza / 100;
     this.bmi = parseFloat((this.peso / (altezzaInMetri * altezzaInMetri)).toFixed(1));
-
-    const eta = this.calcolaEta(this.pazienteSelezionato.data_nascita);
-    const bfCalcolata = (1.20 * this.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
-    this.bf = bfCalcolata > 0 ? parseFloat(bfCalcolata.toFixed(1)) : 0.0;
-
     this.nuovaVisita.bmi = this.bmi;
-    this.nuovaVisita.bf = this.bf;
   }
 
   onGeneraTabella(): void {
@@ -213,12 +209,9 @@ export class DashboardMedicoComponent implements OnInit {
       return;
     }
 
-    const oggi = new Date();
-    const dataVisita = oggi.toISOString().split('T')[0];
-
     const payload = {
       paziente_id: this.pazienteSelezionatoId,
-      data_visita: dataVisita,
+      data_visita: this.dataVisita,
       peso: this.peso,
       bmi: this.bmi,
       bf: this.bf
@@ -231,6 +224,7 @@ export class DashboardMedicoComponent implements OnInit {
         this.peso = null;
         this.bmi = 0.0;
         this.bf = 0.0;
+        this.dataVisita = new Date().toISOString().split('T')[0];
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -259,11 +253,6 @@ export class DashboardMedicoComponent implements OnInit {
     if (!this.nuovoPaziente.peso || !this.nuovoPaziente.altezza) return;
     const altezzaM = this.nuovoPaziente.altezza / 100;
     this.nuovoPaziente.bmi = parseFloat((this.nuovoPaziente.peso / (altezzaM * altezzaM)).toFixed(1));
-    const oggi = new Date();
-    const nascita = new Date(this.nuovoPaziente.data_nascita);
-    const eta = oggi.getFullYear() - nascita.getFullYear();
-    const bf = (1.20 * this.nuovoPaziente.bmi) + (0.23 * eta) - (10.8 * 1) - 5.4;
-    this.nuovoPaziente.bf = bf > 0 ? parseFloat(bf.toFixed(1)) : 0;
   }
 
   salvaNuovoPaziente(): void {

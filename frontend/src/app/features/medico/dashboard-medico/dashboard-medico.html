@@ -84,7 +84,7 @@
           (input)="calcolaBmiBfNuovoPaziente()" />
         <div style="display: flex; gap: 8px;">
           <input type="number" [value]="nuovoPaziente.bmi" placeholder="BMI" readonly class="input-readonly" style="flex:1" />
-          <input type="number" [value]="nuovoPaziente.bf" placeholder="Body Fat %" readonly class="input-readonly" style="flex:1" />
+          <input type="number" [(ngModel)]="nuovoPaziente.bf" placeholder="Body Fat %" step="0.1" style="flex:1" />
         </div>
         <input [(ngModel)]="nuovoPaziente.obiettivo" placeholder="Obiettivo" />
         <textarea [(ngModel)]="nuovoPaziente.anamnesi" placeholder="Anamnesi"></textarea>
@@ -139,6 +139,12 @@
           <form (submit)="onSalvaVisita($event)" class="visita-form">
             <div class="form-row">
               <div class="field-input">
+                <label for="dataVisita">Data Visita</label>
+                <input type="date" id="dataVisita" name="dataVisita"
+                  [(ngModel)]="dataVisita"
+                  [max]="oggi">
+              </div>
+              <div class="field-input">
                 <label for="peso">Peso (kg)</label>
                 <input type="number" id="peso" name="peso" step="0.1" required
                   [(ngModel)]="peso"
@@ -151,7 +157,9 @@
               </div>
               <div class="field-input">
                 <label for="bf">Body Fat (%)</label>
-                <input type="number" id="bf" name="bf" [value]="bf | number:'1.1-1'" readonly class="input-readonly">
+                <input type="number" id="bf" name="bf" step="0.1"
+                  [(ngModel)]="bf"
+                  placeholder="0.0">
               </div>
             </div>
             <button type="submit" class="btn-submit-visita">💾 Salva Dati Visita</button>
