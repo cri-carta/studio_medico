@@ -1,8 +1,12 @@
 const PazienteModel = require('../models/paziente.model');
 const { spawn } = require('child_process');
 
-const RAG_SCRIPT = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\rag_system.py';
-const PYTHON = 'C:\\Users\\user\\Desktop\\studio_medico\\backend_AI\\venv\\Scripts\\python.exe';
+const path       = require('path');
+const AI_DIR     = path.join(__dirname, '..', '..', '..', 'backend_AI');
+const RAG_SCRIPT = path.join(AI_DIR, 'rag_system.py');
+const PYTHON     = process.env.PYTHON_PATH || (process.platform === 'win32'
+    ? path.join(AI_DIR, 'venv', 'Scripts', 'python.exe')
+    : path.join(AI_DIR, 'venv', 'bin', 'python'));
 
 function indicizzaPazienteRAG(id, nome, cognome, obiettivo, anamnesi) {
     return new Promise((resolve) => {
