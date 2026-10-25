@@ -1,4 +1,5 @@
 const express   = require('express');
+const {creaRagId} = require('../utils/ragId'); //mi importo la funzione nuova per l'id collegato correttamente con chroma
 const router    = express.Router();
 const { spawn } = require('child_process');
 const jwt       = require('jsonwebtoken');
@@ -73,7 +74,7 @@ router.get('/tabella/:paziente_id', async (req, res) => {
             return;
         }
 
-        const ragId = `paz_${String(paziente_id).padStart(3, '0')}`;
+        const ragId = creaRagId(paziente_id)
         sendEvent('stato', { message: 'Elaborazione in corso...' });
 
         const risultato = await callPython('tabella', {
