@@ -1,4 +1,5 @@
 const PazienteModel = require('../models/paziente.model');
+const {creaRagId} = require('../utils/ragId'); //mi importo la funzione nuova per l'id collegato correttamente con chroma
 const { spawn } = require('child_process');
 
 const path       = require('path');
@@ -8,15 +9,15 @@ const PYTHON     = process.env.PYTHON_PATH || (process.platform === 'win32'
     ? path.join(AI_DIR, 'venv', 'Scripts', 'python.exe')
     : path.join(AI_DIR, 'venv', 'bin', 'python'));
 
-function indicizzaPazienteRAG(id, nome, cognome, obiettivo, anamnesi) {
+function indicizzaPazienteRAG(comando, id, nome, cognome, obiettivo, anamnesi) {
     return new Promise((resolve) => {
         const payload = JSON.stringify({
-            id:        `paz_${id}`,
+            id:        creaRagId(id),
             nome:      `${nome} ${cognome}`,
             note:      anamnesi  || '',
             obiettivo: obiettivo || '',
         });
-        const proc = spawn(PYTHON, [RAG_SCRIPT, 'add', payload]);
+        const proc = spawn(PYTHON, [RAG_SCRIPT, comando, payload]);
         proc.on('close', () => resolve());
     });
 }
@@ -65,7 +66,7 @@ async function createPatient(req, res) {
 
         const paziente_id = result.insertId;
 
-        indicizzaPazienteRAG(paziente_id, nome, cognome, obiettivo, anamnesi)
+        indicizzaPazienteRAG('add', paziente_id, nome, cognome, obiettivo, anamnesi)
             .catch(err => console.error('[RAG] Errore indicizzazione:', err));
 
         res.status(201).json({ message: 'Paziente creato', id: paziente_id });
@@ -80,7 +81,11 @@ async function updatePatient(req, res) {
         const { id } = req.params;
         const { nome, cognome, data_nascita, altezza, obiettivo, anamnesi } = req.body;
         await PazienteModel.updatePatient(id, nome, cognome, data_nascita, altezza, obiettivo, anamnesi);
+        indicizzaPazienteRAG('update', id, nome, cognome, obiettivo, anamnesi)
+            .catch(err => console.error('[RAG] Errore indicizzazione:', err));
         res.json({ message: 'Paziente aggiornato' });
+        
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
